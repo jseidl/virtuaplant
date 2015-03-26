@@ -1,0 +1,10 @@
+Twisted==15.0.0
+argparse==1.2.1
+distribute==0.6.24
+pyasn1==0.1.7
+pycrypto==2.6.1
+pymodbus==1.2.0
+pymunk==4.0.0
+pyserial==2.7
+wsgiref==0.1.2
+zope.interface==4.1.2
