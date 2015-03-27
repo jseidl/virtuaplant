@@ -49,6 +49,11 @@ or install all of the pip packages by using our provided requirement.txt file:
 
     pip install < requirements.txt
 
+
+## Running
+
+Enter the `/plants` directory, select the plant you want (currently only one available) and start both the world simulator and the HMI with the `start.sh` script. Parts can be ran individually by running `world.py` and `hmi.py` (self-explanatory). All the attack scripts are under the `/attacks` subdirectory.
+
 ## Future
 ### The following plant scenarios are being considered:
 
