@@ -9,6 +9,8 @@ The first release introduces a as-simple-as-it-can-get one-process “bottle-fil
 ## Components
 ### World View
 
+![World View](http://wroot.org/wp/wp-content/uploads/2015/03/worldview.png)
+
 World View consits on the game and 2d physics engine, simulating the effects of the control systems’ action on virtual (cyberz!) assets.
 
 It uses python’s pygame and pymunk (Chipmunk engine for python — intended to be replaced by pybox2d due the lack of swept collision handling which currently limits us a little).
@@ -19,11 +21,16 @@ The soft-plc is implemented over the pymodbus library which runs on a separate t
 
 ### HMI
 
+![HMI](http://wroot.org/wp/wp-content/uploads/2015/03/hmi.png)
 The HMI is written using GTK3 and is quite dead simple. Also runs pymodbus client on a separate thread and connects over TCP/IP to the server (so it could be technically on a separate machine), constantly polling (i.e. reading) the server’s (soft PLC in World View) tags. Control is also possible by writing in the soft-PLC tags.
 
 ### Attack scripts
 
+![Attack all the things](http://wroot.org/wp/wp-content/uploads/2015/03/spill.png)
+
 You didn’t thought I was leaving this behind, did you? The phun on having a World View is to see the results when you start messing around with the soft-PLCs tags! Some pre-built scripts for determined actions are available so you can unleash the script-kiddie on yourself and make the plant go nuts! YAY!
+
+Check the [demo on YouTube](https://www.youtube.com/watch?v=kAfV8acCwfw)
 
 ## Installation requirements
 
