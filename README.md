@@ -22,6 +22,7 @@ The soft-plc is implemented over the pymodbus library which runs on a separate t
 ### HMI
 
 ![HMI](http://wroot.org/wp/wp-content/uploads/2015/03/hmi.png)
+
 The HMI is written using GTK3 and is quite dead simple. Also runs pymodbus client on a separate thread and connects over TCP/IP to the server (so it could be technically on a separate machine), constantly polling (i.e. reading) the server’s (soft PLC in World View) tags. Control is also possible by writing in the soft-PLC tags.
 
 ### Attack scripts
