@@ -44,7 +44,7 @@ The following packages are required:
 
 On debian-based systems (like Ubuntu) you can apt-get the packages which are not provided over pip:
 
-    apt-get install python-pygame python-gobject python-pip
+    apt-get install python-pygame python-gobject python-pip python-dev
 
 Then install the pip ones:
 
