@@ -83,7 +83,7 @@ def add_ball(space):
 def draw_ball(screen, ball, color=THECOLORS['blue']):
     p = int(ball.body.position.x), 600-int(ball.body.position.y)
     pygame.draw.circle(screen, color, p, int(ball.radius), 2)
-    
+
 def add_bottle_in_sensor(space):
 
     body = pymunk.Body()
@@ -327,10 +327,10 @@ def runWorld():
 #########################################
 
 store = ModbusSlaveContext(
-    di = ModbusSequentialDataBlock(0, [0]*100),
-    co = ModbusSequentialDataBlock(0, [0]*100),
-    hr = ModbusSequentialDataBlock(0, [0]*100),
-    ir = ModbusSequentialDataBlock(0, [0]*100))
+    di = ModbusSequentialDataBlock(0, [0]*100), #Discrete
+    co = ModbusSequentialDataBlock(0, [0]*100), #Coil
+    hr = ModbusSequentialDataBlock(0, [0]*100), #Holding registers
+    ir = ModbusSequentialDataBlock(0, [0]*100)) #Input registers
 
 context = ModbusServerContext(slaves=store, single=True)
 
