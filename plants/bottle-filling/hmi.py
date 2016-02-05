@@ -1,17 +1,31 @@
 #!/usr/bin/env python
 
-from gi.repository import GLib, Gtk, GObject
-from pymodbus.client.sync import ModbusTcpClient as ModbusClient
-from pymodbus.exceptions import ConnectionException
+#########################################
+# Imports
+#########################################
+# - HMI Windows
+import  sys
+from gi.repository  import GLib, Gtk, GObject
 
-MODBUS_SLEEP=1
+# - HMI communication
+from modbus         import ClientModbus as Client
+
+#########################################
+# HMI code
+#########################################
+# "Constants"
+SCREEN_WIDTH    = 20
+SLEEP           = 3
+
+SERVER_IP   = "localhost"
+
+PLC_TAG_LEVEL_SENSOR    = 0x1
+PLC_TAG_LIMIT_SWITCH    = 0x2
+PLC_TAG_MOTOR           = 0x3
+PLC_TAG_NOZZLE          = 0x4
+PLC_TAG_RUN             = 0x10
 
 class HMIWindow(Gtk.Window):
-
-    def initModbus(self):
-
-        self.modbusClient = ModbusClient('localhost', port=5020)
-
     def resetLabels(self):
         self.bottlePositionValue.set_markup("<span weight='bold' foreground='gray33'>N/A</span>")
         self.motorStatusValue.set_markup("<span weight='bold' foreground='gray33'>N/A</span>")
@@ -23,9 +37,9 @@ class HMIWindow(Gtk.Window):
     def __init__(self):
         Gtk.Window.__init__(self, title="Bottle-filling factory - HMI - VirtuaPlant")
 
-        self.set_border_width(20)
+        self.set_border_width(SCREEN_WIDTH)
         
-        self.initModbus()
+        self.client = Client(SERVER_IP)
 
         elementIndex = 0
 
@@ -84,8 +98,8 @@ class HMIWindow(Gtk.Window):
         elementIndex += 1
 
         # Run and Stop buttons
-        runButton = Gtk.Button("Run")
-        stopButton = Gtk.Button("Stop")
+        runButton   = Gtk.Button("Run")
+        stopButton  = Gtk.Button("Stop")
 
         runButton.connect("clicked", self.setProcess, 1)
         stopButton.connect("clicked", self.setProcess, 0)
@@ -100,26 +114,25 @@ class HMIWindow(Gtk.Window):
         grid.attach(virtuaPlant, 0, elementIndex, 2, 1)
 
         # Attach Value Labels
-        self.processStatusValue = processStatusValue
-        self.connectionStatusValue = connectionStatusValue
-        self.levelHitValue = levelHitValue
-        self.motorStatusValue = motorStatusValue
-        self.bottlePositionValue = bottlePositionValue
-        self.nozzleStatusValue = nozzleStatusValue
+        self.processStatusValue     = processStatusValue
+        self.connectionStatusValue  = connectionStatusValue
+        self.levelHitValue          = levelHitValue
+        self.motorStatusValue       = motorStatusValue
+        self.bottlePositionValue    = bottlePositionValue
+        self.nozzleStatusValue      = nozzleStatusValue
 
         self.resetLabels()
-        GObject.timeout_add_seconds(MODBUS_SLEEP, self.update_status)
+        GObject.timeout_add_seconds(SLEEP, self.update_status)
 
     def setProcess(self, widget, data=None):
         try:
-            self.modbusClient.write_register(0x10, data)
+            self.client.write(PLC_TAG_RUN, data)
         except:
             pass
 
     def update_status(self):
-
         try:
-            rr = self.modbusClient.read_holding_registers(1,16)
+            rr = self.client.read(0)
             regs = []
 
             if not rr or not rr.registers:
@@ -127,30 +140,30 @@ class HMIWindow(Gtk.Window):
 
             regs = rr.registers
 
-            if not regs or len(regs) < 16:
+            if not regs or len(regs) < PLC_TAG_RUN:
                 raise ConnectionException
 
-            if regs[1] == 1:
+            if regs[PLC_TAG_LIMIT_SWITCH] == 1:
                 self.bottlePositionValue.set_markup("<span weight='bold' foreground='green'>YES</span>")
             else:
                 self.bottlePositionValue.set_markup("<span weight='bold' foreground='red'>NO</span>")
 
-            if regs[0] == 1:
+            if regs[PLC_TAG_LEVEL_SENSOR] == 1:
                 self.levelHitValue.set_markup("<span weight='bold' foreground='green'>YES</span>")
             else:
                 self.levelHitValue.set_markup("<span weight='bold' foreground='red'>NO</span>")
 
-            if regs[2] == 1:
+            if regs[PLC_TAG_MOTOR] == 1:
                 self.motorStatusValue.set_markup("<span weight='bold' foreground='green'>ON</span>")
             else:
                 self.motorStatusValue.set_markup("<span weight='bold' foreground='red'>OFF</span>")
 
-            if regs[3] == 1:
+            if regs[PLC_TAG_NOZZLE] == 1:
                     self.nozzleStatusValue.set_markup("<span weight='bold' foreground='green'>OPEN</span>")
             else:
                 self.nozzleStatusValue.set_markup("<span weight='bold' foreground='red'>CLOSED</span>")
 
-            if regs[15] == 1:
+            if regs[PLC_TAG_RUN] == 1:
                 self.processStatusValue.set_markup("<span weight='bold' foreground='green'>RUNNING</span>")
             else:
                 self.processStatusValue.set_markup("<span weight='bold' foreground='red'>STOPPED</span>")
@@ -158,21 +171,22 @@ class HMIWindow(Gtk.Window):
             self.connectionStatusValue.set_markup("<span weight='bold' foreground='green'>ONLINE</span>")
 
         except ConnectionException:
-            if not self.modbusClient.connect():
+            if not self.client.connect():
                 self.resetLabels()
         except:
             raise
         finally:
             return True
 
-def app_main():
+def main():
+    GObject.threads_init()
     win = HMIWindow()
+
     win.connect("delete-event", Gtk.main_quit)
     win.connect("destroy", Gtk.main_quit)
-    win.show_all()
 
+    win.show_all()
+    Gtk.main()
 
 if __name__ == "__main__":
-    GObject.threads_init()
-    app_main()
-    Gtk.main()
+    sys.exit(main())
