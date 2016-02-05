@@ -9,21 +9,17 @@ from gi.repository  import GLib, Gtk, GObject
 
 # - HMI communication
 from modbus         import ClientModbus as Client
+from modbus	    import ConnectionException 
+
+# - World environement
+from world          import *
 
 #########################################
 # HMI code
 #########################################
 # "Constants"
-SCREEN_WIDTH    = 20
-SLEEP           = 3
-
-SERVER_IP   = "localhost"
-
-PLC_TAG_LEVEL_SENSOR    = 0x1
-PLC_TAG_LIMIT_SWITCH    = 0x2
-PLC_TAG_MOTOR           = 0x3
-PLC_TAG_NOZZLE          = 0x4
-PLC_TAG_RUN             = 0x10
+HMI_SCREEN_WIDTH = 20
+HMI_SLEEP        = 1
 
 class HMIWindow(Gtk.Window):
     def resetLabels(self):
@@ -34,12 +30,12 @@ class HMIWindow(Gtk.Window):
         self.nozzleStatusValue.set_markup("<span weight='bold' foreground='gray33'>N/A</span>")
         self.connectionStatusValue.set_markup("<span weight='bold' foreground='red'>OFFLINE</span>")
 
-    def __init__(self):
+    def __init__(self, address, port):
         Gtk.Window.__init__(self, title="Bottle-filling factory - HMI - VirtuaPlant")
 
-        self.set_border_width(SCREEN_WIDTH)
+        self.set_border_width(HMI_SCREEN_WIDTH)
         
-        self.client = Client(SERVER_IP)
+        self.client = Client(address, port=port)
 
         elementIndex = 0
 
@@ -122,7 +118,7 @@ class HMIWindow(Gtk.Window):
         self.nozzleStatusValue      = nozzleStatusValue
 
         self.resetLabels()
-        GObject.timeout_add_seconds(SLEEP, self.update_status)
+        GObject.timeout_add_seconds(HMI_SLEEP, self.update_status)
 
     def setProcess(self, widget, data=None):
         try:
@@ -132,23 +128,14 @@ class HMIWindow(Gtk.Window):
 
     def update_status(self):
         try:
-            rr = self.client.read(0)
-            regs = []
+            regs = self.client.readln(0x0, 17)
 
-            if not rr or not rr.registers:
-                raise ConnectionException
-
-            regs = rr.registers
-
-            if not regs or len(regs) < PLC_TAG_RUN:
-                raise ConnectionException
-
-            if regs[PLC_TAG_LIMIT_SWITCH] == 1:
+            if regs[PLC_TAG_CONTACT] == 1:
                 self.bottlePositionValue.set_markup("<span weight='bold' foreground='green'>YES</span>")
             else:
                 self.bottlePositionValue.set_markup("<span weight='bold' foreground='red'>NO</span>")
 
-            if regs[PLC_TAG_LEVEL_SENSOR] == 1:
+            if regs[PLC_TAG_LEVEL] == 1:
                 self.levelHitValue.set_markup("<span weight='bold' foreground='green'>YES</span>")
             else:
                 self.levelHitValue.set_markup("<span weight='bold' foreground='red'>NO</span>")
@@ -175,12 +162,13 @@ class HMIWindow(Gtk.Window):
                 self.resetLabels()
         except:
             raise
+
         finally:
             return True
 
 def main():
     GObject.threads_init()
-    win = HMIWindow()
+    win = HMIWindow(PLC_SERVER_IP, PLC_SERVER_PORT)
 
     win.connect("delete-event", Gtk.main_quit)
     win.connect("destroy", Gtk.main_quit)

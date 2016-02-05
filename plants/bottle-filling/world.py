@@ -18,6 +18,7 @@ import  pymunk
 
 # - World communication
 from    modbus              import ServerModbus as Server
+from    modbus              import ClientModbus as Client
 
 #########################################
 # Logging
@@ -27,26 +28,66 @@ log = logging.getLogger()
 log.setLevel(logging.INFO)
 
 #########################################
-# World code
+# PLC
 #########################################
-# "Constants"
-SCREEN_WIDTH    = 600
-SCREEN_HEIGHT   = 350
-FPS             = 50.0
-
 PLC_SERVER_IP   = "localhost"
 PLC_SERVER_PORT = 502
 
-PLC_TAG_LEVEL_SENSOR    = 0x1
-PLC_TAG_LIMIT_SWITCH    = 0x2
-PLC_TAG_MOTOR           = 0x3
-PLC_TAG_NOZZLE          = 0x4
-PLC_TAG_RUN             = 0x10
+PLC_TAG_LEVEL   = 0x1
+PLC_TAG_CONTACT = 0x2
+PLC_TAG_MOTOR   = 0x3
+PLC_TAG_NOZZLE  = 0x4
+PLC_TAG_RUN     = 0x10
+
+#########################################
+# MOTOR actuator
+#########################################
+MOTOR_SERVER_IP     = "localhost"
+MOTOR_SERVER_PORT   = 503
+
+MOTOR_TAG_RUN = 0x3
+
+#########################################
+# NOZZLE actuator
+#########################################
+NOZZLE_SERVER_IP    = "localhost"
+NOZZLE_SERVER_PORT  = 504
+
+NOZZLE_TAG_RUN = 0x4
+
+#########################################
+# LEVEL sensor
+#########################################
+LEVEL_SERVER_IP     = "localhost"
+LEVEL_SERVER_PORT   = 505
+
+LEVEL_TAG_SENSOR = 0x1
+
+#########################################
+# CONTACT sensor
+#########################################
+CONTACT_SERVER_IP   = "localhost"
+CONTACT_SERVER_PORT = 506
+
+CONTACT_TAG_SENSOR = 0x2
+
+#########################################
+# World code
+#########################################
+# "Constants"
+WORLD_SCREEN_WIDTH  = 600
+WORLD_SCREEN_HEIGHT = 350
+FPS                 = 50.0
 
 # Global Variables
 global bottles
 bottles = []
-global plc 
+global plc, motor, nozzle, level, contact
+plc     = {}
+motor   = {}
+nozzle  = {}
+level   = {}
+contact = {}
 
 def to_pygame(p):
     """Small hack to convert pymunk to pygame coordinates"""
@@ -98,7 +139,7 @@ def add_level_sensor(space):
 
     return shape
 
-def add_limit_switch(space):
+def add_contact_sensor(space):
     radius = 2
 
     body = pymunk.Body()
@@ -110,7 +151,7 @@ def add_limit_switch(space):
 
     return shape
 
-def add_nozzle(space):
+def add_nozzle_actuator(space):
     body = pymunk.Body()
     body.position = (180, 430)
 
@@ -123,7 +164,7 @@ def add_base(space):
     body = pymunk.Body()
     body.position = (0, 300)
 
-    shape = pymunk.Poly.create_box(body, (SCREEN_WIDTH, 20), ((SCREEN_WIDTH/2), -10), 0)
+    shape = pymunk.Poly.create_box(body, (WORLD_SCREEN_WIDTH, 20), ((WORLD_SCREEN_WIDTH/2), -10), 0)
     shape.friction = 1.0
     shape.collision_type = 0x7 # base
     space.add(shape)
@@ -192,47 +233,46 @@ def no_collision(space, arbiter, *args, **kwargs):
     return False
 
 def level_ok(space, arbiter, *args, **kwargs):
-    global plc
+    global level
 
     log.debug("Level reached")
 
-    plc.write(PLC_TAG_LEVEL_SENSOR, 1)  # Level Sensor Hit, Bottle Filled
+    level['server'].write(LEVEL_TAG_SENSOR, 1)  # Level Sensor Hit, Bottle Filled
 
     return False
 
 def no_level(space, arbiter, *args, **kwargs):
-    global plc
+    global level
 
     log.debug("No level")
 
-    plc.write(PLC_TAG_LIMIT_SWITCH, 0)
+    level['server'].write(LEVEL_TAG_SENSOR, 0)
 
     return False
 
 def bottle_in_place(space, arbiter, *args, **kwargs):
-    global plc
+    global contact
 
     log.debug("Bottle in place")
 
-    plc.write(PLC_TAG_LIMIT_SWITCH, 1)
+    contact['server'].write(CONTACT_TAG_SENSOR, 1)
 
     return False
 
 def no_bottle(space, arbiter, *args, **kwargs):
-    global plc
+    global contact
 
     log.debug("No Bottle")
 
-    plc.write(PLC_TAG_LEVEL_SENSOR, 0)
+    contact['server'].write(CONTACT_TAG_SENSOR, 0)
     
     return False
 
 def runWorld():
-    global plc
-
     pygame.init()
 
-    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+    screen = pygame.display.set_mode((WORLD_SCREEN_WIDTH, WORLD_SCREEN_HEIGHT))
+
     pygame.display.set_caption("Bottle-Filling Factory - World View - VirtuaPlant")
     clock = pygame.time.Clock()
 
@@ -241,16 +281,16 @@ def runWorld():
     space = pymunk.Space()
     space.gravity = (0.0, -900.0)
 
-    # Limit switch with bottle bottom
+    # Contact sensor with bottle bottom
     space.add_collision_handler(0x1, 0x2, begin=no_collision)
 
-    # Limit switch with bottle left side
+    # Contact sensor with bottle left side
     space.add_collision_handler(0x1, 0x3, begin=no_bottle)
 
-    # Limit switch with bottle right side
+    # Contact sensor with bottle right side
     space.add_collision_handler(0x1, 0x4, begin=bottle_in_place)
 
-    # Limit switch with ground
+    # Contact sensor with ground
     space.add_collision_handler(0x1, 0x7, begin=no_collision)
 
     # Level sensor with bottle left side
@@ -271,8 +311,8 @@ def runWorld():
     space.add_collision_handler(0x8, 0x4, begin=no_collision)
 
     base            = add_base(space)
-    nozzle          = add_nozzle(space)
-    limit_switch    = add_limit_switch(space)
+    nozzle_actuator = add_nozzle_actuator(space)
+    contact_sensor  = add_contact_sensor(space)
     level_sensor    = add_level_sensor(space)
     bottle_in       = add_bottle_in_sensor(space)
     
@@ -288,6 +328,8 @@ def runWorld():
     fontSmall   = pygame.font.SysFont(None, 18)
 
     while running:
+        global plc, motor, nozzle
+
         clock.tick(FPS)
 
         for event in pygame.event.get():
@@ -298,32 +340,42 @@ def runWorld():
 
         screen.fill(THECOLORS["white"])
         
-        if plc.read(PLC_TAG_RUN):
+        # Manage plc
+        # Read remote variables and store in local
+        plc['server'].write(PLC_TAG_LEVEL, plc['level'].read(LEVEL_TAG_SENSOR))
+        plc['server'].write(PLC_TAG_CONTACT, plc['contact'].read(CONTACT_TAG_SENSOR))
+
+        # Manage PLC programm
+        if plc['server'].read(PLC_TAG_RUN):
                 # Motor Logic
-                if (plc.read(PLC_TAG_LIMIT_SWITCH) == 0):
-                    plc.write(PLC_TAG_MOTOR, 1)
+                if (plc['server'].read(PLC_TAG_CONTACT) == 0):
+                    plc['server'].write(PLC_TAG_MOTOR, 1)
                 else:
-                    if (plc.read(PLC_TAG_LIMIT_SWITCH) == 1) and (plc.read(PLC_TAG_LEVEL_SENSOR) == 1):
-                        plc.write(PLC_TAG_MOTOR, 1)
+                    if (plc['server'].read(PLC_TAG_CONTACT) == 1) and (plc['server'].read(PLC_TAG_LEVEL) == 1):
+                        plc['server'].write(PLC_TAG_MOTOR, 1)
                     else:
-                        plc.write(PLC_TAG_MOTOR, 0)
+                        plc['server'].write(PLC_TAG_MOTOR, 0)
 
                 # Nozzle Logic 
-                if (plc.read(PLC_TAG_MOTOR) == 0) and (plc.read(PLC_TAG_LIMIT_SWITCH) == 1) and (plc.read(PLC_TAG_LEVEL_SENSOR) == 0):
-                    plc.write(PLC_TAG_NOZZLE, 1)
+                if (plc['server'].read(PLC_TAG_MOTOR) == 0) and (plc['server'].read(PLC_TAG_CONTACT) == 1) and (plc['server'].read(PLC_TAG_LEVEL) == 0):
+                    plc['server'].write(PLC_TAG_NOZZLE, 1)
                 else:
-                    plc.write(PLC_TAG_NOZZLE, 0)
+                    plc['server'].write(PLC_TAG_NOZZLE, 0)
         else:
-            plc.write(PLC_TAG_MOTOR, 0)
-            plc.write(PLC_TAG_NOZZLE, 0)
-        
-        # Fill bottle
-        if plc.read(PLC_TAG_NOZZLE) == 1:
+            plc['server'].write(PLC_TAG_MOTOR, 0)
+            plc['server'].write(PLC_TAG_NOZZLE, 0)
+
+        # Read local variables and store in remote
+        plc['motor'].write(MOTOR_TAG_RUN, plc['server'].read(PLC_TAG_MOTOR))
+        plc['nozzle'].write(NOZZLE_TAG_RUN, plc['server'].read(PLC_TAG_NOZZLE))
+
+        # Manage nozzle actuator : filling bottle
+        if nozzle['server'].read(NOZZLE_TAG_RUN) == 1:
             ball_shape = add_ball(space)
             balls.append(ball_shape)
 
-        # Move the bottles
-        if plc.read(PLC_TAG_MOTOR) == 1:
+        # Manage motor : move the bottles
+        if motor['server'].read(MOTOR_TAG_RUN) == 1:
             for bottle in bottles:
                 bottle[0].body.position.x += 0.25
 
@@ -331,7 +383,7 @@ def runWorld():
         # Remove off-screen balls
         balls_to_remove = []
         for ball in balls:
-            if ball.body.position.y < 150 or ball.body.position.x > SCREEN_WIDTH+150:
+            if ball.body.position.y < 150 or ball.body.position.x > WORLD_SCREEN_WIDTH+150:
                 balls_to_remove.append(ball)
 
             draw_ball(screen, ball)
@@ -343,7 +395,7 @@ def runWorld():
 
         # Draw bottles
         for bottle in bottles:
-            if bottle[0].body.position.x > SCREEN_WIDTH+150 or bottle[0].body.position.y < 150:
+            if bottle[0].body.position.x > WORLD_SCREEN_WIDTH+150 or bottle[0].body.position.y < 150:
                 space.remove(bottle, bottle[0].body)
 
                 bottles.remove(bottle)
@@ -351,12 +403,12 @@ def runWorld():
                 continue
             draw_lines(screen, bottle)
 
-        # Draw the base and nozzle
+        # Draw the base and nozzle actuator
         draw_polygon(screen, base)
-        draw_polygon(screen, nozzle)
+        draw_polygon(screen, nozzle_actuator)
 
-        # Draw the limit switch
-        draw_ball(screen, limit_switch, THECOLORS['green'])
+        # Draw the contact sensor 
+        draw_ball(screen, contact_sensor, THECOLORS['green'])
 
         # Draw the level sensor
         draw_ball(screen, level_sensor, THECOLORS['red'])
@@ -367,7 +419,7 @@ def runWorld():
 
         screen.blit(title, (10, 40))
         screen.blit(name, (10, 10))
-        screen.blit(instructions, (SCREEN_WIDTH-115, 10))
+        screen.blit(instructions, (WORLD_SCREEN_WIDTH-115, 10))
 
         space.step(1/FPS)
         pygame.display.flip()
@@ -377,13 +429,32 @@ def runWorld():
         reactor.callFromThread(reactor.stop)
 
 def main():
-    global plc
+    global plc, motor, nozzle, level, contact
 
     # Initialise simulator
     reactor.callInThread(runWorld)
 
-    # Initialise communication
-    plc = Server(reactor, PLC_SERVER_IP, port=PLC_SERVER_PORT)
+    # Initialise motor, nozzle, level and contact components
+    motor['server'] = Server(MOTOR_SERVER_IP, port=MOTOR_SERVER_PORT)
+    reactor.listenTCP(MOTOR_SERVER_PORT, motor['server'], interface = MOTOR_SERVER_IP,)
+
+    nozzle['server'] = Server(NOZZLE_SERVER_IP, port=NOZZLE_SERVER_PORT)
+    reactor.listenTCP(NOZZLE_SERVER_PORT, nozzle['server'], interface = NOZZLE_SERVER_IP,)
+
+    level['server'] = Server(LEVEL_SERVER_IP, port=LEVEL_SERVER_PORT)
+    reactor.listenTCP(LEVEL_SERVER_PORT, level['server'], interface = LEVEL_SERVER_IP,)
+
+    contact['server'] = Server(CONTACT_SERVER_IP, port=CONTACT_SERVER_PORT)
+    reactor.listenTCP(CONTACT_SERVER_PORT, contact['server'], interface = CONTACT_SERVER_IP)
+
+    # Initialise plc component
+    plc['server'] = Server(PLC_SERVER_IP, port=PLC_SERVER_PORT)
+    reactor.listenTCP(PLC_SERVER_PORT, plc['server'], interface = PLC_SERVER_IP)
+
+    plc['motor']    = Client(MOTOR_SERVER_IP, port=MOTOR_SERVER_PORT)
+    plc['nozzle']   = Client(NOZZLE_SERVER_IP, port=NOZZLE_SERVER_PORT)
+    plc['level']    = Client(LEVEL_SERVER_IP, port=LEVEL_SERVER_PORT)
+    plc['contact']  = Client(CONTACT_SERVER_IP, port=CONTACT_SERVER_PORT)
 
     # Run World
     reactor.run()
