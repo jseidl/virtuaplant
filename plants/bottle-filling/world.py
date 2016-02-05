@@ -34,7 +34,8 @@ SCREEN_WIDTH    = 600
 SCREEN_HEIGHT   = 350
 FPS             = 50.0
 
-SERVER_IP       = "localhost"
+PLC_SERVER_IP   = "localhost"
+PLC_SERVER_PORT = 502
 
 PLC_TAG_LEVEL_SENSOR    = 0x1
 PLC_TAG_LIMIT_SWITCH    = 0x2
@@ -45,7 +46,7 @@ PLC_TAG_RUN             = 0x10
 # Global Variables
 global bottles
 bottles = []
-global PLC
+global plc 
 
 def to_pygame(p):
     """Small hack to convert pymunk to pygame coordinates"""
@@ -64,7 +65,7 @@ def add_ball(space):
     body.position = x, 410
 
     shape = pymunk.Circle(body, radius, (0,0))
-    shape.collision_type = 0x5 #liquid
+    shape.collision_type = 0x6 #liquid
     space.add(body, shape)
 
     return shape
@@ -80,7 +81,7 @@ def add_bottle_in_sensor(space):
     body.position = (40, 300)
 
     shape = pymunk.Circle(body, radius, (0, 0))
-    shape.collision_type = 0x7 # 'bottle_in'
+    shape.collision_type = 0x8 # 'bottle_in'
     space.add(shape)
 
     return shape
@@ -92,7 +93,7 @@ def add_level_sensor(space):
     body.position = (155, 380)
 
     shape = pymunk.Circle(body, radius, (0, 0))
-    shape.collision_type = 0x4 # level_sensor
+    shape.collision_type = 0x5 # level_sensor
     space.add(shape)
 
     return shape
@@ -124,7 +125,7 @@ def add_base(space):
 
     shape = pymunk.Poly.create_box(body, (SCREEN_WIDTH, 20), ((SCREEN_WIDTH/2), -10), 0)
     shape.friction = 1.0
-    shape.collision_type = 0x6 # base
+    shape.collision_type = 0x7 # base
     space.add(shape)
 
     return shape
@@ -147,8 +148,8 @@ def add_bottle(space):
 
     # Set collision types for sensors
     l1.collision_type = 0x2 # bottle_bottom
-    l2.collision_type = 0x3 # bottle_side
-    l3.collision_type = 0x3 # bottle_side
+    l2.collision_type = 0x3 # bottle_right_side
+    l3.collision_type = 0x4 # bottle_left_side
 
     space.add(l1, l2, l3, body)
 
@@ -191,29 +192,43 @@ def no_collision(space, arbiter, *args, **kwargs):
     return False
 
 def level_ok(space, arbiter, *args, **kwargs):
-    global PLC
+    global plc
 
     log.debug("Level reached")
 
-    PLC.write(PLC_TAG_LIMIT_SWITCH, 0)  # Limit Switch Release, Fill Bottle
-    PLC.write(PLC_TAG_LEVEL_SENSOR, 1)  # Level Sensor Hit, Bottle Filled
-    PLC.write(PLC_TAG_NOZZLE, 0)        # Close nozzle
+    plc.write(PLC_TAG_LEVEL_SENSOR, 1)  # Level Sensor Hit, Bottle Filled
+
+    return False
+
+def no_level(space, arbiter, *args, **kwargs):
+    global plc
+
+    log.debug("No level")
+
+    plc.write(PLC_TAG_LIMIT_SWITCH, 0)
 
     return False
 
 def bottle_in_place(space, arbiter, *args, **kwargs):
-    global PLC
+    global plc
 
     log.debug("Bottle in place")
 
-    PLC.write(PLC_TAG_LIMIT_SWITCH, 1) 
-    PLC.write(PLC_TAG_LEVEL_SENSOR, 0)
-    PLC.write(PLC_TAG_NOZZLE, 1)        # Open nozzle
+    plc.write(PLC_TAG_LIMIT_SWITCH, 1)
 
     return False
 
+def no_bottle(space, arbiter, *args, **kwargs):
+    global plc
+
+    log.debug("No Bottle")
+
+    plc.write(PLC_TAG_LEVEL_SENSOR, 0)
+    
+    return False
+
 def runWorld():
-    global PLC
+    global plc
 
     pygame.init()
 
@@ -227,26 +242,33 @@ def runWorld():
     space.gravity = (0.0, -900.0)
 
     # Limit switch with bottle bottom
-    space.add_collision_handler(0x1, 0x2, begin=bottle_in_place)
+    space.add_collision_handler(0x1, 0x2, begin=no_collision)
 
-    # Level sensor with water
-    space.add_collision_handler(0x4, 0x5, begin=level_ok)
+    # Limit switch with bottle left side
+    space.add_collision_handler(0x1, 0x3, begin=no_bottle)
 
-    # Level sensor with ground
-    space.add_collision_handler(0x4, 0x6, begin=no_collision)
+    # Limit switch with bottle right side
+    space.add_collision_handler(0x1, 0x4, begin=bottle_in_place)
 
     # Limit switch with ground
-    space.add_collision_handler(0x1, 0x6, begin=no_collision)
+    space.add_collision_handler(0x1, 0x7, begin=no_collision)
 
-    # Limit switch with bottle side
-    space.add_collision_handler(0x1, 0x3, begin=no_collision)
+    # Level sensor with bottle left side
+    space.add_collision_handler(0x5, 0x3, begin=no_level)
 
-    # Level sensor with bottle side
-    space.add_collision_handler(0x4, 0x3, begin=no_collision)
+    # Level sensor with bottle right side
+    space.add_collision_handler(0x5, 0x4, begin=no_collision)
+
+    # Level sensor with water
+    space.add_collision_handler(0x5, 0x6, begin=level_ok)
+
+    # Level sensor with ground
+    space.add_collision_handler(0x5, 0x7, begin=no_collision)
 
     # Bottle in with bottle sides and bottom
-    space.add_collision_handler(0x7, 0x2, begin=no_collision, separate=add_new_bottle)
-    space.add_collision_handler(0x7, 0x3, begin=no_collision)
+    space.add_collision_handler(0x8, 0x2, begin=no_collision, separate=add_new_bottle)
+    space.add_collision_handler(0x8, 0x3, begin=no_collision)
+    space.add_collision_handler(0x8, 0x4, begin=no_collision)
 
     base            = add_base(space)
     nozzle          = add_nozzle(space)
@@ -276,30 +298,34 @@ def runWorld():
 
         screen.fill(THECOLORS["white"])
         
-        if PLC.read(PLC_TAG_RUN):
+        if plc.read(PLC_TAG_RUN):
                 # Motor Logic
-                if (PLC.read(PLC_TAG_LIMIT_SWITCH) == 1):
-                    PLC.write(PLC_TAG_MOTOR, 0)
-                
-                if (PLC.read(PLC_TAG_LEVEL_SENSOR) == 1):
-                    PLC.write(PLC_TAG_MOTOR, 1)
-                    
-                ticks_to_next_ball -= 1
-                
-                if not PLC.read(PLC_TAG_LIMIT_SWITCH):
-                    PLC.write(PLC_TAG_MOTOR, 1)
+                if (plc.read(PLC_TAG_LIMIT_SWITCH) == 0):
+                    plc.write(PLC_TAG_MOTOR, 1)
+                else:
+                    if (plc.read(PLC_TAG_LIMIT_SWITCH) == 1) and (plc.read(PLC_TAG_LEVEL_SENSOR) == 1):
+                        plc.write(PLC_TAG_MOTOR, 1)
+                    else:
+                        plc.write(PLC_TAG_MOTOR, 0)
 
-                if ticks_to_next_ball <= 0 and PLC.read(PLC_TAG_NOZZLE):
-                    ticks_to_next_ball = 1
-                    ball_shape = add_ball(space)
-                    balls.append(ball_shape)
-
-                # Move the bottles
-                if PLC.read(PLC_TAG_MOTOR) == 1:
-                    for bottle in bottles:
-                        bottle[0].body.position.x += 0.25
+                # Nozzle Logic 
+                if (plc.read(PLC_TAG_MOTOR) == 0) and (plc.read(PLC_TAG_LIMIT_SWITCH) == 1) and (plc.read(PLC_TAG_LEVEL_SENSOR) == 0):
+                    plc.write(PLC_TAG_NOZZLE, 1)
+                else:
+                    plc.write(PLC_TAG_NOZZLE, 0)
         else:
-            PLC.write(PLC_TAG_MOTOR, 0)
+            plc.write(PLC_TAG_MOTOR, 0)
+            plc.write(PLC_TAG_NOZZLE, 0)
+        
+        # Fill bottle
+        if plc.read(PLC_TAG_NOZZLE) == 1:
+            ball_shape = add_ball(space)
+            balls.append(ball_shape)
+
+        # Move the bottles
+        if plc.read(PLC_TAG_MOTOR) == 1:
+            for bottle in bottles:
+                bottle[0].body.position.x += 0.25
 
         # Draw water balls
         # Remove off-screen balls
@@ -351,13 +377,13 @@ def runWorld():
         reactor.callFromThread(reactor.stop)
 
 def main():
-    global PLC
+    global plc
 
     # Initialise simulator
     reactor.callInThread(runWorld)
 
     # Initialise communication
-    PLC = Server(reactor, SERVER_IP)
+    plc = Server(reactor, PLC_SERVER_IP, port=PLC_SERVER_PORT)
 
     # Run World
     reactor.run()
