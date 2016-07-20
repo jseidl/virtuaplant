@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from gi.repository import GLib, Gtk, GObject
+from gi.repository import GLib, Gtk, Gdk, GObject
 from pymodbus.client.sync import ModbusTcpClient as ModbusClient
 from pymodbus.exceptions import ConnectionException
 import pygtk
@@ -25,6 +25,7 @@ class HMIWindow(Gtk.Window):
      
     def __init__(self):
         Gtk.Window.__init__(self, title="Oil Refinery")
+        #self.gtk_widget_override_background_color(Gtk.StateType.NORMAL, Gtk.Window("green"))
 
         self.set_border_width(100)
         
