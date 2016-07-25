@@ -298,12 +298,12 @@ def run_world():
                 PLCSetTag(PLC_OUTLET_VALVE, 1)
                 PLCSetTag(PLC_FEED_PUMP, 0)
             
-            else:
-                PLCSetTag(PLC_OUTLET_VALVE, 0)
-                try:
-                    space.remove(valve, valve.body)
-                except:
-                    pass
+        else:
+            PLCSetTag(PLC_OUTLET_VALVE, 0)
+            try:
+                space.remove(valve, valve.body)
+            except:
+                pass
                 
                 ticks_to_next_ball -= 1
 
