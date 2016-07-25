@@ -344,7 +344,7 @@ identity.MajorMinorRevision = '1.0'
 
 def startModbusServer():
 
-    StartTcpServer(context, identity=identity, address=("172.27.158.32", MODBUS_SERVER_PORT))
+    StartTcpServer(context, identity=identity, address=("localhost", MODBUS_SERVER_PORT))
 
 def main():
     reactor.callInThread(runWorld)

@@ -10,7 +10,7 @@ class HMIWindow(Gtk.Window):
 
     def initModbus(self):
 
-        self.modbusClient = ModbusClient('172.27.158.32', port=5020)
+        self.modbusClient = ModbusClient('localhost', port=5020)
 
     def resetLabels(self):
         self.bottlePositionValue.set_markup("<span weight='bold' foreground='gray33'>N/A</span>")

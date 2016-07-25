@@ -35,9 +35,11 @@ FPS=50.0
 
 MODBUS_SERVER_PORT=5020
 
-PLC_TAG_LEVEL_SENSOR = 0x1
-PLC_TAG_LIMIT_SWITCH = 0x2
-PLC_TAG_PUMP = 0x3
+PLC_TANK_LEVEL = 0x1
+PLC_INLET_VALVE = 0x2
+PLC_OUTLET_VALVE = 0x2
+PLC_FEED_PUMP = 0x3
+PLC_DISCHARGE_PUMP = 0x3
 PLC_TAG_NOZZLE = 0x4
 PLC_TAG_RUN = 0x10
 
@@ -63,28 +65,37 @@ def draw_ball(screen, ball, color=THECOLORS['black']):
     p = int(ball.body.position.x), 600-int(ball.body.position.y)
     pygame.draw.circle(screen, color, p, int(ball.radius), 2)
 
-def add_tank_in_sensor(space):
+def outlet_valve_sensor(space):
 
     body = pymunk.Body()
-    body.position = (10, 320)
+    body.position = (185, 320)
     radius = 2
     shape = pymunk.Circle(body, radius, (0, 0))
     shape.collision_type = 0x7 # 'bottle_in'
     space.add(shape)
     return shape
 
-def add_level_sensor(space):
+def separator_vessel_release(space):
+    body = pymunk.Body()
+    body.position = (380, 225)
+    radius = 2
+    shape = pymunk.Circle(body, radius, (0, 0))
+    shape.collision_type = 0x7
+    space.add(shape)
+    return shape
+
+def tank_level_sensor(space):
 
     body = pymunk.Body()
     body.position = (125, 400)
     radius = 3
     shape = pymunk.Circle(body, radius, (0, 0))
-    shape.collision_type = 0x4 # level_sensor
+    shape.collision_type = 0x4 # tank_level
     space.add(shape)
     return shape
 
 
-def add_limit_switch(space):
+def inlet_valve_sensor(space):
 
     body = pymunk.Body()
     body.position = (165, 415)
@@ -153,8 +164,12 @@ def add_oil_unit(space):
     l26 = pymunk.Segment(body, (80, -115), (20, -115), 5)
     l27 = pymunk.Segment(body, (20, -115), (20, -185), 5)
     l28 = pymunk.Segment(body, (20, -185), (140, -185), 5)
-    l29 = pymunk.Segment(body, (140, -185), (140, -115), 5)
-    l30 = pymunk.Segment(body, (140, -115), (100, -115), 5)
+    l29 = pymunk.Segment(body, (140, -185), (140, -170), 5)
+    l30 = pymunk.Segment(body, (140, -145), (140, -115), 5)
+    l31 = pymunk.Segment(body, (140, -115), (100, -115), 5)
+    l32 = pymunk.Segment(body, (140, -145), (600, -145), 5)
+    l33 = pymunk.Segment(body, (140, -170), (600, -170), 5)
+
 
     #rotation_center_joint = pymunk.PinJoint(body, rotation_center_body, (-135,115), (-100, 115))
     #joint_limit = 25
@@ -162,9 +177,9 @@ def add_oil_unit(space):
 
     space.add(l1, l2, l7, l8, l9, l10, l11, l12, l13, l14, l15, 
                 l16, l17, l18, l19, l20, l21, l22, l23, l24, l25, 
-                l26, l27, l28, l29, l30) # 3
+                l26, l27, l28, l29, l30, l31, l32, l33) # 3
 
-    return l1,l2,l7,l8,l9,l10,l11,l12,l13,l14,l15,l16,l17,l18,l19,l20,l21,l22,l23,l24,l25,l26,l27,l28,l29,l30
+    return l1,l2,l7,l8,l9,l10,l11,l12,l13,l14,l15,l16,l17,l18,l19,l20,l21,l22,l23,l24,l25,l26,l27,l28,l29,l30,l31,l32,l33
 
 def draw_polygon(screen, shape):
 
@@ -190,17 +205,21 @@ def no_collision(space, arbiter, *args, **kwargs):
 def level_ok(space, arbiter, *args, **kwargs):
 
     log.debug("Level reached")
-    PLCSetTag(PLC_TAG_LIMIT_SWITCH, 0) # Limit Switch Release, Fill Bottle
-    PLCSetTag(PLC_TAG_LEVEL_SENSOR, 1) # Level Sensor Hit, Bottle Filled
+    PLCSetTag(PLC_INLET_VALVE, 0) # Limit Switch Release, Fill Bottle
+    PLCSetTag(PLC_TANK_LEVEL, 1) # Level Sensor Hit, Bottle Filled
     PLCSetTag(PLC_TAG_NOZZLE, 0) # Close nozzle
+    PLCSetTag(PLC_OUTLET_VALVE, 1)
+    PLCSetTag(PLC_DISCHARGE_PUMP, 1)
     return False
 
 def oil_storage_ready(space, arbiter, *args, **kwargs):
 
     log.debug("Storage bin ready")
-    PLCSetTag(PLC_TAG_LIMIT_SWITCH, 1) 
-    PLCSetTag(PLC_TAG_LEVEL_SENSOR, 0)
+    PLCSetTag(PLC_INLET_VALVE, 1) 
+    PLCSetTag(PLC_TANK_LEVEL, 0)
     PLCSetTag(PLC_TAG_NOZZLE, 1) # Open nozzle
+    PLCSetTag(PLC_OUTLET_VALVE, 0)
+    PLCSetTag(PLC_DISCHARGE_PUMP, 0)
     return False
 
 def run_world():
@@ -230,9 +249,11 @@ def run_world():
 
     nozzle = add_nozzle(space)
     lines = add_oil_unit(space)
-    limit_switch = add_limit_switch(space)
-    level_sensor = add_level_sensor(space)
-    tank_in = add_tank_in_sensor(space)
+    inlet_valve = inlet_valve_sensor(space)
+    tank_level = tank_level_sensor(space)
+    tank_in = outlet_valve_sensor(space)
+    separator_vessel = separator_vessel_release(space)
+    outlet_valve = outlet_valve_sensor(space)
     
     balls = []
 
@@ -256,23 +277,34 @@ def run_world():
         if PLCGetTag(PLC_TAG_RUN):
 
                 # Motor Logic
-                if (PLCGetTag(PLC_TAG_LIMIT_SWITCH) == 1):
-                    PLCSetTag(PLC_TAG_PUMP, 0)
-                
-                if (PLCGetTag(PLC_TAG_LEVEL_SENSOR) == 1):
-                    PLCSetTag(PLC_TAG_PUMP, 1)
+                if (PLCGetTag(PLC_FEED_PUMP) == 1):
+                    PLCSetTag(PLC_INLET_VALVE, 1)
+                    PLCSetTag(PLC_TAG_NOZZLE, 1)
+
+                if (PLCGetTag(PLC_INLET_VALVE) == 1):
+                    PLCSetTag(PLC_OUTLET_VALVE, 0)
+                    PLCSetTag(PLC_DISCHARGE_PUMP, 0)
+
+                if (PLCGetTag(PLC_TANK_LEVEL) == 1):
                     
+                    PLCSetTag(PLC_OUTLET_VALVE, 1)
+                    PLCSetTag(PLC_DISCHARGE_PUMP, 1)
+                
+                if (PLCGetTag(PLC_OUTLET_VALVE) == 1):
+                    PLCSetTag(PLC_FEED_PUMP, 0)
+                    PLCSetTag(PLC_INLET_VALVE, 0)
+                    PLCSetTag(PLC_TAG_NOZZLE, 0)
                 ticks_to_next_ball -= 1
                 
-                if not PLCGetTag(PLC_TAG_LIMIT_SWITCH):
-                    PLCSetTag(PLC_TAG_PUMP, 1)
+                if not PLCGetTag(PLC_INLET_VALVE):
+                    PLCSetTag(PLC_FEED_PUMP, 1)
 
-                if ticks_to_next_ball <= 0: #and PLCGetTag(PLC_TAG_NOZZLE):
+                if ticks_to_next_ball <= 0 and PLCGetTag(PLC_TAG_NOZZLE):
                     ticks_to_next_ball = 1
                     ball_shape = add_ball(space)
                     balls.append(ball_shape)
         else:
-            PLCSetTag(PLC_TAG_PUMP, 0)
+            PLCSetTag(PLC_TAG_NOZZLE, 0)
 
 
         balls_to_remove = []
@@ -288,8 +320,10 @@ def run_world():
 
         draw_polygon(screen, nozzle)
         draw_lines(screen, lines)
-        draw_ball(screen, limit_switch, THECOLORS['red'])
-        draw_ball(screen, level_sensor, THECOLORS['red'])
+        draw_ball(screen, inlet_valve, THECOLORS['red'])
+        draw_ball(screen, tank_level, THECOLORS['red'])
+        draw_ball(screen, separator_vessel, THECOLORS['red'])
+        draw_ball(screen, outlet_valve, THECOLORS['red'])
 
         title = fontMedium.render(str("Crude Oil Pretreatment Unit"), 1, THECOLORS['blue'])
         name = fontBig.render(str("VirtuaPlant"), 1, THECOLORS['gray20'])
