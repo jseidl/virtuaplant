@@ -37,11 +37,10 @@ FPS=50.0
 MODBUS_SERVER_PORT=5020
 
 PLC_TANK_LEVEL = 0x1
-##PLC_INLET_VALVE = 0x2
+#PLC_INLET_VALVE = 0x2
 PLC_OUTLET_VALVE = 0x2
 PLC_FEED_PUMP = 0x3
 PLC_DISCHARGE_PUMP = 0x3
-PLC_TAG_NOZZLE = 0x4
 PLC_TAG_RUN = 0x10
 
 def to_pygame(p):
@@ -106,7 +105,7 @@ def tank_level_sensor(space):
 #    space.add(shape)
 #    return shape
 
-def add_nozzle(space):
+def add_pump(space):
 
     body = pymunk.Body()
     body.position = (179, 585)
@@ -208,7 +207,7 @@ def level_ok(space, arbiter, *args, **kwargs):
     log.debug("Level reached")
  #   PLCSetTag(PLC_INLET_VALVE, 0) # Limit Switch Release, Fill Bottle
     PLCSetTag(PLC_TANK_LEVEL, 1) # Level Sensor Hit, Bottle Filled
-    PLCSetTag(PLC_TAG_NOZZLE, 0) # Close nozzle
+    PLCSetTag(PLC_FEED_PUMP, 0) # Close pump
     PLCSetTag(PLC_OUTLET_VALVE, 1)
     PLCSetTag(PLC_DISCHARGE_PUMP, 1)
     return False
@@ -218,7 +217,7 @@ def oil_storage_ready(space, arbiter, *args, **kwargs):
     log.debug("Storage bin ready")
  #   PLCSetTag(PLC_INLET_VALVE, 1) 
     PLCSetTag(PLC_TANK_LEVEL, 0)
-    PLCSetTag(PLC_TAG_NOZZLE, 1) # Open nozzle
+    PLCSetTag(PLC_FEED_PUMP, 1) # Open pump
     PLCSetTag(PLC_OUTLET_VALVE, 0)
     PLCSetTag(PLC_DISCHARGE_PUMP, 0)
     return False
@@ -248,7 +247,7 @@ def run_world():
     space.add_collision_handler(0x7, 0x2, begin=no_collision)
     space.add_collision_handler(0x7, 0x3, begin=no_collision)   
 
-    nozzle = add_nozzle(space)
+    pump = add_pump(space)
     lines = add_oil_unit(space)
 #    inlet_valve = inlet_valve_sensor(space)
     tank_level = tank_level_sensor(space)
@@ -276,36 +275,26 @@ def run_world():
         screen.fill(THECOLORS["grey"])
 
         if PLCGetTag(PLC_TAG_RUN):
-
                 # Motor Logic
                 if (PLCGetTag(PLC_FEED_PUMP) == 1):
 #                    PLCSetTag(PLC_INLET_VALVE, 1)
-                    PLCSetTag(PLC_TAG_NOZZLE, 1)
+                    PLCSetTag(PLC_OUTLET_VALVE, 0)
 
-#                if (PLCGetTag(PLC_INLET_VALVE) == 1):
-#                    PLCSetTag(PLC_OUTLET_VALVE, 0)
-#                    PLCSetTag(PLC_DISCHARGE_PUMP, 0)
 
                 if (PLCGetTag(PLC_TANK_LEVEL) == 1):
                     
                     PLCSetTag(PLC_OUTLET_VALVE, 1)
-                    PLCSetTag(PLC_DISCHARGE_PUMP, 1)
-                
-                if (PLCGetTag(PLC_OUTLET_VALVE) == 1):
                     PLCSetTag(PLC_FEED_PUMP, 0)
  #                   PLCSetTag(PLC_INLET_VALVE, 0)
-                    PLCSetTag(PLC_TAG_NOZZLE, 0)
+                    
                 ticks_to_next_ball -= 1
-                
-                if PLCGetTag(PLC_TAG_NOZZLE) == 1:
-                    PLCSetTag(PLC_FEED_PUMP, 1)
 
-                if ticks_to_next_ball <= 0 and PLCGetTag(PLC_TAG_NOZZLE):
+                if ticks_to_next_ball <= 0 and PLCGetTag(PLC_TAG_PUMP):
                     ticks_to_next_ball = 1
                     ball_shape = add_ball(space)
                     balls.append(ball_shape)
         else:
-            PLCSetTag(PLC_TAG_NOZZLE, 0)
+            PLCSetTag(PLC_TAG_PUMP, 0)
 
 
         balls_to_remove = []
@@ -319,7 +308,7 @@ def run_world():
             space.remove(ball, ball.body)
             balls.remove(ball)
 
-        draw_polygon(screen, nozzle)
+        draw_polygon(screen, pump)
         draw_lines(screen, lines)
 #        draw_ball(screen, inlet_valve, THECOLORS['red'])
         draw_ball(screen, tank_level, THECOLORS['red'])

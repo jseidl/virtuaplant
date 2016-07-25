@@ -19,7 +19,7 @@ class HMIWindow(Gtk.Window):
 #        self.inlet_valve_value.set_markup("<span weight='bold' foreground='gray33'>N/A</span>")
         self.outlet_valve_value.set_markup("<span weight='bold' foreground='gray33'>N/A</span>")
         self.separator_value.set_markup("<span weight='bold' foreground='gray33'>N/A</span>")
-        self.discharge_pump_value.set_markup("<span weight='bold' foreground='gray33'>N/A</span>")
+#        self.discharge_pump_value.set_markup("<span weight='bold' foreground='gray33'>N/A</span>")
         self.process_status_value.set_markup("<span weight='bold' foreground='gray33'>N/A</span>")
         self.connection_status_value.set_markup("<span weight='bold' foreground='red'>OFFLINE</span>")
      
@@ -46,7 +46,7 @@ class HMIWindow(Gtk.Window):
         elementIndex += 1
 
         # Crude Oil Feed Pump
-        feed_pump_label = Gtk.Label("Crude Oil Tank Feed Pump")
+        feed_pump_label = Gtk.Label("Crude Oil Tank Feed Nozzle")
         feed_pump_value = Gtk.Label()
         
         feed_pump_start_button = Gtk.Button("START")
@@ -94,20 +94,20 @@ class HMIWindow(Gtk.Window):
         elementIndex += 1
 
         # Crude Oil Discharge Pump
-        discharge_pump_label = Gtk.Label("Crude Oil Tank Discharge Pump")
-        discharge_pump_value = Gtk.Label()
+#        discharge_pump_label = Gtk.Label("Crude Oil Tank Discharge Pump")
+#        discharge_pump_value = Gtk.Label()
 
-        discharge_pump_start_button = Gtk.Button("START")
-        discharge_pump_stop_button = Gtk.Button("STOP")
+#        discharge_pump_start_button = Gtk.Button("START")
+#        discharge_pump_stop_button = Gtk.Button("STOP")
 
-        discharge_pump_start_button.connect("clicked", self.setProcess, 1)
-        discharge_pump_stop_button.connect("clicked", self.setProcess, 0)
+#        discharge_pump_start_button.connect("clicked", self.setProcess, 1)
+#        discharge_pump_stop_button.connect("clicked", self.setProcess, 0)
 
-        grid.attach(discharge_pump_label, 0, elementIndex, 1, 1)
-        grid.attach(discharge_pump_value, 1, elementIndex, 1, 1)
-        grid.attach(discharge_pump_start_button, 2, elementIndex, 1, 1)
-        grid.attach(discharge_pump_stop_button, 3, elementIndex, 1, 1)
-        elementIndex += 1
+#        grid.attach(discharge_pump_label, 0, elementIndex, 1, 1)
+#        grid.attach(discharge_pump_value, 1, elementIndex, 1, 1)
+#        grid.attach(discharge_pump_start_button, 2, elementIndex, 1, 1)
+#        grid.attach(discharge_pump_stop_button, 3, elementIndex, 1, 1)
+#        elementIndex += 1
 
         #Oil/Water Separator Vessel
         separator_label = Gtk.Label("Oil/Water Separator Vessel")
@@ -149,7 +149,7 @@ class HMIWindow(Gtk.Window):
         self.feed_pump_value = feed_pump_value
 #        self.inlet_valve_value = inlet_valve_value
         self.outlet_valve_value = outlet_valve_value
-        self.discharge_pump_value = discharge_pump_value
+#        self.discharge_pump_value = discharge_pump_value
         self.process_status_value = process_status_value
         self.connection_status_value = connection_status_value
         self.separator_value = separator_value
@@ -192,10 +192,10 @@ class HMIWindow(Gtk.Window):
             else:
                 self.outlet_valve_value.set_markup("<span weight='bold' foreground='red'>CLOSED</span>")
 
-            if regs[1] == 1:
-                self.discharge_pump_value.set_markup("<span weight='bold' foreground='green'>RUNNING</span>")
-            else:
-                self.discharge_pump_value.set_markup("<span weight='bold' foreground='red'>STOPPED</span>")
+#           if regs[1] == 1:
+#                self.discharge_pump_value.set_markup("<span weight='bold' foreground='green'>RUNNING</span>")
+#            else:
+#                self.discharge_pump_value.set_markup("<span weight='bold' foreground='red'>STOPPED</span>")
 
             if regs[1] == 1:
                 self.separator_value.set_markup("<span weight='bold' foreground='green'>RUNNING</span>")
