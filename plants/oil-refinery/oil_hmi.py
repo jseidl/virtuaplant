@@ -51,8 +51,8 @@ class HMIWindow(Gtk.Window):
         feed_pump_start_button = Gtk.Button("START")
         feed_pump_stop_button = Gtk.Button("STOP")
         
-        feed_pump_start_button.connect("clicked", self.setCommand(self, 0x10), 1)
-        feed_pump_stop_button.connect("clicked", self.setCommand(self, 0x10), 0)
+        feed_pump_start_button.connect("clicked", self.setPump, 1)
+        feed_pump_stop_button.connect("clicked", self.setPump, 0)
         
         feed_pump_start_button.connect("clicked", self.setProcess, 1)
         feed_pump_stop_button.connect("clicked", self.setProcess, 0)
@@ -160,6 +160,12 @@ class HMIWindow(Gtk.Window):
         GObject.timeout_add_seconds(MODBUS_SLEEP, self.update_status)
 
     def setPump(self, widget, data=None):
+        try:
+            self.modbusClient.write_register(0x10, data)
+        except:
+            pass
+        
+    def setProcess(self, widget, data=None):
         try:
             self.modbusClient.write_register(0x10, data)
         except:
