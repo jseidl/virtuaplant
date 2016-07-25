@@ -111,7 +111,7 @@ def add_pump(space):
     space.add(shape)
     return shape
     
-def draw_valve(space):
+def add_outlet_valve(space):
     body = pymunk.Body()
     body.position = (300, 300)
     valve = pymunk.Segment(body, (-115, 20), (-90, 20), 5)
@@ -261,7 +261,7 @@ def run_world():
     tank_in = outlet_valve_sensor(space)
     separator_vessel = separator_vessel_release(space)
     outlet_valve = outlet_valve_sensor(space)
-    valve = tank_outlet_valve(space)
+    valve = add_outlet_valve(space)
     
     balls = []
 
