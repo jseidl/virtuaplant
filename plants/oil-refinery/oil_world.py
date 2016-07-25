@@ -36,10 +36,10 @@ FPS=50.0
 
 MODBUS_SERVER_PORT=5020
 
-PLC_TANK_LEVEL = 0x1
-#PLC_INLET_VALVE = 0x2
-PLC_OUTLET_VALVE = 0x2
 PLC_FEED_PUMP = 0x10
+PLC_TANK_LEVEL = 0x11
+PLC_OUTLET_VALVE = 0x12
+
 
 def to_pygame(p):
     """Small hack to convert pymunk to pygame coordinates"""
