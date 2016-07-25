@@ -300,9 +300,9 @@ def run_world():
             
             else:
                 PLCSetTag(PLC_OUTLET_VALVE, 0)
-                try
+                try:
                     space.remove(valve, valve.body)
-                except
+                except:
                     pass
                 
                 ticks_to_next_ball -= 1
