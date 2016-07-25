@@ -46,7 +46,7 @@ class HMIWindow(Gtk.Window):
         elementIndex += 1
 
         # Crude Oil Feed Pump
-        feed_pump_label = Gtk.Label("Crude Oil Tank Feed Nozzle")
+        feed_pump_label = Gtk.Label("Crude Oil Tank Feed Pump")
         feed_pump_value = Gtk.Label()
         
         feed_pump_start_button = Gtk.Button("START")
