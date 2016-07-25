@@ -40,7 +40,7 @@ class HMIWindow(Gtk.Window):
 
         # Main title label
         label = Gtk.Label()
-        label.set_markup("<span> weight='bold' size='x-large' color='black'>Crude Oil Pretreatment Unit</span>")
+        label.set_markup("<span weight='bold' size='x-large' color='black'>Crude Oil Pretreatment Unit />")
         grid.attach(label, 0, elementIndex, 4, 1)
         elementIndex += 1
 
