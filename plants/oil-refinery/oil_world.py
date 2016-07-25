@@ -297,20 +297,23 @@ def run_world():
             if (PLCGetTag(PLC_TANK_LEVEL) == 1):
                 PLCSetTag(PLC_OUTLET_VALVE, 1)
                 PLCSetTag(PLC_FEED_PUMP, 0)
-            
-        else:
-            PLCSetTag(PLC_OUTLET_VALVE, 0)
-            try:
-                space.remove(valve, valve.body)
-            except:
-                pass
                 
+                # Draw balls
                 ticks_to_next_ball -= 1
 
                 if ticks_to_next_ball <= 0 and PLCGetTag(PLC_FEED_PUMP):
                     ticks_to_next_ball = 1
                     ball_shape = add_ball(space)
                     balls.append(ball_shape)
+                
+        else:   
+            # PLCSetTag(PLC_OUTLET_VALVE, 0)
+            try:
+                space.remove(valve, valve.body)
+            except:
+                pass
+                
+
 #        else:
 #            PLCSetTag(PLC_FEED_PUMP, 1)
 
