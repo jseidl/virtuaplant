@@ -40,7 +40,6 @@ PLC_TANK_LEVEL = 0x1
 #PLC_INLET_VALVE = 0x2
 PLC_OUTLET_VALVE = 0x2
 PLC_FEED_PUMP = 0x3
-PLC_DISCHARGE_PUMP = 0x3
 PLC_TAG_RUN = 0x10
 
 def to_pygame(p):
@@ -209,7 +208,7 @@ def level_ok(space, arbiter, *args, **kwargs):
     PLCSetTag(PLC_TANK_LEVEL, 1) # Level Sensor Hit, Bottle Filled
     PLCSetTag(PLC_FEED_PUMP, 0) # Close pump
     PLCSetTag(PLC_OUTLET_VALVE, 1)
-    PLCSetTag(PLC_DISCHARGE_PUMP, 1)
+#    PLCSetTag(PLC_DISCHARGE_PUMP, 1)
     return False
 
 def oil_storage_ready(space, arbiter, *args, **kwargs):
@@ -219,7 +218,7 @@ def oil_storage_ready(space, arbiter, *args, **kwargs):
     PLCSetTag(PLC_TANK_LEVEL, 0)
     PLCSetTag(PLC_FEED_PUMP, 1) # Open pump
     PLCSetTag(PLC_OUTLET_VALVE, 0)
-    PLCSetTag(PLC_DISCHARGE_PUMP, 0)
+#    PLCSetTag(PLC_DISCHARGE_PUMP, 0)
     return False
 
 def run_world():
@@ -274,18 +273,14 @@ def run_world():
 
         screen.fill(THECOLORS["grey"])
 
-        if PLCGetTag(PLC_TAG_RUN):
-                # Motor Logic
-                if (PLCGetTag(PLC_FEED_PUMP) == 1):
-#                    PLCSetTag(PLC_INLET_VALVE, 1)
-                    PLCSetTag(PLC_OUTLET_VALVE, 0)
-
-
-                if (PLCGetTag(PLC_TANK_LEVEL) == 1):
-                    
-                    PLCSetTag(PLC_OUTLET_VALVE, 1)
-                    PLCSetTag(PLC_FEED_PUMP, 0)
- #                   PLCSetTag(PLC_INLET_VALVE, 0)
+        # If the feed pump is on
+        if PLCGetTag(PLC_FEED_PUMP) == 1:
+            
+            if (PLCGetTag(PLC_TANK_LEVEL) == 1):
+                PLCSetTag(PLC_OUTLET_VALVE, 1)
+                PLCSetTag(PLC_FEED_PUMP, 0)
+            else:
+                PLCSetTag(PLC_OUTLET_VALVE, 0)
                     
                 ticks_to_next_ball -= 1
 
@@ -293,8 +288,8 @@ def run_world():
                     ticks_to_next_ball = 1
                     ball_shape = add_ball(space)
                     balls.append(ball_shape)
-        else:
-            PLCSetTag(PLC_FEED_PUMP, 1)
+#        else:
+#            PLCSetTag(PLC_FEED_PUMP, 1)
 
 
         balls_to_remove = []
