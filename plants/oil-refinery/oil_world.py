@@ -299,12 +299,7 @@ def run_world():
                 PLCSetTag(PLC_FEED_PUMP, 0)
                 
                 # Draw balls
-                ticks_to_next_ball -= 1
 
-                if ticks_to_next_ball <= 0 and PLCGetTag(PLC_FEED_PUMP):
-                    ticks_to_next_ball = 1
-                    ball_shape = add_ball(space)
-                    balls.append(ball_shape)
                 
         else:   
             # PLCSetTag(PLC_OUTLET_VALVE, 0)
@@ -318,6 +313,13 @@ def run_world():
 #            PLCSetTag(PLC_FEED_PUMP, 1)
 
 
+        ticks_to_next_ball -= 1
+
+        if ticks_to_next_ball <= 0 and PLCGetTag(PLC_FEED_PUMP):
+            ticks_to_next_ball = 1
+            ball_shape = add_ball(space)
+            balls.append(ball_shape)
+            
         balls_to_remove = []
         for ball in balls:
             if ball.body.position.y < 0 or ball.body.position.x > SCREEN_WIDTH+150:
