@@ -297,7 +297,7 @@ def run_world():
                     PLCSetTag(PLC_TAG_NOZZLE, 0)
                 ticks_to_next_ball -= 1
                 
-                if PLCGetTag(PLC_TAG_NOZZLE):
+                if PLCGetTag(PLC_TAG_NOZZLE) == 1:
                     PLCSetTag(PLC_FEED_PUMP, 1)
 
                 if ticks_to_next_ball <= 0 and PLCGetTag(PLC_TAG_NOZZLE):
