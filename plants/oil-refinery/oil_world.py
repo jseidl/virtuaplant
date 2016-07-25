@@ -294,7 +294,7 @@ def run_world():
                     ball_shape = add_ball(space)
                     balls.append(ball_shape)
         else:
-            PLCSetTag(PLC_TAG_PUMP, 0)
+            PLCSetTag(PLC_FEED_PUMP, 0)
 
 
         balls_to_remove = []
