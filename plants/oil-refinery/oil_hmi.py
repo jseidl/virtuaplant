@@ -51,8 +51,8 @@ class HMIWindow(Gtk.Window):
         feed_pump_start_button = Gtk.Button("START")
         feed_pump_stop_button = Gtk.Button("STOP")
         
-        feed_pump_start_button.connect("clicked", self.modbusClient.write_register(0x10, data), 1)
-        feed_pump_stop_button.connect("clicked", self.modbusClient.write_register(0x10, data), 0)
+        feed_pump_start_button.connect("clicked", self.modbusClient.write_register(0x10, None), 1)
+        feed_pump_stop_button.connect("clicked", self.modbusClient.write_register(0x10, None), 0)
         
         feed_pump_start_button.connect("clicked", self.setProcess, 1)
         feed_pump_stop_button.connect("clicked", self.setProcess, 0)
