@@ -54,9 +54,6 @@ class HMIWindow(Gtk.Window):
         feed_pump_start_button.connect("clicked", self.setPump, 1)
         feed_pump_stop_button.connect("clicked", self.setPump, 0)
         
-        feed_pump_start_button.connect("clicked", self.setProcess, 1)
-        feed_pump_stop_button.connect("clicked", self.setProcess, 0)
-        
         grid.attach(feed_pump_label, 0, elementIndex, 1, 1)
         grid.attach(feed_pump_value, 1, elementIndex, 1, 1)
         grid.attach(feed_pump_start_button, 2, elementIndex, 1, 1)
