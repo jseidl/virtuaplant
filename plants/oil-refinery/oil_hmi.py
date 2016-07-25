@@ -159,9 +159,9 @@ class HMIWindow(Gtk.Window):
         self.resetLabels()
         GObject.timeout_add_seconds(MODBUS_SLEEP, self.update_status)
 
-    def setProcess(self, widget, register, data=None):
+    def setProcess(self, widget, data=None):
         try:
-            self.modbusClient.write_register(register, data)
+            self.modbusClient.write_register(0x10, data)
         except:
             pass
 
