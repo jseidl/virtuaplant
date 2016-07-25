@@ -141,7 +141,7 @@ class HMIWindow(Gtk.Window):
 
         # Oil Refienery branding
         virtual_refinery = Gtk.Label()
-        virtual_refinery.set_markup("<span> size='small'>Crude Oil Pretreatment Unit - HMI")
+        virtual_refinery.set_markup("<span size='small'>Crude Oil Pretreatment Unit - HMI</span>")
         grid.attach(virtual_refinery, 0, elementIndex, 2, 1)
 
         # Attach Value Labels
@@ -189,9 +189,9 @@ class HMIWindow(Gtk.Window):
                 raise ConnectionException
 
             if regs[3] == 1:
-                self.feed_pump_value.set_markup("<span weight='bold' foreground='green'/>RUNNING>")
+                self.feed_pump_value.set_markup("<span weight='bold' foreground='green'>RUNNING</span>")
             else:
-                self.feed_pump_value.set_markup("<span weight='bold' foreground='red'>STOPPED /span>")
+                self.feed_pump_value.set_markup("<span weight='bold' foreground='red'>STOPPED</span>")
 
 #            if regs[2] == 1:
 #                self.inlet_valve_value.set_markup("<span> weight='bold' foreground='green'>OPEN</span>")
@@ -199,9 +199,9 @@ class HMIWindow(Gtk.Window):
 #                self.inlet_valve_value.set_markup("<span> weight='bold' foreground='red'>CLOSED</span>")
 
             if regs[1] == 1:
-                self.outlet_valve_value.set_markup("<span> weight='bold' foreground='green'>OPEN</span>")
+                self.outlet_valve_value.set_markup("<span weight='bold' foreground='green'>OPEN</span>")
             else:
-                self.outlet_valve_value.set_markup("<span> weight='bold' foreground='red'>CLOSED</span>")
+                self.outlet_valve_value.set_markup("<span weight='bold' foreground='red'>CLOSED</span>")
 
 #           if regs[1] == 1:
 #                self.discharge_pump_value.set_markup("<span weight='bold' foreground='green'>RUNNING</span>")
@@ -209,16 +209,16 @@ class HMIWindow(Gtk.Window):
 #                self.discharge_pump_value.set_markup("<span weight='bold' foreground='red'>STOPPED</span>")
 
             if regs[1] == 1:
-                self.separator_value.set_markup("<span> weight='bold' foreground='green'>RUNNING</span>")
+                self.separator_value.set_markup("<span weight='bold' foreground='green'>RUNNING</span>")
             else:
-                self.separator_value.set_markup("<span> weight='bold' foreground='red'>STOPPED</span>")
+                self.separator_value.set_markup("<span weight='bold' foreground='red'>STOPPED</span>")
 
             if regs[15] == 1:
-                self.process_status_value.set_markup("<span> weight='bold' foreground='green'>RUNNING</span>")
+                self.process_status_value.set_markup("<span weight='bold' foreground='green'>RUNNING</span>")
             else:
-                self.process_status_value.set_markup("<span weight='bold' foreground='red'>STOPPED />")
+                self.process_status_value.set_markup("<span weight='bold' foreground='red'>STOPPED </span>")
 
-            self.connection_status_value.set_markup("<span weight='bold' foreground='green'>ONLINE />")
+            self.connection_status_value.set_markup("<span weight='bold' foreground='green'>ONLINE </span>")
 
 
         except ConnectionException:
