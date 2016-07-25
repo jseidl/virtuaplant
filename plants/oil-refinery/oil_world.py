@@ -96,15 +96,15 @@ def tank_level_sensor(space):
     return shape
 
 
-def inlet_valve_sensor(space):
-
-    body = pymunk.Body()
-    body.position = (165, 415)
-    radius = 2
-    shape = pymunk.Circle(body, radius, (0, 0))
-    shape.collision_type = 0x1 # switch
-    space.add(shape)
-    return shape
+#def inlet_valve_sensor(space):
+#
+#    body = pymunk.Body()
+#    body.position = (165, 415)
+#    radius = 2
+#    shape = pymunk.Circle(body, radius, (0, 0))
+#    shape.collision_type = 0x1 # switch
+#    space.add(shape)
+#    return shape
 
 def add_nozzle(space):
 
@@ -250,7 +250,7 @@ def run_world():
 
     nozzle = add_nozzle(space)
     lines = add_oil_unit(space)
-    inlet_valve = inlet_valve_sensor(space)
+#    inlet_valve = inlet_valve_sensor(space)
     tank_level = tank_level_sensor(space)
     tank_in = outlet_valve_sensor(space)
     separator_vessel = separator_vessel_release(space)
