@@ -110,6 +110,16 @@ def add_pump(space):
     shape = pymunk.Poly.create_box(body, (15, 20), (0, 0), 0)
     space.add(shape)
     return shape
+    
+def draw_valve(space):
+    body = pymunk.Body()
+    body.position = (300, 300)
+    valve = pymunk.Segment(body, (-115, 20), -90, 20), 5)
+    
+    space.add(valve)
+    return valve
+    
+def remove_valve(space):
 
 def add_oil_unit(space):
     #rotation_limit_body = pymunk.Body()
