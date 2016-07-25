@@ -289,7 +289,7 @@ def run_world():
                     
                 ticks_to_next_ball -= 1
 
-                if ticks_to_next_ball <= 0 and PLCGetTag(PLC_TAG_PUMP):
+                if ticks_to_next_ball <= 0 and PLCGetTag(PLC_FEED_PUMP):
                     ticks_to_next_ball = 1
                     ball_shape = add_ball(space)
                     balls.append(ball_shape)
