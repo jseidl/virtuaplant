@@ -16,7 +16,7 @@ class HMIWindow(Gtk.Window):
 
     def resetLabels(self):
         self.feed_pump_value.set_markup("<span weight='bold' foreground='gray33'>N/A</span>")
-        self.inlet_valve_value.set_markup("<span weight='bold' foreground='gray33'>N/A</span>")
+#        self.inlet_valve_value.set_markup("<span weight='bold' foreground='gray33'>N/A</span>")
         self.outlet_valve_value.set_markup("<span weight='bold' foreground='gray33'>N/A</span>")
         self.separator_value.set_markup("<span weight='bold' foreground='gray33'>N/A</span>")
         self.discharge_pump_value.set_markup("<span weight='bold' foreground='gray33'>N/A</span>")
@@ -61,21 +61,21 @@ class HMIWindow(Gtk.Window):
         grid.attach(feed_pump_stop_button, 3, elementIndex, 1, 1)
         elementIndex += 1
 
-        # Crude Oil Inlet Valve
-        inlet_valve_label = Gtk.Label("Crude Oil Tank Inlet Valve")
-        inlet_valve_value = Gtk.Label()
+         #Crude Oil Inlet Valve
+#        inlet_valve_label = Gtk.Label("Crude Oil Tank Inlet Valve")
+#        inlet_valve_value = Gtk.Label()
 
-        inlet_valve_open_button = Gtk.Button("OPEN")
-        inlet_valve_close_button = Gtk.Button("CLOSE")
+#        inlet_valve_open_button = Gtk.Button("OPEN")
+#        inlet_valve_close_button = Gtk.Button("CLOSE")
 
-        inlet_valve_open_button.connect("clicked", self.setProcess, 1)
-        inlet_valve_close_button.connect("clicked", self.setProcess, 0)
+#        inlet_valve_open_button.connect("clicked", self.setProcess, 1)
+#        inlet_valve_close_button.connect("clicked", self.setProcess, 0)
 
-        grid.attach(inlet_valve_label, 0, elementIndex, 1, 1)
-        grid.attach(inlet_valve_value, 1, elementIndex, 1, 1)
-        grid.attach(inlet_valve_open_button, 2, elementIndex, 1, 1)
-        grid.attach(inlet_valve_close_button, 3, elementIndex, 1, 1)
-        elementIndex += 1
+#        grid.attach(inlet_valve_label, 0, elementIndex, 1, 1)
+#        grid.attach(inlet_valve_value, 1, elementIndex, 1, 1)
+#        grid.attach(inlet_valve_open_button, 2, elementIndex, 1, 1)
+#        grid.attach(inlet_valve_close_button, 3, elementIndex, 1, 1)
+#        elementIndex += 1
 
         # Crude Oil Outlet Valve
         outlet_valve_label = Gtk.Label("Crude Oil Tank Outlet Valve")
@@ -147,7 +147,7 @@ class HMIWindow(Gtk.Window):
 
         # Attach Value Labels
         self.feed_pump_value = feed_pump_value
-        self.inlet_valve_value = inlet_valve_value
+#        self.inlet_valve_value = inlet_valve_value
         self.outlet_valve_value = outlet_valve_value
         self.discharge_pump_value = discharge_pump_value
         self.process_status_value = process_status_value
@@ -182,10 +182,10 @@ class HMIWindow(Gtk.Window):
             else:
                 self.feed_pump_value.set_markup("<span weight='bold' foreground='red'>STOPPED</span>")
 
-            if regs[2] == 1:
-                self.inlet_valve_value.set_markup("<span weight='bold' foreground='green'>OPEN</span>")
-            else:
-                self.inlet_valve_value.set_markup("<span weight='bold' foreground='red'>CLOSED</span>")
+#            if regs[2] == 1:
+#                self.inlet_valve_value.set_markup("<span weight='bold' foreground='green'>OPEN</span>")
+#            else:
+#                self.inlet_valve_value.set_markup("<span weight='bold' foreground='red'>CLOSED</span>")
 
             if regs[1] == 1:
                 self.outlet_valve_value.set_markup("<span weight='bold' foreground='green'>OPEN</span>")
