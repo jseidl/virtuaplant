@@ -216,9 +216,9 @@ class HMIWindow(Gtk.Window):
             if regs[15] == 1:
                 self.process_status_value.set_markup("<span> weight='bold' foreground='green'>RUNNING</span>")
             else:
-                self.process_status_value.set_markup("<span> weight='bold' foreground='red'>STOPPED</span>")
+                self.process_status_value.set_markup("<span weight='bold' foreground='red'>STOPPED >")
 
-            self.connection_status_value.set_markup("<span> weight='bold' foreground='green'>ONLINE</span>")
+            self.connection_status_value.set_markup("<span weight='bold' foreground='green'>ONLINE >")
 
 
         except ConnectionException:
