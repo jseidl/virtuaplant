@@ -289,7 +289,7 @@ def run_world():
             if (PLCGetTag(PLC_TANK_LEVEL) == 1):
                 PLCSetTag(PLC_OUTLET_VALVE, 1)
                 PLCSetTag(PLC_FEED_PUMP, 0)
-                draw_valve(space)
+                valve = draw_valve(space)
             else:
                 PLCSetTag(PLC_OUTLET_VALVE, 0)
                     
