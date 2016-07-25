@@ -189,9 +189,9 @@ class HMIWindow(Gtk.Window):
                 raise ConnectionException
 
             if regs[3] == 1:
-                self.feed_pump_value.set_markup("<span> weight='bold' foreground='green'>RUNNING</span>")
+                self.feed_pump_value.set_markup("<span weight='bold' foreground='green'/>RUNNING>")
             else:
-                self.feed_pump_value.set_markup("<span> weight='bold' foreground='red'>STOPPED</span>")
+                self.feed_pump_value.set_markup("<span weight='bold' foreground='red'>STOPPED /span>")
 
 #            if regs[2] == 1:
 #                self.inlet_valve_value.set_markup("<span> weight='bold' foreground='green'>OPEN</span>")
