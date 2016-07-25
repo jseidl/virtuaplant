@@ -115,7 +115,6 @@ def draw_valve(space):
     body = pymunk.Body()
     body.position = (300, 300)
     valve = pymunk.Segment(body, (-115, 20), (-90, 20), 5)
-    
     space.add(valve)
     return valve
     
@@ -258,11 +257,11 @@ def run_world():
 
     pump = add_pump(space)
     lines = add_oil_unit(space)
-#    inlet_valve = inlet_valve_sensor(space)
     tank_level = tank_level_sensor(space)
     tank_in = outlet_valve_sensor(space)
     separator_vessel = separator_vessel_release(space)
     outlet_valve = outlet_valve_sensor(space)
+    valve = draw_valve(space)
     
     balls = []
 
@@ -289,7 +288,6 @@ def run_world():
             if (PLCGetTag(PLC_TANK_LEVEL) == 1):
                 PLCSetTag(PLC_OUTLET_VALVE, 1)
                 PLCSetTag(PLC_FEED_PUMP, 0)
-                valve = draw_valve(space)
             else:
                 PLCSetTag(PLC_OUTLET_VALVE, 0)
                     
