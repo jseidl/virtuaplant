@@ -14,13 +14,13 @@ class HMIWindow(Gtk.Window):
         self.modbusClient = ModbusClient('localhost', port=5020)
 
     def resetLabels(self):
-        self.feed_pump_value.set_markup("<span> weight='bold' foreground='gray33'>N/A</span>")
+        self.feed_pump_value.set_markup("<span weight='bold' foreground='gray33'>N/A</span>")
 #        self.inlet_valve_value.set_markup("<span weight='bold' foreground='gray33'>N/A</span>")
-        self.outlet_valve_value.set_markup("<span> weight='bold' foreground='gray33'>N/A</span>")
-        self.separator_value.set_markup("<span> weight='bold' foreground='gray33'>N/A</span>")
+        self.outlet_valve_value.set_markup("<span weight='bold' foreground='gray33'>N/A</span>")
+        self.separator_value.set_markup("<span weight='bold' foreground='gray33'>N/A</span>")
 #        self.discharge_pump_value.set_markup("<span weight='bold' foreground='gray33'>N/A</span>")
-        self.process_status_value.set_markup("<span> weight='bold' foreground='gray33'>N/A</span>")
-        self.connection_status_value.set_markup("<span> weight='bold' foreground='red'>OFFLINE</span>")
+        self.process_status_value.set_markup("<span weight='bold' foreground='gray33'>N/A</span>")
+        self.connection_status_value.set_markup("<span weight='bold' foreground='red'>OFFLINE</span>")
      
     def __init__(self):
         Gtk.Window.__init__(self, title="Oil Refinery")
@@ -214,7 +214,7 @@ class HMIWindow(Gtk.Window):
                 self.separator_value.set_markup("<span weight='bold' foreground='red'>STOPPED</span>")
 
             if regs[15] == 1:
-                self.process_status_value.set_markup("<span weight='bold' foreground='green'>RUNNING</span>")
+                self.process_status_value.set_markup("<span weight='bold' foreground='green'>RUNNING </span>")
             else:
                 self.process_status_value.set_markup("<span weight='bold' foreground='red'>STOPPED </span>")
 
