@@ -190,7 +190,6 @@ def add_oil_unit(space):
     return l1,l2,l7,l8,l9,l10,l11,l12,l13,l14,l15,l16,l17,l18,l19,l20,l21,l22,l23,l24,l25,l26,l27,l28,l29,l30,l31,l32,l33
 
 def draw_polygon(screen, shape):
-
     points = shape.get_vertices()
     fpoints = []
     for p in points:
@@ -269,7 +268,6 @@ def run_world():
     tank_in = outlet_valve_sensor(space)
     separator_vessel = separator_vessel_release(space)
     outlet_valve = outlet_valve_sensor(space)
-    valve = add_outlet_valve(space)
     
     balls = []
 
@@ -293,6 +291,7 @@ def run_world():
         # If the feed pump is on
         if PLCGetTag(PLC_FEED_PUMP) == 1:
             # Draw the valve if the pump is on
+            valve = add_outlet_valve(space)
             draw_line(screen, valve)
             # If the oil reaches the level sensor at the top of the tank
             if (PLCGetTag(PLC_TANK_LEVEL) == 1):
@@ -301,6 +300,7 @@ def run_world():
             
             else:
                 PLCSetTag(PLC_OUTLET_VALVE, 0)
+                space.remove(valve, valve.body)
                     
                 ticks_to_next_ball -= 1
 
@@ -325,7 +325,6 @@ def run_world():
 
         draw_polygon(screen, pump)
         draw_lines(screen, lines)
-#        draw_ball(screen, inlet_valve, THECOLORS['red'])
         draw_ball(screen, tank_level, THECOLORS['red'])
         draw_ball(screen, separator_vessel, THECOLORS['red'])
         draw_ball(screen, outlet_valve, THECOLORS['red'])
