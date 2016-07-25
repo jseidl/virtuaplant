@@ -261,7 +261,7 @@ def run_world():
     tank_in = outlet_valve_sensor(space)
     separator_vessel = separator_vessel_release(space)
     outlet_valve = outlet_valve_sensor(space)
-    valve = draw_valve(space)
+    valve = tank_outlet_valve(space)
     
     balls = []
 
@@ -284,10 +284,13 @@ def run_world():
 
         # If the feed pump is on
         if PLCGetTag(PLC_FEED_PUMP) == 1:
-            
+            # Draw the valve if the pump is on
+            draw_lines(screen, valve)
+            # If the oil reaches the level sensor at the top of the tank
             if (PLCGetTag(PLC_TANK_LEVEL) == 1):
                 PLCSetTag(PLC_OUTLET_VALVE, 1)
                 PLCSetTag(PLC_FEED_PUMP, 0)
+            
             else:
                 PLCSetTag(PLC_OUTLET_VALVE, 0)
                     
