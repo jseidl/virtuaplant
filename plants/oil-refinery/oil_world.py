@@ -196,6 +196,14 @@ def draw_polygon(screen, shape):
     for p in points:
         fpoints.append(to_pygame(p))
     pygame.draw.polygon(screen, THECOLORS['darkgreen'], fpoints)
+    
+def draw_line(screen, lines):
+    body = line.body
+    pv1 = body.position + line.a.rotated(body.angle) # 1
+    pv2 = body.position + line.b.rotated(body.angle)
+    p1 = to_pygame(pv1) # 2
+    p2 = to_pygame(pv2)
+    pygame.draw.lines(screen, THECOLORS["black"], False, [p1,p2])
 
 def draw_lines(screen, lines):
 
@@ -285,7 +293,7 @@ def run_world():
         # If the feed pump is on
         if PLCGetTag(PLC_FEED_PUMP) == 1:
             # Draw the valve if the pump is on
-            draw_lines(screen, valve)
+            draw_line(screen, valve)
             # If the oil reaches the level sensor at the top of the tank
             if (PLCGetTag(PLC_TANK_LEVEL) == 1):
                 PLCSetTag(PLC_OUTLET_VALVE, 1)
