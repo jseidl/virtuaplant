@@ -197,7 +197,7 @@ def draw_polygon(screen, shape):
         fpoints.append(to_pygame(p))
     pygame.draw.polygon(screen, THECOLORS['darkgreen'], fpoints)
     
-def draw_line(screen, lines):
+def draw_line(screen, line):
     body = line.body
     pv1 = body.position + line.a.rotated(body.angle) # 1
     pv2 = body.position + line.b.rotated(body.angle)
