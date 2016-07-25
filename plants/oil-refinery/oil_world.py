@@ -300,8 +300,11 @@ def run_world():
             
             else:
                 PLCSetTag(PLC_OUTLET_VALVE, 0)
-                space.remove(valve, valve.body)
-                    
+                try
+                    space.remove(valve, valve.body)
+                except
+                    pass
+                
                 ticks_to_next_ball -= 1
 
                 if ticks_to_next_ball <= 0 and PLCGetTag(PLC_FEED_PUMP):
