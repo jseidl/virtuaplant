@@ -141,7 +141,7 @@ class HMIWindow(Gtk.Window):
 
         # Oil Refienery branding
         virtual_refinery = Gtk.Label()
-        virtual_refinery.set_markup("<span> size='small'>Crude Oil Pretreatment Unit - HMI</span>")
+        virtual_refinery.set_markup("<span> size='small'>Crude Oil Pretreatment Unit - HMI")
         grid.attach(virtual_refinery, 0, elementIndex, 2, 1)
 
         # Attach Value Labels
