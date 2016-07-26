@@ -217,6 +217,12 @@ def level_ok(space, arbiter, *args, **kwargs):
     PLCSetTag(PLC_OUTLET_VALVE, 1)
 #    PLCSetTag(PLC_DISCHARGE_PUMP, 1)
     return False
+    
+# This fires when the separator level is hit    
+def sep_on(space, arbiter, *args, **kwargs):
+    log.debug("Begin separation")
+    PLCSetTag(PLC_SEP_VESSEL, 1) # Sep vessel hit, begin processing
+    return False
 
 def oil_storage_ready(space, arbiter, *args, **kwargs):
 
@@ -249,7 +255,9 @@ def run_world():
     space.add_collision_handler(0x1, 0x3, begin=no_collision)
     # Level sensor with bottle side
     space.add_collision_handler(0x4, 0x3, begin=no_collision)
-
+    
+    space.add_collision_handler(0x7, 0x5, begin=sep_on)
+    
     space.add_collision_handler(0x7, 0x2, begin=no_collision)
     space.add_collision_handler(0x7, 0x3, begin=no_collision)   
 
@@ -287,10 +295,6 @@ def run_world():
             # If the oil reaches the level sensor at the top of the tank
             if (PLCGetTag(PLC_TANK_LEVEL) == 1):
                 PLCSetTag(PLC_FEED_PUMP, 1)
-        
-#        else:
-#            PLCSetTag(PLC_FEED_PUMP, 1)
-
 
         ticks_to_next_ball -= 1
 
