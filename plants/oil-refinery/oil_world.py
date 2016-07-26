@@ -131,8 +131,8 @@ def add_oil_unit(space):
     body = pymunk.Body()
     body.position = (300,300)
     #feed pump
-    l1 = pymunk.Segment(body, (-100, 270), (-100, 115), 5)
-    l2 = pymunk.Segment(body, (-135, 270), (-135, 115), 5)
+    l1 = pymunk.Segment(body, (-100, 270), (-100, 145), 5)
+    l2 = pymunk.Segment(body, (-135, 270), (-135, 145), 5)
     #l3 = pymunk.Segment(body, (-135, 115), (-100, 115), 5)
     #l3 = pymunk.Segment(body, (-250, 180), (-135, 180), 5) 
     #l4 = pymunk.Segment(body, (-215, 200), (-115, 200), 5) 
@@ -140,8 +140,8 @@ def add_oil_unit(space):
     #l6 = pymunk.Segment(body, (-115, 200), (-115, 120), 5)
 
     #oil storage unit
-    l7 = pymunk.Segment(body, (-185, 115), (-185, 20), 5) 
-    l8 = pymunk.Segment(body, (-65, 115), (-65, 20), 5) 
+    l7 = pymunk.Segment(body, (-185, 130), (-185, 20), 5) 
+    l8 = pymunk.Segment(body, (-65, 130), (-65, 20), 5) 
     l9 = pymunk.Segment(body, (-185,20), (-115, 20), 5) 
     l10 = pymunk.Segment(body, (-90, 20), (-65, 20), 5) 
 
@@ -302,7 +302,6 @@ def run_world():
             # PLCSetTag(PLC_OUTLET_VALVE, 0)
             try:
                 space.remove(valve, valve.body)
-                valve.kill()
             except:
                 pass
                 
