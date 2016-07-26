@@ -76,7 +76,7 @@ def outlet_valve_sensor(space):
 
 def separator_vessel_release(space):
     body = pymunk.Body()
-    body.position = (385, 225)
+    body.position = (390, 225)
     radius = 3
     shape = pymunk.Circle(body, radius, (0, 0))
     shape.collision_type = 0x7
