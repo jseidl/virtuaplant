@@ -175,7 +175,7 @@ def draw_polygon(screen, shape):
     fpoints = []
     for p in points:
         fpoints.append(to_pygame(p))
-    pygame.draw.polygon(screen, THECOLORS['darkgreen'], fpoints)
+    pygame.draw.polygon(screen, THECOLORS['black'], fpoints)
     
 def draw_line(screen, line):
     body = line.body
