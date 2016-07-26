@@ -83,8 +83,8 @@ class HMIWindow(Gtk.Window):
         outlet_valve_open_button = Gtk.Button("OPEN")
         outlet_valve_close_button = Gtk.Button("CLOSE")
 
-        outlet_valve_open_button.connect("clicked", self.setProcess, 1)
-        outlet_valve_close_button.connect("clicked", self.setProcess, 0)
+        outlet_valve_open_button.connect("clicked", self.setOutputValve, 1)
+        outlet_valve_close_button.connect("clicked", self.setOutputValve, 0)
 
         grid.attach(outlet_valve_label, 0, elementIndex, 1, 1)
         grid.attach(outlet_valve_value, 1, elementIndex, 1, 1)
@@ -115,8 +115,8 @@ class HMIWindow(Gtk.Window):
         separator_start_button = Gtk.Button("START")
         separator_stop_button = Gtk.Button("STOP")
 
-        separator_start_button.connect("clicked", self.setProcess, 1)
-        separator_stop_button.connect("clicked", self.setProcess, 0)
+        separator_start_button.connect("clicked", self.setSepVessel, 1)
+        separator_stop_button.connect("clicked", self.setSepVessel, 0)
 
         grid.attach(separator_label, 0, elementIndex, 1, 1)
         grid.attach(separator_value, 1, elementIndex, 1, 1)
@@ -158,19 +158,25 @@ class HMIWindow(Gtk.Window):
 
     def setPump(self, widget, data=None):
         try:
-            self.modbusClient.write_register(0x10, data)
+            self.modbusClient.write_register(0x01, data)
         except:
             pass
         
-    def setProcess(self, widget, data=None):
+    def setTankLevel(self, widget, data=None):
         try:
-            self.modbusClient.write_register(0x11, data)
+            self.modbusClient.write_register(0x02, data)
         except:
             pass
         
     def setOutputValve(self, widget, data=None):
         try:
-            self.modbusClient.write_register(0x12, data)
+            self.modbusClient.write_register(0x03, data)
+        except:
+            pass
+        
+    def setSepVessel(self, widget, data=None):
+        try:
+            self.modbusClient.write_register(0x04, data)
         except:
             pass
 
