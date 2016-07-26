@@ -289,8 +289,6 @@ def run_world():
 
         screen.fill(THECOLORS["grey"])
 
-        valve = add_outlet_valve(space)
-        draw_line(screen, valve)
         # If the feed pump is on
         if PLCGetTag(PLC_FEED_PUMP) == 1:
             # Draw the valve if the pump is on
