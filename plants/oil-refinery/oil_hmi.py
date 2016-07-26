@@ -77,20 +77,20 @@ class HMIWindow(Gtk.Window):
 #        elementIndex += 1
 
         # Crude Oil Outlet Valve
-        outlet_valve_label = Gtk.Label("Crude Oil Tank Outlet Valve")
-        outlet_valve_value = Gtk.Label()
+#        outlet_valve_label = Gtk.Label("Crude Oil Tank Outlet Valve")
+#        outlet_valve_value = Gtk.Label()
 
-        outlet_valve_open_button = Gtk.Button("OPEN")
-        outlet_valve_close_button = Gtk.Button("CLOSE")
+#        outlet_valve_open_button = Gtk.Button("OPEN")
+#        outlet_valve_close_button = Gtk.Button("CLOSE")
 
-        outlet_valve_open_button.connect("clicked", self.setOutputValve, 1)
-        outlet_valve_close_button.connect("clicked", self.setOutputValve, 0)
+#        outlet_valve_open_button.connect("clicked", self.setOutputValve, 1)
+#       outlet_valve_close_button.connect("clicked", self.setOutputValve, 0)
 
-        grid.attach(outlet_valve_label, 0, elementIndex, 1, 1)
-        grid.attach(outlet_valve_value, 1, elementIndex, 1, 1)
-        grid.attach(outlet_valve_open_button, 2, elementIndex, 1, 1)
-        grid.attach(outlet_valve_close_button, 3, elementIndex, 1, 1)
-        elementIndex += 1
+#        grid.attach(outlet_valve_label, 0, elementIndex, 1, 1)
+#        grid.attach(outlet_valve_value, 1, elementIndex, 1, 1)
+#        grid.attach(outlet_valve_open_button, 2, elementIndex, 1, 1)
+#        grid.attach(outlet_valve_close_button, 3, elementIndex, 1, 1)
+#        elementIndex += 1
 
         # Crude Oil Discharge Pump
 #        discharge_pump_label = Gtk.Label("Crude Oil Tank Discharge Pump")
@@ -148,7 +148,7 @@ class HMIWindow(Gtk.Window):
         # Attach Value Labels
         self.feed_pump_value = feed_pump_value
 #        self.inlet_valve_value = inlet_valve_value
-        self.outlet_valve_value = outlet_valve_value
+#       self.outlet_valve_value = outlet_valve_value
 #        self.discharge_pump_value = discharge_pump_value
         self.process_status_value = process_status_value
         self.connection_status_value = connection_status_value
@@ -205,10 +205,10 @@ class HMIWindow(Gtk.Window):
 #            else:
 #                self.inlet_valve_value.set_markup("<span> weight='bold' foreground='red'>CLOSED</span>")
 
-            if regs[2] == 1:
-                self.outlet_valve_value.set_markup("<span weight='bold' foreground='green'>OPEN</span>")
-            else:
-                self.outlet_valve_value.set_markup("<span weight='bold' foreground='red'>CLOSED</span>")
+#            if regs[2] == 1:
+#                self.outlet_valve_value.set_markup("<span weight='bold' foreground='green'>OPEN</span>")
+#            else:
+#                self.outlet_valve_value.set_markup("<span weight='bold' foreground='red'>CLOSED</span>")
 
 #           if regs[1] == 1:
 #                self.discharge_pump_value.set_markup("<span weight='bold' foreground='green'>RUNNING</span>")
