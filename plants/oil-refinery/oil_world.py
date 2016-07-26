@@ -287,7 +287,7 @@ def run_world():
             # If the oil reaches the level sensor at the top of the tank
             if (PLCGetTag(PLC_TANK_LEVEL) == 1):
                 PLCSetTag(PLC_FEED_PUMP, 1)
-        if 
+        
 #        else:
 #            PLCSetTag(PLC_FEED_PUMP, 1)
 
