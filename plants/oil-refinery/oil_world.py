@@ -60,7 +60,7 @@ def add_ball(space):
     space.add(body, shape)
     return shape
 
-def draw_ball(screen, ball, color=THECOLORS['black']):
+def draw_ball(screen, ball, color=THECOLORS['brown']):
     p = int(ball.body.position.x), 600-int(ball.body.position.y)
     pygame.draw.circle(screen, color, p, int(ball.radius), 2)
 
@@ -70,7 +70,7 @@ def outlet_valve_sensor(space):
     body.position = (185, 320)
     radius = 2
     shape = pymunk.Circle(body, radius, (0, 0))
-    shape.collision_type = 0x7 # 'bottle_in'
+    shape.collision_type = 0x8 # 'bottle_in'
     space.add(shape)
     return shape
 
@@ -92,16 +92,6 @@ def tank_level_sensor(space):
     shape.collision_type = 0x4 # tank_level
     space.add(shape)
     return shape
-
-#def inlet_valve_sensor(space):
-#
-#    body = pymunk.Body()
-#    body.position = (165, 415)
-#    radius = 2
-#    shape = pymunk.Circle(body, radius, (0, 0))
-#    shape.collision_type = 0x1 # switch
-#    space.add(shape)
-#    return shape
 
 def add_pump(space):
 
