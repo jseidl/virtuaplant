@@ -188,7 +188,7 @@ class HMIWindow(Gtk.Window):
             if not regs or len(regs) < 16:
                 raise ConnectionException
 
-            if regs[10] == 1:
+            if regs[1] == 1:
                 self.feed_pump_value.set_markup("<span weight='bold' foreground='green'>RUNNING</span>")
             else:
                 self.feed_pump_value.set_markup("<span weight='bold' foreground='red'>STOPPED</span>")
@@ -198,7 +198,7 @@ class HMIWindow(Gtk.Window):
 #            else:
 #                self.inlet_valve_value.set_markup("<span> weight='bold' foreground='red'>CLOSED</span>")
 
-            if regs[12] == 1:
+            if regs[3] == 1:
                 self.outlet_valve_value.set_markup("<span weight='bold' foreground='green'>OPEN</span>")
             else:
                 self.outlet_valve_value.set_markup("<span weight='bold' foreground='red'>CLOSED</span>")
@@ -208,12 +208,12 @@ class HMIWindow(Gtk.Window):
 #            else:
 #                self.discharge_pump_value.set_markup("<span weight='bold' foreground='red'>STOPPED</span>")
 
-            if regs[3] == 1:
+            if regs[4] == 1:
                 self.separator_value.set_markup("<span weight='bold' foreground='green'>RUNNING</span>")
             else:
                 self.separator_value.set_markup("<span weight='bold' foreground='red'>STOPPED</span>")
 
-            if regs[15] == 1:
+            if regs[1] == 1:
                 self.process_status_value.set_markup("<span weight='bold' foreground='green'>RUNNING </span>")
             else:
                 self.process_status_value.set_markup("<span weight='bold' foreground='red'>STOPPED </span>")
