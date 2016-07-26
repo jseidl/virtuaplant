@@ -194,7 +194,7 @@ class HMIWindow(Gtk.Window):
             if not regs or len(regs) < 16:
                 raise ConnectionException
 
-            if regs[2] == 1:
+            if regs[3] == 1:
                 self.feed_pump_value.set_markup("<span weight='bold' foreground='green'>RUNNING</span>")
             else:
                 self.feed_pump_value.set_markup("<span weight='bold' foreground='red'>STOPPED</span>")
@@ -219,7 +219,7 @@ class HMIWindow(Gtk.Window):
             else:
                 self.separator_value.set_markup("<span weight='bold' foreground='red'>STOPPED</span>")
 
-            if regs[1] == 1:
+            if regs[3] == 1:
                 self.process_status_value.set_markup("<span weight='bold' foreground='green'>RUNNING </span>")
             else:
                 self.process_status_value.set_markup("<span weight='bold' foreground='red'>STOPPED </span>")
