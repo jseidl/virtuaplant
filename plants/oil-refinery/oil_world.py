@@ -288,22 +288,24 @@ def run_world():
 
         screen.fill(THECOLORS["grey"])
 
+        valve = add_outlet_valve(space)
+        draw_line(screen, valve)
         # If the feed pump is on
         if PLCGetTag(PLC_FEED_PUMP) == 1:
             # Draw the valve if the pump is on
-            valve = add_outlet_valve(space)
-            draw_line(screen, valve)
+            #valve = add_outlet_valve(space)
+            #draw_line(screen, valve)
             # If the oil reaches the level sensor at the top of the tank
             if (PLCGetTag(PLC_TANK_LEVEL) == 1):
                 PLCSetTag(PLC_OUTLET_VALVE, 1)
-                PLCSetTag(PLC_FEED_PUMP, 0)
+                PLCSetTag(PLC_FEED_PUMP, 1)
     
-        else:   
+        #else:   
             # PLCSetTag(PLC_OUTLET_VALVE, 0)
-            try:
-                space.remove(valve, valve.body)
-            except:
-                pass
+         #   try:
+          #      space.remove(valve, valve.body)
+           # except:
+            #    pass
                 
 
 #        else:
