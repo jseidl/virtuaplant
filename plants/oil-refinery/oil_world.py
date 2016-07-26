@@ -93,7 +93,6 @@ def tank_level_sensor(space):
     space.add(shape)
     return shape
 
-
 #def inlet_valve_sensor(space):
 #
 #    body = pymunk.Body()
@@ -111,16 +110,7 @@ def add_pump(space):
     shape = pymunk.Poly.create_box(body, (15, 20), (0, 0), 0)
     space.add(shape)
     return shape
-    
-def add_outlet_valve(space):
-    body = pymunk.Body()
-    body.position = (300, 300)
-    valve = pymunk.Segment(body, (-115, 20), (-90, 20), 5)
-    space.add(valve)
-    return valve
-    
-def remove_valve(space):
-    return 0
+
     
 def add_oil_unit(space):
     #rotation_limit_body = pymunk.Body()
@@ -296,17 +286,8 @@ def run_world():
             #draw_line(screen, valve)
             # If the oil reaches the level sensor at the top of the tank
             if (PLCGetTag(PLC_TANK_LEVEL) == 1):
-                PLCSetTag(PLC_OUTLET_VALVE, 1)
                 PLCSetTag(PLC_FEED_PUMP, 1)
-    
-        #else:   
-            # PLCSetTag(PLC_OUTLET_VALVE, 0)
-         #   try:
-          #      space.remove(valve, valve.body)
-           # except:
-            #    pass
-                
-
+        if 
 #        else:
 #            PLCSetTag(PLC_FEED_PUMP, 1)
 
