@@ -16,11 +16,10 @@ client = ModbusClient('localhost', port=5020)
 try:
     client.connect()
     while True:
-        rq = client.write_register(0x10, 1) # Run Plant, Run!
-        rq = client.write_register(0x1, 0) # Level Sensor
-        rq = client.write_register(0x2, 0) # Limit Switch
-        rq = client.write_register(0x3, 1) # Motor
-        rq = client.write_register(0x4, 0) # Nozzle
+        rq = client.write_register(0x01, 0) # Run Plant, Run!
+        rq = client.write_register(0x02, 0) # Level Sensor
+        rq = client.write_register(0x04, 1) # Limit Switch
+
 except KeyboardInterrupt:
     client.close()
 except ConnectionException:
