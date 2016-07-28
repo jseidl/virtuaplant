@@ -56,6 +56,22 @@ class HMIWindow(Gtk.Window):
         grid.attach(feed_pump_start_button, 2, elementIndex, 1, 1)
         grid.attach(feed_pump_stop_button, 3, elementIndex, 1, 1)
         elementIndex += 1
+        
+        # Level Switch
+        level_switch_label = Gtk.Label("Crude Oil Tank Level Switch")
+        level_switch_value = Gtk.Label()
+        
+        level_switch_start_button = Gtk.Button("ON")
+        level_switch_stop_button = Gtk.Button("OFF")
+        
+        level_switch_start_button.connect("clicked", self.setTankLevel, 1)
+        level_switch_stop_button.connect("clicked", self.setTankLevel, 0)
+        
+        grid.attach(level_switch_label, 0, elementIndex, 1, 1)
+        grid.attach(level_switch_value, 1, elementIndex, 1, 1)
+        grid.attach(level_switch_start_button, 2, elementIndex, 1, 1)
+        grid.attach(level_switch_stop_button, 3, elementIndex, 1, 1)
+        elementIndex += 1
 
         #Oil/Water Separator Vessel
         separator_label = Gtk.Label("Oil/Water Separator Vessel")
