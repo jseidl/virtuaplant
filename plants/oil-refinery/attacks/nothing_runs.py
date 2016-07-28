@@ -18,7 +18,7 @@ try:
     while True:
         rq = client.write_register(0x01, 0) # Run Plant, Run!
         rq = client.write_register(0x02, 0) # Level Sensor
-        rq = client.write_register(0x04, 1) # Limit Switch
+        rq = client.write_register(0x04, 0) # Limit Switch
 
 except KeyboardInterrupt:
     client.close()
