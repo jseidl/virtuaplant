@@ -321,14 +321,9 @@ def run_world():
             if (PLCGetTag(PLC_SEP_VESSEL) == 0):
                 space.add_collision_handler(0x7, 0x5, stop=sep_on)
                 space.add_collision_handler(0x8, 0x5, stop=sep_feed)
-#            if (PLCGetTag(PLC_SEP_VESSEL) == 0):
-#               PLCSetTag(PLC_FEED_PUMP, 1)
-            
-#            if (PLCGetTag(PLC_TANK_LEVEL) == 0):
-                
         ticks_to_next_ball -= 1
 
-        if ticks_to_next_ball <= 0 and PLCGetTag(PLC_FEED_PUMP):
+        if ticks_to_next_ball <= 0 and PLCGetTag(PLC_FEED_PUMP) == 1:
             ticks_to_next_ball = 1
             ball_shape = add_ball(space)
             balls.append(ball_shape)
