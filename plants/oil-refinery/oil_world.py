@@ -211,7 +211,7 @@ def level_reached(space, arbiter, *args, **kwargs):
 # Called when level sensor in tank is ok
 def level_ok(space, arbiter, *args, **kwargs):
     log.debug("Level ok")
-    PLCSetTag(PLC_TANK_LEVEL, 0) # Level Sensor Hit, Tank full
+    PLCSetTag(PLC_TANK_LEVEL, 0) # Level Sensor ok, tank empty enough
     PLCSetTag(PLC_FEED_PUMP, 1) # Turn off the pump
     PLCSetTag(PLC_OUTLET_VALVE, 0) # Set the outlet valve to 1
     return False
@@ -254,7 +254,10 @@ def run_world():
     space.add_collision_handler(0x1, 0x2, begin=oil_storage_ready)
     # When oil collides with tank_level, call level_ok
     space.add_collision_handler(tank_level_collision, ball_collision, begin=level_reached)
-    space.add_collision_handler(tank_level_collision, ball_collision, stop=level_ok)
+    
+    # the line below doesn't do what expected.
+    space.add_collision_handler(tank_level_collision, ball_collision, separate=level_ok)
+    
     # Level sensor with ground
     #space.add_collision_handler(0x4, 0x6, begin=no_collision)
     # Limit switch with ground
