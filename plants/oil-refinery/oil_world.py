@@ -40,7 +40,7 @@ PLC_FEED_PUMP = 0x01
 PLC_TANK_LEVEL = 0x02
 PLC_OUTLET_VALVE = 0x03
 PLC_SEP_VESSEL = 0x04
-PLC_SEP_FEED = 0x04
+PLC_SEP_FEED = 0x05
 
 def to_pygame(p):
     """Small hack to convert pymunk to pygame coordinates"""

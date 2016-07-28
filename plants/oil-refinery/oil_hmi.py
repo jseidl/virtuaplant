@@ -16,7 +16,7 @@ class HMIWindow(Gtk.Window):
     def resetLabels(self):
         self.feed_pump_value.set_markup("<span weight='bold' foreground='gray33'>N/A</span>")
 #        self.inlet_valve_value.set_markup("<span weight='bold' foreground='gray33'>N/A</span>")
-        self.outlet_valve_value.set_markup("<span weight='bold' foreground='gray33'>N/A</span>")
+#        self.outlet_valve_value.set_markup("<span weight='bold' foreground='gray33'>N/A</span>")
         self.separator_value.set_markup("<span weight='bold' foreground='gray33'>N/A</span>")
 #        self.discharge_pump_value.set_markup("<span weight='bold' foreground='gray33'>N/A</span>")
         self.process_status_value.set_markup("<span weight='bold' foreground='gray33'>N/A</span>")
@@ -169,9 +169,9 @@ class HMIWindow(Gtk.Window):
         except:
             pass
         
-    def setOutputValve(self, widget, data=None):
+    def setSepFeed(self, widget, data=None):
         try:
-            self.modbusClient.write_register(0x03, data)
+            self.modbusClient.write_register(0x05, data)
         except:
             pass
         
