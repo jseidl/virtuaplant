@@ -256,7 +256,7 @@ def run_world():
     space.add_collision_handler(tank_level_collision, ball_collision, begin=level_reached)
     
     # the line below doesn't do what expected.
-    space.add_collision_handler(tank_level_collision, ball_collision, separate=level_ok)
+    # space.add_collision_handler(tank_level_collision, ball_collision, separate=level_ok)
     
     # Level sensor with ground
     #space.add_collision_handler(0x4, 0x6, begin=no_collision)
@@ -271,8 +271,8 @@ def run_world():
 #    space.add_collision_handler(0x7, 0x5, begin=sep_on)
 #    space.add_collision_handler(0x7, 0x5, stop=sep_off)
 
-    space.add_collision_handler(0x7, 0x2, begin=no_collision)
-    space.add_collision_handler(0x7, 0x3, begin=no_collision)   
+    #space.add_collision_handler(0x7, 0x2, begin=no_collision)
+    #space.add_collision_handler(0x7, 0x3, begin=no_collision)   
 
     pump = add_pump(space)
     lines = add_oil_unit(space)
@@ -312,7 +312,7 @@ def run_world():
             space.add_collision_handler(0x8, 0x5, stop=sep_feed)
             # If the oil reaches the level sensor at the top of the tank
             if (PLCGetTag(PLC_TANK_LEVEL) == 1):
-                PLCSetTag(PLC_FEED_PUMP, 1)
+                PLCSetTag(PLC_FEED_PUMP, 0)
                 PLCSetTag(PLC_SEP_VESSEL, 1)
                 PLCSetTag(PLC_SEP_FEED, 1)
                 space.add_collision_handler(0x7, 0x5, begin=sep_on)
