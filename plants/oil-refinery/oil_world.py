@@ -197,8 +197,9 @@ def draw_lines(screen, lines):
         pygame.draw.lines(screen, THECOLORS["black"], False, [p1,p2])
 
 # Default collision function for objects
+# Returning true makes the two objects collide normally just like "walls/pipes"
 def no_collision(space, arbiter, *args, **kwargs):
-    return True
+    return True 
 
 # Called when level sensor in tank is hit
 def level_reached(space, arbiter, *args, **kwargs):
@@ -223,13 +224,6 @@ def sep_off(space, arbiter, *args, **kwargs):
 def sep_feed_on(space, arbiter, *args, **kwargs):
     log.debug("Outlet Feed")
     PLCSetTag(PLC_SEP_FEED, 1)
-    return False
-
-def oil_storage_ready(space, arbiter, *args, **kwargs):
-    log.debug("Storage bin ready")
-    PLCSetTag(PLC_TANK_LEVEL, 0)
-    PLCSetTag(PLC_FEED_PUMP, 1) # Open pump
-    PLCSetTag(PLC_OUTLET_VALVE, 0)
     return False
 
 def run_world():
@@ -281,19 +275,17 @@ def run_world():
             # If the oil reaches the level sensor at the top of the tank
             if (PLCGetTag(PLC_TANK_LEVEL) == 1):
                 PLCSetTag(PLC_FEED_PUMP, 0)
-                PLCSetTag(PLC_SEP_VESSEL, 1)
-                PLCSetTag(PLC_SEP_FEED, 1)
-                space.add_collision_handler(0x7, 0x5, begin=sep_on)
-                space.add_collision_handler(0x8, 0x5, begin=sep_feed_on)
+                space.add_collision_handler(sep_vessel_collision, ball_collision, begin=sep_on)
+                space.add_collision_handler(separator_collision, ball_collision, begin=sep_feed_on)
                 
             
         # If the separator process is turned on
         if PLCGetTag(PLC_SEP_VESSEL) == 1:
-            space.add_collision_handler(0x7, 0x5, begin=sep_on)
-            space.add_collision_handler(0x8, 0x5, begin=sep_feed_on)
+            space.add_collision_handler(sep_vessel_collision, ball_collision, begin=sep_on)
+            space.add_collision_handler(separator_collision, ball_collision, begin=sep_feed_on)
         else:
-            space.add_collision_handler(0x7, 0x5, begin=no_collision)
-            space.add_collision_handler(0x8, 0x5, begin=no_collision)
+            space.add_collision_handler(sep_vessel_collision, ball_collision, begin=no_collision)
+            space.add_collision_handler(separator_collision, ball_collision, begin=no_collision)
             
             
             

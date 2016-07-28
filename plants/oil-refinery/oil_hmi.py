@@ -116,18 +116,18 @@ class HMIWindow(Gtk.Window):
             self.modbusClient.write_register(0x02, data)
         except:
             pass
-    
-    # Control the separator feed register values
-    def setSepFeed(self, widget, data=None):
-        try:
-            self.modbusClient.write_register(0x05, data)
-        except:
-            pass
         
     # Control the separator vessel level register values
     def setSepVessel(self, widget, data=None):
         try:
             self.modbusClient.write_register(0x04, data)
+        except:
+            pass
+    
+    # Control the separator feed register values
+    def setSepFeed(self, widget, data=None):
+        try:
+            self.modbusClient.write_register(0x05, data)
         except:
             pass
 
