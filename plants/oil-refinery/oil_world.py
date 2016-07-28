@@ -201,7 +201,7 @@ def no_collision(space, arbiter, *args, **kwargs):
     return False
 
 # Called when level sensor in tank is hit
-def level_ok(space, arbiter, *args, **kwargs):
+def level_reached(space, arbiter, *args, **kwargs):
 
     log.debug("Level reached")
     PLCSetTag(PLC_TANK_LEVEL, 1) # Level Sensor Hit, Tank full
@@ -214,6 +214,12 @@ def sep_on(space, arbiter, *args, **kwargs):
     log.debug("Begin separation")
     PLCSetTag(PLC_SEP_VESSEL, 1) # Sep vessel hit, begin processing
     return False
+    
+# This fires when the separator is not processing
+def sep_off(space, arbiter, *args, **kwargs):
+    log.debug("Begin separation")
+    PLCSetTag(PLC_SEP_VESSEL, 0) # Sep vessel hit, begin processing
+    return False
 
 def sep_feed(space, arbiter, *args, **kwargs):
     log.debug("Outlet Feed")
@@ -221,7 +227,6 @@ def sep_feed(space, arbiter, *args, **kwargs):
     return False
 
 def oil_storage_ready(space, arbiter, *args, **kwargs):
-
     log.debug("Storage bin ready")
     PLCSetTag(PLC_TANK_LEVEL, 0)
     PLCSetTag(PLC_FEED_PUMP, 1) # Open pump
@@ -235,12 +240,13 @@ def run_world():
     clock = pygame.time.Clock()
     running = True
 
+    # Create game space (world) and set gravity to normal
     space = pymunk.Space() #2
     space.gravity = (0.0, -900.0)
 
     space.add_collision_handler(0x1, 0x2, begin=oil_storage_ready)
     # When oil collides with tank_level, call level_ok
-    space.add_collision_handler(tank_level_collision, ball_collision, begin=level_ok)
+    space.add_collision_handler(tank_level_collision, ball_collision, begin=level_reached)
     # Level sensor with ground
     #space.add_collision_handler(0x4, 0x6, begin=no_collision)
     # Limit switch with ground
