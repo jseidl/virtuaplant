@@ -114,6 +114,7 @@ class HMIWindow(Gtk.Window):
         self.process_status_value = process_status_value
         self.connection_status_value = connection_status_value
         self.separator_value = separator_value
+        self.level_switch_value = level_switch_value
 
         # Set default label values
         self.resetLabels()
