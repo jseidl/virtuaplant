@@ -17,6 +17,7 @@ class HMIWindow(Gtk.Window):
     def resetLabels(self):
         self.feed_pump_value.set_markup("<span weight='bold' foreground='gray33'>N/A</span>")
         self.separator_value.set_markup("<span weight='bold' foreground='gray33'>N/A</span>")
+        self.level_switch_value.set_markup("<span weight='bold' foreground='gray33'>N/A</span>")
         self.process_status_value.set_markup("<span weight='bold' foreground='gray33'>N/A</span>")
         self.connection_status_value.set_markup("<span weight='bold' foreground='red'>OFFLINE</span>")
      
