@@ -291,6 +291,9 @@ def run_world():
         if PLCGetTag(PLC_SEP_VESSEL) == 1:
             space.add_collision_handler(0x7, 0x5, begin=sep_on)
             space.add_collision_handler(0x8, 0x5, begin=sep_feed_on)
+        else:
+            space.add_collision_handler(0x7, 0x5, begin=no_collision)
+            space.add_collision_handler(0x8, 0x5, begin=no_collision)
             
             
             
