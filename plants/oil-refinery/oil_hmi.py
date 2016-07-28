@@ -170,6 +170,12 @@ class HMIWindow(Gtk.Window):
             else:
                 self.feed_pump_value.set_markup("<span weight='bold' foreground='red'>STOPPED</span>")
                 
+            # If the level sensor is ON
+            if regs[1] == 1:
+                self.level_switch_value.set_markup("<span weight='bold' foreground='green'>ON</span>")
+            else:
+                self.level_switch_value.set_markup("<span weight='bold' foreground='red'>OFF</span>")
+                
             # If the feed pump "0x04" is set to 1, separator is currently processing
             if regs[3] == 1:
                 self.separator_value.set_markup("<span weight='bold' foreground='green'>RUNNING</span>")
