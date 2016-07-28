@@ -10,28 +10,25 @@ MODBUS_SLEEP=1
 
 class HMIWindow(Gtk.Window):
     def initModbus(self):
-
+        # Create modbus connection to specified address and port
         self.modbusClient = ModbusClient('localhost', port=5020)
 
+    # Default values for the HMI labels
     def resetLabels(self):
         self.feed_pump_value.set_markup("<span weight='bold' foreground='gray33'>N/A</span>")
-#        self.inlet_valve_value.set_markup("<span weight='bold' foreground='gray33'>N/A</span>")
-#        self.outlet_valve_value.set_markup("<span weight='bold' foreground='gray33'>N/A</span>")
         self.separator_value.set_markup("<span weight='bold' foreground='gray33'>N/A</span>")
-#        self.discharge_pump_value.set_markup("<span weight='bold' foreground='gray33'>N/A</span>")
         self.process_status_value.set_markup("<span weight='bold' foreground='gray33'>N/A</span>")
         self.connection_status_value.set_markup("<span weight='bold' foreground='red'>OFFLINE</span>")
      
     def __init__(self):
+        # Window title
         Gtk.Window.__init__(self, title="Oil Refinery")
-        #self.gtk_widget_override_background_color(Gtk.StateType.NORMAL, Gtk.Window("green"))
-
         self.set_border_width(100)
         
+        #Create modbus connection
         self.initModbus()
 
         elementIndex = 0
-
         # Grid
         grid = Gtk.Grid()
         grid.set_row_spacing(15)
@@ -60,54 +57,6 @@ class HMIWindow(Gtk.Window):
         grid.attach(feed_pump_stop_button, 3, elementIndex, 1, 1)
         elementIndex += 1
 
-         #Crude Oil Inlet Valve
-#        inlet_valve_label = Gtk.Label("Crude Oil Tank Inlet Valve")
-#        inlet_valve_value = Gtk.Label()
-
-#        inlet_valve_open_button = Gtk.Button("OPEN")
-#        inlet_valve_close_button = Gtk.Button("CLOSE")
-
-#        inlet_valve_open_button.connect("clicked", self.setProcess, 1)
-#        inlet_valve_close_button.connect("clicked", self.setProcess, 0)
-
-#        grid.attach(inlet_valve_label, 0, elementIndex, 1, 1)
-#        grid.attach(inlet_valve_value, 1, elementIndex, 1, 1)
-#        grid.attach(inlet_valve_open_button, 2, elementIndex, 1, 1)
-#        grid.attach(inlet_valve_close_button, 3, elementIndex, 1, 1)
-#        elementIndex += 1
-
-        # Crude Oil Outlet Valve
-#        outlet_valve_label = Gtk.Label("Crude Oil Tank Outlet Valve")
-#        outlet_valve_value = Gtk.Label()
-
-#        outlet_valve_open_button = Gtk.Button("OPEN")
-#        outlet_valve_close_button = Gtk.Button("CLOSE")
-
-#        outlet_valve_open_button.connect("clicked", self.setOutputValve, 1)
-#       outlet_valve_close_button.connect("clicked", self.setOutputValve, 0)
-
-#        grid.attach(outlet_valve_label, 0, elementIndex, 1, 1)
-#        grid.attach(outlet_valve_value, 1, elementIndex, 1, 1)
-#        grid.attach(outlet_valve_open_button, 2, elementIndex, 1, 1)
-#        grid.attach(outlet_valve_close_button, 3, elementIndex, 1, 1)
-#        elementIndex += 1
-
-        # Crude Oil Discharge Pump
-#        discharge_pump_label = Gtk.Label("Crude Oil Tank Discharge Pump")
-#        discharge_pump_value = Gtk.Label()
-
-#        discharge_pump_start_button = Gtk.Button("START")
-#        discharge_pump_stop_button = Gtk.Button("STOP")
-
-#        discharge_pump_start_button.connect("clicked", self.setProcess, 1)
-#        discharge_pump_stop_button.connect("clicked", self.setProcess, 0)
-
-#        grid.attach(discharge_pump_label, 0, elementIndex, 1, 1)
-#        grid.attach(discharge_pump_value, 1, elementIndex, 1, 1)
-#        grid.attach(discharge_pump_start_button, 2, elementIndex, 1, 1)
-#        grid.attach(discharge_pump_stop_button, 3, elementIndex, 1, 1)
-#        elementIndex += 1
-
         #Oil/Water Separator Vessel
         separator_label = Gtk.Label("Oil/Water Separator Vessel")
         separator_value = Gtk.Label()
@@ -134,7 +83,6 @@ class HMIWindow(Gtk.Window):
         # Connection status
         connection_status_label = Gtk.Label("Connection Status")
         connection_status_value = Gtk.Label()
-
         grid.attach(connection_status_label, 0, elementIndex, 1, 1)
         grid.attach(connection_status_value, 1, elementIndex, 1, 1)
         elementIndex += 1
@@ -147,34 +95,36 @@ class HMIWindow(Gtk.Window):
 
         # Attach Value Labels
         self.feed_pump_value = feed_pump_value
-#        self.inlet_valve_value = inlet_valve_value
-#       self.outlet_valve_value = outlet_valve_value
-#        self.discharge_pump_value = discharge_pump_value
         self.process_status_value = process_status_value
         self.connection_status_value = connection_status_value
         self.separator_value = separator_value
 
+        # Set default label values
         self.resetLabels()
         GObject.timeout_add_seconds(MODBUS_SLEEP, self.update_status)
 
+    # Control the feed pump register values
     def setPump(self, widget, data=None):
         try:
             self.modbusClient.write_register(0x01, data)
         except:
             pass
         
+    # Control the tank level register values
     def setTankLevel(self, widget, data=None):
         try:
             self.modbusClient.write_register(0x02, data)
         except:
             pass
-        
+    
+    # Control the separator feed register values
     def setSepFeed(self, widget, data=None):
         try:
             self.modbusClient.write_register(0x05, data)
         except:
             pass
         
+    # Control the separator vessel level register values
     def setSepVessel(self, widget, data=None):
         try:
             self.modbusClient.write_register(0x04, data)
@@ -184,47 +134,35 @@ class HMIWindow(Gtk.Window):
     def update_status(self):
 
         try:
+            # Store the registers of the PLC in "rr"
             rr = self.modbusClient.read_holding_registers(1,16)
             regs = []
 
+            # If we get back a blank response, something happened connecting to the PLC
             if not rr or not rr.registers:
                 raise ConnectionException
-
+            
+            # Regs is an iterable list of register key:values
             regs = rr.registers
 
             if not regs or len(regs) < 16:
                 raise ConnectionException
-
+            
+            # If the feed pump "0x01" is set to 1, then the pump is running
             if regs[0] == 1:
                 self.feed_pump_value.set_markup("<span weight='bold' foreground='green'>RUNNING</span>")
             else:
                 self.feed_pump_value.set_markup("<span weight='bold' foreground='red'>STOPPED</span>")
-
-#            if regs[2] == 1:
-#                self.inlet_valve_value.set_markup("<span> weight='bold' foreground='green'>OPEN</span>")
-#            else:
-#                self.inlet_valve_value.set_markup("<span> weight='bold' foreground='red'>CLOSED</span>")
-
-#            if regs[2] == 1:
-#                self.outlet_valve_value.set_markup("<span weight='bold' foreground='green'>OPEN</span>")
-#            else:
-#                self.outlet_valve_value.set_markup("<span weight='bold' foreground='red'>CLOSED</span>")
-
-#           if regs[1] == 1:
-#                self.discharge_pump_value.set_markup("<span weight='bold' foreground='green'>RUNNING</span>")
-#            else:
-#                self.discharge_pump_value.set_markup("<span weight='bold' foreground='red'>STOPPED</span>")
-
+                
+            # If the feed pump "0x04" is set to 1, separator is currently processing
             if regs[3] == 1:
                 self.separator_value.set_markup("<span weight='bold' foreground='green'>RUNNING</span>")
-            else:
-                self.separator_value.set_markup("<span weight='bold' foreground='red'>STOPPED</span>")
-
-            if regs[3] == 1:
                 self.process_status_value.set_markup("<span weight='bold' foreground='green'>RUNNING </span>")
             else:
+                self.separator_value.set_markup("<span weight='bold' foreground='red'>STOPPED</span>")
                 self.process_status_value.set_markup("<span weight='bold' foreground='red'>STOPPED </span>")
 
+            # If we successfully connect, then show that the HMI has contacted the PLC
             self.connection_status_value.set_markup("<span weight='bold' foreground='green'>ONLINE </span>")
 
 
