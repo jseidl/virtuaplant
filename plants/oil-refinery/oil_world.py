@@ -198,7 +198,7 @@ def draw_lines(screen, lines):
 
 # Default collision function for objects
 def no_collision(space, arbiter, *args, **kwargs):
-    return False
+    return True
 
 # Called when level sensor in tank is hit
 def level_reached(space, arbiter, *args, **kwargs):
