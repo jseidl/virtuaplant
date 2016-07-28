@@ -40,6 +40,7 @@ PLC_FEED_PUMP = 0x01
 PLC_TANK_LEVEL = 0x02
 PLC_OUTLET_VALVE = 0x03
 PLC_SEP_VESSEL = 0x04
+PLC_SEP_FEED = 0x05
 
 
 def to_pygame(p):
@@ -64,11 +65,11 @@ def draw_ball(screen, ball, color=THECOLORS['brown']):
     p = int(ball.body.position.x), 600-int(ball.body.position.y)
     pygame.draw.circle(screen, color, p, int(ball.radius), 2)
 
-def outlet_valve_sensor(space):
+def separator_vessel_feed(space):
 
     body = pymunk.Body()
-    body.position = (185, 320)
-    radius = 2
+    body.position = (420, 257)
+    radius = 4
     shape = pymunk.Circle(body, radius, (0, 0))
     shape.collision_type = 0x8 # 'bottle_in'
     space.add(shape)
@@ -205,6 +206,7 @@ def level_ok(space, arbiter, *args, **kwargs):
     PLCSetTag(PLC_TANK_LEVEL, 1) # Level Sensor Hit, Bottle Filled
     PLCSetTag(PLC_FEED_PUMP, 0) # Close pump
     PLCSetTag(PLC_OUTLET_VALVE, 1)
+
 #    PLCSetTag(PLC_DISCHARGE_PUMP, 1)
     return False
     
@@ -212,6 +214,11 @@ def level_ok(space, arbiter, *args, **kwargs):
 def sep_on(space, arbiter, *args, **kwargs):
     log.debug("Begin separation")
     PLCSetTag(PLC_SEP_VESSEL, 1) # Sep vessel hit, begin processing
+    return False
+
+def sep_feed(space, arbiter, *args, **kwargs):
+    log.debug("Outlet Feed")
+    PLCSetTag(PLC_SEP_FEED, 1)
     return False
 
 def oil_storage_ready(space, arbiter, *args, **kwargs):
@@ -246,18 +253,22 @@ def run_world():
     # Level sensor with bottle side
     space.add_collision_handler(0x4, 0x3, begin=no_collision)
     
-    space.add_collision_handler(0x7, 0x5, begin=sep_on)
-    
+#    space.add_collision_handler(0x7, 0x5, begin=sep_feed)
+#    space.add_collision_handler(0x7, 0x5, begin=sep_on)
+#    space.add_collision_handler(0x7, 0x5, stop=sep_off)
+
     space.add_collision_handler(0x7, 0x2, begin=no_collision)
     space.add_collision_handler(0x7, 0x3, begin=no_collision)   
 
     pump = add_pump(space)
     lines = add_oil_unit(space)
     tank_level = tank_level_sensor(space)
-    tank_in = outlet_valve_sensor(space)
+#    tank_in = outlet_valve_sensor(space)
     separator_vessel = separator_vessel_release(space)
-    outlet_valve = outlet_valve_sensor(space)
+#    outlet_valve = outlet_valve_sensor(space)
+    separator_feed = separator_vessel_feed(space)
     
+
     balls = []
 
     ticks_to_next_ball = 1
@@ -280,11 +291,25 @@ def run_world():
         # If the feed pump is on
         if PLCGetTag(PLC_FEED_PUMP) == 1:
             # Draw the valve if the pump is on
-            #valve = add_outlet_valve(space)
-            #draw_line(screen, valve)
+            space.add_collision_handler(0x7, 0x5, stop=sep_on)
+            space.add_collision_handler(0x8, 0x5, stop=sep_feed)
             # If the oil reaches the level sensor at the top of the tank
             if (PLCGetTag(PLC_TANK_LEVEL) == 1):
                 PLCSetTag(PLC_FEED_PUMP, 1)
+                PLCSetTag(PLC_SEP_VESSEL, 1)
+                PLCSetTag(PLC_SEP_FEED, 1)
+                space.add_collision_handler(0x7, 0x5, begin=sep_on)
+                space.add_collision_handler(0x8, 0x5, begin=sep_feed)
+
+            if (PLCGetTag(PLC_SEP_VESSEL) == 0):
+                space.add_collision_handler(0x7, 0x5, stop=sep_on)
+                space.add_collision_handler(0x8, 0x5, stop=sep_feed)
+#            if (PLCGetTag(PLC_SEP_VESSEL) == 0):
+#               PLCSetTag(PLC_FEED_PUMP, 1)
+            
+#            if (PLCGetTag(PLC_TANK_LEVEL) == 0):
+                
+
 
         ticks_to_next_ball -= 1
 
@@ -308,7 +333,8 @@ def run_world():
         draw_lines(screen, lines)
         draw_ball(screen, tank_level, THECOLORS['red'])
         draw_ball(screen, separator_vessel, THECOLORS['red'])
-        draw_ball(screen, outlet_valve, THECOLORS['red'])
+        draw_ball(screen, separator_feed, THECOLORS['red'])
+        #draw_ball(screen, separator_feed, THECOLORS['red'])
 
         title = fontMedium.render(str("Crude Oil Pretreatment Unit"), 1, THECOLORS['blue'])
         name = fontBig.render(str("VirtuaPlant"), 1, THECOLORS['gray20'])
