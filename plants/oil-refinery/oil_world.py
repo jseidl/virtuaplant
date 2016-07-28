@@ -208,14 +208,6 @@ def level_reached(space, arbiter, *args, **kwargs):
     PLCSetTag(PLC_OUTLET_VALVE, 1) # Set the outlet valve to 1
     return False
     
-# Called when level sensor in tank is ok
-def level_ok(space, arbiter, *args, **kwargs):
-    log.debug("Level ok")
-    PLCSetTag(PLC_TANK_LEVEL, 0) # Level Sensor ok, tank empty enough
-    PLCSetTag(PLC_FEED_PUMP, 1) # Turn off the pump
-    PLCSetTag(PLC_OUTLET_VALVE, 0) # Set the outlet valve to 1
-    return False
-    
 # This fires when the separator level is hit    
 def sep_on(space, arbiter, *args, **kwargs):
     log.debug("Begin separation")
@@ -228,7 +220,7 @@ def sep_off(space, arbiter, *args, **kwargs):
     PLCSetTag(PLC_SEP_VESSEL, 0) # Sep vessel hit, begin processing
     return False
 
-def sep_feed(space, arbiter, *args, **kwargs):
+def sep_feed_on(space, arbiter, *args, **kwargs):
     log.debug("Outlet Feed")
     PLCSetTag(PLC_SEP_FEED, 1)
     return False
@@ -250,29 +242,9 @@ def run_world():
     # Create game space (world) and set gravity to normal
     space = pymunk.Space() #2
     space.gravity = (0.0, -900.0)
-
-    space.add_collision_handler(0x1, 0x2, begin=oil_storage_ready)
-    # When oil collides with tank_level, call level_ok
+    
+    # When oil collides with tank_level, call level_reached
     space.add_collision_handler(tank_level_collision, ball_collision, begin=level_reached)
-    
-    # the line below doesn't do what expected.
-    # space.add_collision_handler(tank_level_collision, ball_collision, separate=level_ok)
-    
-    # Level sensor with ground
-    #space.add_collision_handler(0x4, 0x6, begin=no_collision)
-    # Limit switch with ground
-    #space.add_collision_handler(0x1, 0x6, begin=no_collision)
-    # Limit switch with bottle side
-    #space.add_collision_handler(0x1, 0x3, begin=no_collision)
-    # Level sensor with bottle side
-    #space.add_collision_handler(0x4, 0x3, begin=no_collision)
-    
-#    space.add_collision_handler(0x7, 0x5, begin=sep_feed)
-#    space.add_collision_handler(0x7, 0x5, begin=sep_on)
-#    space.add_collision_handler(0x7, 0x5, stop=sep_off)
-
-    #space.add_collision_handler(0x7, 0x2, begin=no_collision)
-    #space.add_collision_handler(0x7, 0x3, begin=no_collision)   
 
     pump = add_pump(space)
     lines = add_oil_unit(space)
@@ -306,21 +278,22 @@ def run_world():
         # If the feed pump is on
         if PLCGetTag(PLC_FEED_PUMP) == 1:
             # Draw the valve if the pump is on
-            space.add_collision_handler(0x7, 0x5, stop=sep_on)
-            space.add_collision_handler(0x8, 0x5, stop=sep_feed)
-            space.add_collision_handler(0x7, 0x5, stop=sep_on)
-            space.add_collision_handler(0x8, 0x5, stop=sep_feed)
             # If the oil reaches the level sensor at the top of the tank
             if (PLCGetTag(PLC_TANK_LEVEL) == 1):
                 PLCSetTag(PLC_FEED_PUMP, 0)
                 PLCSetTag(PLC_SEP_VESSEL, 1)
                 PLCSetTag(PLC_SEP_FEED, 1)
                 space.add_collision_handler(0x7, 0x5, begin=sep_on)
-                space.add_collision_handler(0x8, 0x5, begin=sep_feed)
-
-            if (PLCGetTag(PLC_SEP_VESSEL) == 0):
-                space.add_collision_handler(0x7, 0x5, stop=sep_on)
-                space.add_collision_handler(0x8, 0x5, stop=sep_feed)
+                space.add_collision_handler(0x8, 0x5, begin=sep_feed_on)
+                
+            
+        # If the separator process is turned on
+        if PLCGetTag(PLC_SEP_VESSEL) == 1:
+            space.add_collision_handler(0x7, 0x5, begin=sep_on)
+            space.add_collision_handler(0x8, 0x5, begin=sep_feed_on)
+            
+            
+            
         ticks_to_next_ball -= 1
 
         if ticks_to_next_ball <= 0 and PLCGetTag(PLC_FEED_PUMP) == 1:
