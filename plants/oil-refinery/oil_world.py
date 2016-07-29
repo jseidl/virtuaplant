@@ -47,6 +47,9 @@ parser.add_argument("-t", action = "store", dest="server_addr",
 if len(sys.argv)==1:
 	parser.print_help()
 	sys.exit(1)
+	
+# Split and process arguments into "args"
+args = parser.parse_args()
 
 logging.basicConfig()
 log = logging.getLogger()
