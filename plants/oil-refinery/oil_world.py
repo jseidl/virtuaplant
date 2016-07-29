@@ -121,8 +121,8 @@ def separator_vessel_feed(space):
 # Add the separator vessel release
 def separator_vessel_release(space):
     body = pymunk.Body()
-    body.position = (390, 225)
-    radius = 3
+    body.position = (387, 225)
+    radius = 4
     shape = pymunk.Circle(body, radius, (0, 0))
     shape.collision_type = sep_vessel_collision
     space.add(shape)
@@ -171,14 +171,14 @@ def add_oil_unit(space):
     #separator vessel
     l15 = pymunk.Segment(body, (-40, -45), (-40, -75), 5)
     l16 = pymunk.Segment(body, (-40, -25), (-40, 5), 5)
-    l17 = pymunk.Segment(body, (-40, -75), (80, -75), 5)
+    l17 = pymunk.Segment(body, (-40, -75), (75, -75), 5)
     l18 = pymunk.Segment(body, (-40, 5), (120, 5), 5)
     l19 = pymunk.Segment(body, (100, -75), (120, -75), 5)
     l22 = pymunk.Segment(body, (120, -75), (120, -55), 5)
     l23 = pymunk.Segment(body, (120, -30), (120, 5), 5)
 
     #waste water pipe
-    l20 = pymunk.Segment(body, (80, -75), (80, -115), 5)
+    l20 = pymunk.Segment(body, (75, -75), (75, -115), 5)
     l21 = pymunk.Segment(body, (100, -75), (100, -115), 5)
     
     #separator exit pipe
@@ -186,7 +186,7 @@ def add_oil_unit(space):
     l25 = pymunk.Segment(body, (120, -55), (600, -55), 5)
 
     #waste water storage
-    l26 = pymunk.Segment(body, (80, -115), (20, -115), 5)
+    l26 = pymunk.Segment(body, (75, -115), (20, -115), 5)
     l27 = pymunk.Segment(body, (20, -115), (20, -185), 5)
     l28 = pymunk.Segment(body, (20, -185), (140, -185), 5)
     l29 = pymunk.Segment(body, (140, -185), (140, -170), 5)
