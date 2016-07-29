@@ -68,7 +68,7 @@ class HMIWindow(Gtk.Window):
         # Main title label
         label = Gtk.Label()
         label.set_markup("<span weight='bold' size='xx-large' color='black'>Crude Oil Pretreatment Unit </span>")
-        grid.attach(label, 0, elementIndex, 4, 1)
+        grid.attach(label, 4, elementIndex, 4, 1)
         elementIndex += 1
 
         # Crude Oil Feed Pump
@@ -81,10 +81,10 @@ class HMIWindow(Gtk.Window):
         feed_pump_start_button.connect("clicked", self.setPump, 1)
         feed_pump_stop_button.connect("clicked", self.setPump, 0)
         
-        grid.attach(feed_pump_label, 0, elementIndex, 1, 1)
-        grid.attach(feed_pump_value, 1, elementIndex, 1, 1)
-        grid.attach(feed_pump_start_button, 2, elementIndex, 1, 1)
-        grid.attach(feed_pump_stop_button, 3, elementIndex, 1, 1)
+        grid.attach(feed_pump_label, 4, elementIndex, 1, 1)
+        grid.attach(feed_pump_value, 5, elementIndex, 1, 1)
+        grid.attach(feed_pump_start_button, 6, elementIndex, 1, 1)
+        grid.attach(feed_pump_stop_button, 7, elementIndex, 1, 1)
         elementIndex += 1
         
         # Level Switch
@@ -97,10 +97,10 @@ class HMIWindow(Gtk.Window):
         level_switch_start_button.connect("clicked", self.setTankLevel, 1)
         level_switch_stop_button.connect("clicked", self.setTankLevel, 0)
         
-        grid.attach(level_switch_label, 0, elementIndex, 1, 1)
-        grid.attach(level_switch_value, 1, elementIndex, 1, 1)
-        grid.attach(level_switch_start_button, 2, elementIndex, 1, 1)
-        grid.attach(level_switch_stop_button, 3, elementIndex, 1, 1)
+        grid.attach(level_switch_label, 4, elementIndex, 1, 1)
+        grid.attach(level_switch_value, 5, elementIndex, 1, 1)
+        grid.attach(level_switch_start_button, 6, elementIndex, 1, 1)
+        grid.attach(level_switch_stop_button, 7, elementIndex, 1, 1)
         elementIndex += 1
 
         #Oil/Water Separator Vessel
@@ -113,31 +113,31 @@ class HMIWindow(Gtk.Window):
         separator_start_button.connect("clicked", self.setSepVessel, 1)
         separator_stop_button.connect("clicked", self.setSepVessel, 0)
 
-        grid.attach(separator_label, 0, elementIndex, 1, 1)
-        grid.attach(separator_value, 1, elementIndex, 1, 1)
-        grid.attach(separator_start_button, 2, elementIndex, 1, 1)
-        grid.attach(separator_stop_button, 3, elementIndex, 1, 1)
+        grid.attach(separator_label, 4, elementIndex, 1, 1)
+        grid.attach(separator_value, 5, elementIndex, 1, 1)
+        grid.attach(separator_start_button, 6, elementIndex, 1, 1)
+        grid.attach(separator_stop_button, 7, elementIndex, 1, 1)
         elementIndex += 1
 
         # Process status
         process_status_label = Gtk.Label("Process Status")
         process_status_value = Gtk.Label()
-        grid.attach(process_status_label, 0, elementIndex, 1, 1)
-        grid.attach(process_status_value, 1, elementIndex, 1, 1)
+        grid.attach(process_status_label, 4, elementIndex, 1, 1)
+        grid.attach(process_status_value, 5, elementIndex, 1, 1)
         elementIndex += 1
 
         # Connection status
         connection_status_label = Gtk.Label("Connection Status")
         connection_status_value = Gtk.Label()
-        grid.attach(connection_status_label, 0, elementIndex, 1, 1)
-        grid.attach(connection_status_value, 1, elementIndex, 1, 1)
+        grid.attach(connection_status_label, 4, elementIndex, 1, 1)
+        grid.attach(connection_status_value, 5, elementIndex, 1, 1)
         elementIndex += 1
         
         
         # Oil Refienery branding
         virtual_refinery = Gtk.Label()
         virtual_refinery.set_markup("<span size='small'>Crude Oil Pretreatment Unit - HMI</span>")
-        grid.attach(virtual_refinery, 0, elementIndex, 2, 1)
+        grid.attach(virtual_refinery, 4, elementIndex, 2, 1)
 
         # Attach Value Labels
         self.feed_pump_value = feed_pump_value
