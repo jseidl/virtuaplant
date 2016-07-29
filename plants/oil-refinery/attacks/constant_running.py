@@ -49,7 +49,7 @@ try:
     print ". . . Connecting to PLC"
     print ". . . Please wait."
     time.sleep(3)
-    print ". . . Attacking PLC at " + args.target
+    print ". . . Attacking PLC at " + args.target + ":5020"
     time.sleep(1)
     print ". . . Attack successful!"
     print ". . . PLC will now constantly pump oil"
