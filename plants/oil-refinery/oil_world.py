@@ -340,9 +340,9 @@ def run_world():
 
         draw_polygon(screen, pump)
         draw_lines(screen, lines)
-        draw_ball(screen, tank_level, THECOLORS['red'])
-        draw_ball(screen, separator_vessel, THECOLORS['red'])
-        draw_ball(screen, separator_feed, THECOLORS['red'])
+        draw_ball(screen, tank_level, THECOLORS['black'])
+        draw_ball(screen, separator_vessel, THECOLORS['black'])
+        draw_ball(screen, separator_feed, THECOLORS['black'])
 
         #draw_ball(screen, separator_feed, THECOLORS['red'])
         title = fontMedium.render(str("Crude Oil Pretreatment Unit"), 1, THECOLORS['blue'])
@@ -352,6 +352,10 @@ def run_world():
         oil_storage_label = fontMedium.render(str("Oil Storage Unit"), 1, THECOLORS['blue'])
         separator_label = fontMedium.render(str("Separator Vessel"), 1, THECOLORS['blue'])
         waste_water_label = fontMedium.render(str("Waste Water Treatment Unit"), 1, THECOLORS['blue'])
+        tank_sensor = fontSmall.render(str("Tank Level Sensor"), 1, THECOLORS['blue'])
+        separator_release = fontSmall.render(str("Separator Vessel Release Sensor"), 1, THECOLORS['blue'])
+        waste_sensor = fontSmall.render(str("Waste Water Sensor"), 1, THECOLORS['blue'])
+        
         screen.blit(title, (300, 40))
         screen.blit(name, (347, 10))
         screen.blit(instructions, (SCREEN_WIDTH-115, 10))
@@ -359,6 +363,9 @@ def run_world():
         screen.blit(oil_storage_label, (240, 190))
         screen.blit(separator_label, (270,275))
         screen.blit(waste_water_label, (265, 490))
+        screen.blit(tank_sensor, (10, 187))
+        screen.blit(separator_release, (425, 315))
+        screen.blit(waste_sensor, (402, 375))
 
         space.step(1/FPS) 
         pygame.display.flip()
