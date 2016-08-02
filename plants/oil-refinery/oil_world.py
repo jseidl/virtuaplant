@@ -415,11 +415,11 @@ context = ModbusServerContext(slaves=store, single=True)
 
 # Modbus PLC server information
 identity = ModbusDeviceIdentification()
-identity.VendorName  = 'Siemens Oil Refining Platform'
+identity.VendorName  = 'Simmons Oil Refining Platform'
 identity.ProductCode = 'SORP'
-identity.VendorUrl   = 'http://w3.siemens.com/markets/global/en/oil-gas/pages/refining-petrochemical-industry.aspx'
+identity.VendorUrl   = 'http://simmons.com/markets/oil-gas/pages/refining-industry.html'
 identity.ProductName = 'SORP 3850'
-identity.ModelName   = 'Siemens ORP 3850'
+identity.ModelName   = 'Simmons ORP 3850'
 identity.MajorMinorRevision = '2.09.01'
 
 def startModbusServer():
