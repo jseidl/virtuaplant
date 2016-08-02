@@ -143,7 +143,9 @@ def oil_spill_sensor(space):
     body = pymunk.Body()
     body.position = (125, 425)
     radius = 7
-    shape = pymunk.Circle(body, radius, (0, 0))
+    a = (0, 25)
+    b = (300, 25)
+    shape = pymunk.Segment(body, a, b, radius)
     shape.collision_type = oil_spill_collision # tank_level
     space.add(shape)
     return shape
@@ -359,7 +361,7 @@ def run_world():
         draw_ball(screen, tank_level, THECOLORS['black'])
         draw_ball(screen, separator_vessel, THECOLORS['black'])
         draw_ball(screen, separator_feed, THECOLORS['black'])
-        draw_line(screen, oil_spill, THECOLORS['black'])
+        draw_line(screen, oil_spill)
 
         #draw_ball(screen, separator_feed, THECOLORS['red'])
         title = fontMedium.render(str("Crude Oil Pretreatment Unit"), 1, THECOLORS['blue'])
