@@ -52,8 +52,8 @@ class HMIWindow(Gtk.Window):
         self.level_switch_value.set_markup("<span weight='bold' foreground='gray33'>N/A</span>")
         self.process_status_value.set_markup("<span weight='bold' foreground='gray33'>N/A</span>")
         self.connection_status_value.set_markup("<span weight='bold' foreground='red'>OFFLINE</span>")
-        self.oil_processed_value.set_markup("<span weight='bold' foreground='green'>" + oil_processed_amount + "</span>")
-        self.oil_spilled_value.set_markup("<span weight='bold' foreground='red'>" + oil_spilled_amount + "</span>")
+        self.oil_processed_value.set_markup("<span weight='bold' foreground='green'>" + self.oil_processed_amount + "</span>")
+        self.oil_spilled_value.set_markup("<span weight='bold' foreground='red'>" + self.oil_spilled_amount + "</span>")
      
     def __init__(self):
         # Window title
