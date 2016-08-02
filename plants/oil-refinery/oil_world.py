@@ -83,6 +83,7 @@ tank_level_collision = 0x4
 ball_collision = 0x5
 separator_collision = 0x8
 sep_vessel_collision = 0x7
+oil_spill_collision = 0x9
 
 def to_pygame(p):
     """Small hack to convert pymunk to pygame coordinates"""
@@ -135,6 +136,17 @@ def tank_level_sensor(space):
     radius = 3
     shape = pymunk.Circle(body, radius, (0, 0))
     shape.collision_type = tank_level_collision # tank_level
+    space.add(shape)
+    return shape
+    
+def oil_spill_sensor(space):
+    body = pymunk.Body()
+    #body.position = (125, 800)
+    a = (125, 600)
+    b = (400, 600)
+    radius = 5
+    shape = pymunk.Segment(body, a, b, radius)
+    shape.collision_type = oil_spill_collision # tank_level
     space.add(shape)
     return shape
 
@@ -240,6 +252,10 @@ def level_reached(space, arbiter, *args, **kwargs):
     PLCSetTag(PLC_OUTLET_VALVE, 1) # Set the outlet valve to 1
     return False
     
+def oil_spilled(space, arbiter, *args, **kwargs):
+    log.debug("Oil Spilled")
+    return False   
+    
 # This fires when the separator level is hit    
 def sep_on(space, arbiter, *args, **kwargs):
     log.debug("Begin separation")
@@ -270,6 +286,7 @@ def run_world():
     
     # When oil collides with tank_level, call level_reached
     space.add_collision_handler(tank_level_collision, ball_collision, begin=level_reached)
+    space.add_collision_handler(oil_spill_collision, ball_collision, begin=oil_spilled)
 
     pump = add_pump(space)
     lines = add_oil_unit(space)
@@ -277,6 +294,7 @@ def run_world():
     separator_vessel = separator_vessel_release(space)
     separator_feed = separator_vessel_feed(space)
     separator_feed = separator_vessel_feed(space)
+    oil_spill = oil_spill_sensor(space)
     
 
     balls = []
