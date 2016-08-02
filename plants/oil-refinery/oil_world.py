@@ -72,8 +72,8 @@ FPS=50.0
 MODBUS_SERVER_PORT=5020
 
 # Amount of oil spilled/processed
-oil_spilled_amount = 0
-oil_processed_amount = 0
+global oil_spilled_amount = 0
+global oil_processed_amount = 0
 
 # PLC Register values for various control functions
 PLC_FEED_PUMP = 0x01
