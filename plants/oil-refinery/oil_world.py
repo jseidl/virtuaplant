@@ -77,6 +77,7 @@ PLC_TANK_LEVEL = 0x02
 PLC_OUTLET_VALVE = 0x03
 PLC_SEP_VESSEL = 0x04
 PLC_SEP_FEED = 0x05
+PLC_OIL_SPILL = 0x06
 
 # Collision types
 tank_level_collision = 0x4
@@ -257,6 +258,9 @@ def level_reached(space, arbiter, *args, **kwargs):
     
 def oil_spilled(space, arbiter, *args, **kwargs):
     log.debug("Oil Spilled")
+    PLCSetTag(PLC_OIL_SPILL, 1) # We lost a unit of oil
+    PLCSetTag(PLC_OIL_SPILL, 0) # We have now accounted for that unit of oil
+    PLCSetTag(PLC_FEED_PUMP, 0) # Attempt to shut off the pump
     return False   
     
 # This fires when the separator level is hit    
@@ -338,7 +342,6 @@ def run_world():
         else:
             space.add_collision_handler(sep_vessel_collision, ball_collision, begin=no_collision)
             space.add_collision_handler(separator_collision, ball_collision, begin=no_collision)
-            
             
             
         ticks_to_next_ball -= 1

@@ -7,3 +7,8 @@ TODO list
     
 - Make it prettier/more graphical
 - Add background image
+
+- Oil Spilled/Processed
+    - Add sensors in processing pipes
+    - Add sensor at bottom of world/above level sensor
+    

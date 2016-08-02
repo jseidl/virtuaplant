@@ -38,6 +38,9 @@ args = parser.parse_args()
 MODBUS_SLEEP=1
 
 class HMIWindow(Gtk.Window):
+    oil_processed_amount = 0
+    oil_spilled_amount = 0
+    
     def initModbus(self):
         # Create modbus connection to specified address and port
         self.modbusClient = ModbusClient(args.server_addr, port=5020)
@@ -49,8 +52,8 @@ class HMIWindow(Gtk.Window):
         self.level_switch_value.set_markup("<span weight='bold' foreground='gray33'>N/A</span>")
         self.process_status_value.set_markup("<span weight='bold' foreground='gray33'>N/A</span>")
         self.connection_status_value.set_markup("<span weight='bold' foreground='red'>OFFLINE</span>")
-        self.oil_processed_value.set_markup("<span weight='bold' foreground='green'>0</span>")
-        self.oil_spilled_value.set_markup("<span weight='bold' foreground='red'>0</span>")
+        self.oil_processed_value.set_markup("<span weight='bold' foreground='green'>" + oil_processed_amount + "</span>")
+        self.oil_spilled_value.set_markup("<span weight='bold' foreground='red'>" + oil_spilled_amount + "</span>")
      
     def __init__(self):
         # Window title
@@ -227,6 +230,14 @@ class HMIWindow(Gtk.Window):
                 
             # If the feed pump "0x04" is set to 1, separator is currently processing
             if regs[3] == 1:
+                self.separator_value.set_markup("<span weight='bold' foreground='green'>RUNNING</span>")
+                self.process_status_value.set_markup("<span weight='bold' foreground='green'>RUNNING </span>")
+            else:
+                self.separator_value.set_markup("<span weight='bold' foreground='red'>STOPPED</span>")
+                self.process_status_value.set_markup("<span weight='bold' foreground='red'>STOPPED </span>")
+                
+            if regs[5] == 1:
+                oil_spilled_amount += 1
                 self.separator_value.set_markup("<span weight='bold' foreground='green'>RUNNING</span>")
                 self.process_status_value.set_markup("<span weight='bold' foreground='green'>RUNNING </span>")
             else:
