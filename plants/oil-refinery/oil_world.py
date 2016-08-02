@@ -72,8 +72,6 @@ FPS=50.0
 MODBUS_SERVER_PORT=5020
 
 # Amount of oil spilled/processed
-global oil_spilled_amount
-global oil_processed_amount
 oil_spilled_amount = 0
 oil_processed_amount = 0
 
@@ -264,6 +262,8 @@ def level_reached(space, arbiter, *args, **kwargs):
     return False
     
 def oil_spilled(space, arbiter, *args, **kwargs):
+    global oil_spilled_amount
+    global oil_processed_amount
     log.debug("Oil Spilled")
     oil_spilled_amount = oil_spilled_amount + 1
     PLCSetTag(PLC_OIL_SPILL, oil_spilled_amount) # We lost a unit of oil
