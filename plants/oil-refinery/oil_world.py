@@ -143,8 +143,8 @@ def oil_spill_sensor(space):
     body = pymunk.Body()
     body.position = (0, 0)
     radius = 7
-    a = (0, 100)
-    b = (640, 100)
+    a = (0, 50)
+    b = (SCREEN_WIDTH, 50)
     shape = pymunk.Segment(body, a, b, radius)
     shape.collision_type = oil_spill_collision # tank_level
     space.add(shape)
@@ -221,14 +221,17 @@ def draw_polygon(screen, shape):
     pygame.draw.polygon(screen, THECOLORS['black'], fpoints)
     
 # Draw a single line to the screen
-def draw_line(screen, line):
+def draw_line(screen, line, color = None):
     body = line.body
     pv1 = body.position + line.a.rotated(body.angle) # 1
     pv2 = body.position + line.b.rotated(body.angle)
     p1 = to_pygame(pv1) # 2
     p2 = to_pygame(pv2)
-    pygame.draw.lines(screen, THECOLORS["black"], False, [p1,p2])
-
+    if color is None:
+        pygame.draw.lines(screen, THECOLORS["black"], False, [p1,p2])
+    else:
+        pygame.draw.lines(screen, color, False, [p1,p2])
+    
 # Draw lines from an iterable list
 def draw_lines(screen, lines):
     for line in lines:
@@ -361,7 +364,7 @@ def run_world():
         draw_ball(screen, tank_level, THECOLORS['black'])
         draw_ball(screen, separator_vessel, THECOLORS['black'])
         draw_ball(screen, separator_feed, THECOLORS['black'])
-        draw_line(screen, oil_spill)
+        draw_line(screen, oil_spill, THECOLORS['red'])
 
         #draw_ball(screen, separator_feed, THECOLORS['red'])
         title = fontMedium.render(str("Crude Oil Pretreatment Unit"), 1, THECOLORS['blue'])
