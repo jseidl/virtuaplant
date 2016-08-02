@@ -52,8 +52,8 @@ class HMIWindow(Gtk.Window):
         self.level_switch_value.set_markup("<span weight='bold' foreground='gray33'>N/A</span>")
         self.process_status_value.set_markup("<span weight='bold' foreground='gray33'>N/A</span>")
         self.connection_status_value.set_markup("<span weight='bold' foreground='red'>OFFLINE</span>")
-        self.oil_processed_value.set_markup("<span weight='bold' foreground='green'>" + self.oil_processed_amount + "</span>")
-        self.oil_spilled_value.set_markup("<span weight='bold' foreground='red'>" + self.oil_spilled_amount + "</span>")
+        self.oil_processed_value.set_markup("<span weight='bold' foreground='green'>" + str(self.oil_processed_amount) + "</span>")
+        self.oil_spilled_value.set_markup("<span weight='bold' foreground='red'>" + str(self.oil_spilled_amount) + "</span>")
      
     def __init__(self):
         # Window title
@@ -239,7 +239,7 @@ class HMIWindow(Gtk.Window):
             # If the oil spilled tag gets set, increase the amount of oil we have spilled
             if regs[5] == 1:
                 self.oil_spilled_amount += 1
-                self.oil_spilled_value.set_markup("<span weight='bold' foreground='red'>" + self.oil_spilled_amount + "ml</span>")
+                self.oil_spilled_value.set_markup("<span weight='bold' foreground='red'>" + str(self.oil_spilled_amount) + "ml</span>")
 
             # If we successfully connect, then show that the HMI has contacted the PLC
             self.connection_status_value.set_markup("<span weight='bold' foreground='green'>ONLINE </span>")
