@@ -359,7 +359,7 @@ def run_world():
         draw_ball(screen, tank_level, THECOLORS['black'])
         draw_ball(screen, separator_vessel, THECOLORS['black'])
         draw_ball(screen, separator_feed, THECOLORS['black'])
-        draw_ball(screen, oil_spill, THECOLORS['black'])
+        draw_line(screen, oil_spill, THECOLORS['black'])
 
         #draw_ball(screen, separator_feed, THECOLORS['red'])
         title = fontMedium.render(str("Crude Oil Pretreatment Unit"), 1, THECOLORS['blue'])
