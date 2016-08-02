@@ -71,6 +71,10 @@ FPS=50.0
 # Port the world will listen on
 MODBUS_SERVER_PORT=5020
 
+# Amount of oil spilled/processed
+oil_spilled_amount = 0
+oil_processed_amount = 0
+
 # PLC Register values for various control functions
 PLC_FEED_PUMP = 0x01
 PLC_TANK_LEVEL = 0x02
@@ -78,6 +82,7 @@ PLC_OUTLET_VALVE = 0x03
 PLC_SEP_VESSEL = 0x04
 PLC_SEP_FEED = 0x05
 PLC_OIL_SPILL = 0x06
+PLC_OIL_PROCESSED = 0x07
 
 # Collision types
 tank_level_collision = 0x4
@@ -258,9 +263,8 @@ def level_reached(space, arbiter, *args, **kwargs):
     
 def oil_spilled(space, arbiter, *args, **kwargs):
     log.debug("Oil Spilled")
-    PLCSetTag(PLC_OIL_SPILL, 1) # We lost a unit of oil
-    time.sleep(0.1)
-    PLCSetTag(PLC_OIL_SPILL, 0) # We have now accounted for that unit of oil maybe add sleep here
+    oil_spilled_amount += 1
+    PLCSetTag(PLC_OIL_SPILL, oil_spilled_amount) # We lost a unit of oil
     PLCSetTag(PLC_FEED_PUMP, 0) # Attempt to shut off the pump
     return False   
     

@@ -237,9 +237,9 @@ class HMIWindow(Gtk.Window):
                 self.process_status_value.set_markup("<span weight='bold' foreground='red'>STOPPED </span>")
                 
             # If the oil spilled tag gets set, increase the amount of oil we have spilled
-            if regs[5] == 1:
-                self.oil_spilled_amount += 1
-                self.oil_spilled_value.set_markup("<span weight='bold' foreground='red'>" + str(self.oil_spilled_amount) + "ml</span>")
+            if regs[5]:
+                #self.oil_spilled_amount += 1
+                self.oil_spilled_value.set_markup("<span weight='bold' foreground='red'>" + str(regs[5]) + "ml</span>")
 
             # If we successfully connect, then show that the HMI has contacted the PLC
             self.connection_status_value.set_markup("<span weight='bold' foreground='green'>ONLINE </span>")
