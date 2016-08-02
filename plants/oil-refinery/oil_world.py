@@ -141,9 +141,7 @@ def tank_level_sensor(space):
     
 def oil_spill_sensor(space):
     body = pymunk.Body()
-    body.position = (125, 600)
-    a = (125, 600)
-    b = (400, 600)
+    body.position = (125, 425)
     radius = 7
     shape = pymunk.Circle(body, radius, (0, 0))
     shape.collision_type = oil_spill_collision # tank_level
