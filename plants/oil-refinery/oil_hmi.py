@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+# IMPORTS #
 from gi.repository import GLib, Gtk, Gdk, GObject
 from pymodbus.client.sync import ModbusTcpClient as ModbusClient
 from pymodbus.exceptions import ConnectionException
@@ -9,8 +10,7 @@ import os
 import sys
 import time
 
-# Override Argument parser to throw error and generate help message
-# if undefined args are passed
+# Argument Parsing
 class MyParser(argparse.ArgumentParser):
     def error(self, message):
         sys.stderr.write('error: %s\n' % message)
