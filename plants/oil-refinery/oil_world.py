@@ -258,9 +258,9 @@ def level_reached(space, arbiter, *args, **kwargs):
     
 def oil_spilled(space, arbiter, *args, **kwargs):
     log.debug("Oil Spilled")
-    print "oil spilled"
     PLCSetTag(PLC_OIL_SPILL, 1) # We lost a unit of oil
-    #PLCSetTag(PLC_OIL_SPILL, 0) # We have now accounted for that unit of oil maybe add sleep here
+    time.sleep(0.1)
+    PLCSetTag(PLC_OIL_SPILL, 0) # We have now accounted for that unit of oil maybe add sleep here
     PLCSetTag(PLC_FEED_PUMP, 0) # Attempt to shut off the pump
     return False   
     
