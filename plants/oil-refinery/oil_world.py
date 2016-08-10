@@ -78,8 +78,7 @@ oil_processed_amount = 0
 PLC_FEED_PUMP = 0x01
 PLC_TANK_LEVEL = 0x02
 PLC_OUTLET_VALVE = 0x03
-PLC_SEP_VESSEL = 0x04
-PLC_SEP_FEED = 0x05
+PLC_SEP_VALVE = 0x04
 PLC_OIL_SPILL = 0x06
 PLC_OIL_PROCESSED = 0x07
 
@@ -87,8 +86,7 @@ PLC_OIL_PROCESSED = 0x07
 tank_level_collision = 0x4
 ball_collision = 0x5
 outlet_valve_collision = 0x6
-sep_vessel_collision = 0x7
-separator_collision = 0x8
+sep_valve_collision = 0x7
 oil_spill_collision = 0x9
 
 # Helper function to set PLC values
@@ -123,25 +121,15 @@ def draw_ball(screen, ball, color=THECOLORS['brown']):
     p = int(ball.body.position.x), 600-int(ball.body.position.y)
     pygame.draw.circle(screen, color, p, int(ball.radius), 2)
 
-# Add the separator vessel feed
-def separator_vessel_feed(space):
-    body = pymunk.Body()
-    body.position = (420, 257)
-    radius = 4
-    shape = pymunk.Circle(body, radius, (0, 0))
-    shape.collision_type = separator_collision # Collision value for separator
-    space.add(shape)
-    return shape
-
 # Add the separator vessel release
-def separator_vessel_release(space):
+def sep_valve(space):
     body = pymunk.Body()
     body.position = (327, 218)
     radius = 2
-    a = (-14, 0)
-    b = (14, 0)
+    a = (-15, 0)
+    b = (15, 0)
     shape = pymunk.Segment(body, a, b, radius)
-    shape.collision_type = sep_vessel_collision
+    shape.collision_type = sep_valve_collision
     space.add(shape)
     return shape
 
@@ -152,14 +140,13 @@ def tank_level_sensor(space):
     radius = 3
     a = (0, 0)
     b = (0, 0)
-    
     shape = pymunk.Circle(body, radius, (0, 0))
     shape.collision_type = tank_level_collision # tank_level
     space.add(shape)
     return shape
     
 # Outlet valve that lets oil from oil tank to the pipes
-def outlet_valve_sensor(space):
+def outlet_valve(space):
     body = pymunk.Body()
     body.position = (70, 410)
     # Check these coords and adjust
@@ -300,22 +287,15 @@ def oil_spilled(space, arbiter, *args, **kwargs):
     PLCSetTag(PLC_FEED_PUMP, 0) # Attempt to shut off the pump
     return False   
     
-# This fires when the separator level is hit    
-def sep_on(space, arbiter, *args, **kwargs):
+# This is on when separation is on
+def sep_open(space, arbiter, *args, **kwargs):
     log.debug("Begin separation")
-    PLCSetTag(PLC_SEP_VESSEL, 1) # Sep vessel hit, begin processing
     return False
     
 # This fires when the separator is not processing
-def sep_off(space, arbiter, *args, **kwargs):
-    log.debug("Begin separation")
-    PLCSetTag(PLC_SEP_VESSEL, 0) # Sep vessel hit, begin processing
-    return False
-
-def sep_feed_on(space, arbiter, *args, **kwargs):
-    log.debug("Outlet Feed")
-    PLCSetTag(PLC_SEP_FEED, 1)
-    return False
+def sep_closed(space, arbiter, *args, **kwargs):
+    log.debug("Stop separation")
+    return True
 
 def outlet_valve_open(space, arbiter, *args, **kwargs):
     log.debug("Outlet valve open")
@@ -343,16 +323,16 @@ def run_world():
     space.add_collision_handler(oil_spill_collision, ball_collision, begin=oil_spilled)
     # Initial outlet valve condition is turned off
     space.add_collision_handler(outlet_valve_collision, ball_collision, begin=no_collision)
+    # Initial sep valve condition is turned off
+    space.add_collision_handler(sep_valve_collision, ball_collision, begin=no_collision)
     
     # Add the objects to the game world
     pump = add_pump(space)
     lines = add_oil_unit(space)
     tank_level = tank_level_sensor(space)
-    separator_vessel = separator_vessel_release(space)
-    separator_feed = separator_vessel_feed(space)
-    separator_feed = separator_vessel_feed(space)
+    sep_valve = sep_valve(space)
     oil_spill = oil_spill_sensor(space)
-    outlet = outlet_valve_sensor(space)
+    outlet = outlet_valve(space)
     
 
     balls = []
@@ -392,13 +372,11 @@ def run_world():
         elif PLCGetTag(PLC_OUTLET_VALVE) == 0: # Valve is closed
             space.add_collision_handler(outlet_valve_collision, ball_collision, begin=outlet_valve_closed)
        
-        # If the separator process is turned on
-        if PLCGetTag(PLC_SEP_VESSEL) == 1:
-            space.add_collision_handler(sep_vessel_collision, ball_collision, begin=sep_on)
-            space.add_collision_handler(separator_collision, ball_collision, begin=sep_feed_on)
+        # If the separator valve is open
+        if PLCGetTag(PLC_SEP_VALVE) == 1:
+            space.add_collision_handler(sep_valve_collision, ball_collision, begin=sep_open)
         else:
-            space.add_collision_handler(sep_vessel_collision, ball_collision, begin=no_collision)
-            space.add_collision_handler(separator_collision, ball_collision, begin=no_collision)
+            space.add_collision_handler(sep_vessel_collision, ball_collision, begin=sep_closed)
             
             
         ticks_to_next_ball -= 1

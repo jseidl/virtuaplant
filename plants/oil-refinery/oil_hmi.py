@@ -129,16 +129,16 @@ class HMIWindow(Gtk.Window):
         separator_label = Gtk.Label("Oil/Water Separator Vessel")
         separator_value = Gtk.Label()
 
-        separator_start_button = Gtk.Button("START")
-        separator_stop_button = Gtk.Button("STOP")
+        separator_open_button = Gtk.Button("OPEN")
+        separator_close_button = Gtk.Button("CLOSE")
 
-        separator_start_button.connect("clicked", self.setSepVessel, 1)
-        separator_stop_button.connect("clicked", self.setSepVessel, 0)
+        separator_open_button.connect("clicked", self.setSepVessel, 1)
+        separator_close_button.connect("clicked", self.setSepVessel, 0)
 
         grid.attach(separator_label, 4, elementIndex, 1, 1)
         grid.attach(separator_value, 5, elementIndex, 1, 1)
-        grid.attach(separator_start_button, 6, elementIndex, 1, 1)
-        grid.attach(separator_stop_button, 7, elementIndex, 1, 1)
+        grid.attach(separator_open_button, 6, elementIndex, 1, 1)
+        grid.attach(separator_close_button, 7, elementIndex, 1, 1)
         elementIndex += 1
 
         # Process status
@@ -204,19 +204,12 @@ class HMIWindow(Gtk.Window):
             pass
         
     # Control the separator vessel level register values
-    def setSepVessel(self, widget, data=None):
+    def setSepValve(self, widget, data=None):
         try:
             self.modbusClient.write_register(0x04, data)
         except:
             pass
     
-    # Control the separator feed register values
-    def setSepFeed(self, widget, data=None):
-        try:
-            self.modbusClient.write_register(0x05, data)
-        except:
-            pass
-
     def setOutletValve(self, widget, data=None):
         try:
             self.modbusClient.write_register(0x03, data)
@@ -258,12 +251,12 @@ class HMIWindow(Gtk.Window):
             else:
                 self.outlet_valve_value.set_markup("<span weight='bold' foreground='red'>CLOSED</span>")
                 
-            # If the feed pump "0x04" is set to 1, separator is currently processing
+            # If the feed pump "0x04" is set to 1, separator valve is open
             if regs[3] == 1:
-                self.separator_value.set_markup("<span weight='bold' foreground='green'>RUNNING</span>")
+                self.separator_value.set_markup("<span weight='bold' foreground='green'>OPEN</span>")
                 self.process_status_value.set_markup("<span weight='bold' foreground='green'>RUNNING </span>")
             else:
-                self.separator_value.set_markup("<span weight='bold' foreground='red'>STOPPED</span>")
+                self.separator_value.set_markup("<span weight='bold' foreground='red'>CLOSED</span>")
                 self.process_status_value.set_markup("<span weight='bold' foreground='red'>STOPPED </span>")
                 
             # If the oil spilled tag gets set, increase the amount of oil we have spilled
