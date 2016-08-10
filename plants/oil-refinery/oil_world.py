@@ -401,7 +401,6 @@ def run_world():
         draw_lines(bg, lines)
         draw_ball(bg, tank_level, THECOLORS['black'])
         draw_line(bg, sep_valve_obj)
-        draw_ball(bg, separator_feed, THECOLORS['black'])
         draw_line(bg, outlet)
 
         #draw_ball(screen, separator_feed, THECOLORS['red'])
