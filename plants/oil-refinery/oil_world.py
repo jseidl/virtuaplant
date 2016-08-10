@@ -389,21 +389,20 @@ def run_world():
             # If the oil reaches the level sensor at the top of the tank
             if (PLCGetTag(PLC_TANK_LEVEL) == 1):
                 PLCSetTag(PLC_FEED_PUMP, 0)
-                space.add_collision_handler(sep_vessel_collision, ball_collision, begin=sep_on)
-                space.add_collision_handler(separator_collision, ball_collision, begin=sep_feed_on)
 
-        if PLCGetTag(PLC_OUTLET_VALVE) == 1: # Valve is open
+        # Oil Tank outlet valve open/closed collision handler
+        if PLCGetTag(PLC_OUTLET_VALVE) == 1:
             space.add_collision_handler(outlet_valve_collision, ball_collision, begin=outlet_valve_open)
         elif PLCGetTag(PLC_OUTLET_VALVE) == 0: # Valve is closed
             space.add_collision_handler(outlet_valve_collision, ball_collision, begin=outlet_valve_closed)
        
-        # If the separator valve is open
+        # Separator valve open/closed collision handler
         if PLCGetTag(PLC_SEP_VALVE) == 1:
             space.add_collision_handler(sep_valve_collision, ball_collision, begin=sep_open)
         else:
             space.add_collision_handler(sep_valve_collision, ball_collision, begin=sep_closed)
             
-        # If the waste valve is open
+        # Waste water valve open/closed collision handler
         if PLCGetTag(PLC_WASTE_VALVE) == 1:
             space.add_collision_handler(sep_valve_collision, ball_collision, begin=waste_valve_open)
         else:
