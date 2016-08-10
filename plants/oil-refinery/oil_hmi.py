@@ -132,8 +132,8 @@ class HMIWindow(Gtk.Window):
         separator_open_button = Gtk.Button("OPEN")
         separator_close_button = Gtk.Button("CLOSE")
 
-        separator_open_button.connect("clicked", self.setSepVessel, 1)
-        separator_close_button.connect("clicked", self.setSepVessel, 0)
+        separator_open_button.connect("clicked", self.setSepValve, 1)
+        separator_close_button.connect("clicked", self.setSepValve, 0)
 
         grid.attach(separator_label, 4, elementIndex, 1, 1)
         grid.attach(separator_value, 5, elementIndex, 1, 1)
