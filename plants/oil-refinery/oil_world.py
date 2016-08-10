@@ -144,7 +144,7 @@ def separator_vessel_release(space):
     return shape
 
 # Add the tank level sensor 
-def tank_level_sensor(space):
+def tank_level_sensor(space):   
     body = pymunk.Body()
     body.position = (115, 535)
     radius = 3
@@ -158,7 +158,7 @@ def outlet_valve_sensor(space):
     body = pymunk.Body()
     body.position = (70, 410)
     # Check these coords and adjust
-    a = (0, 0)
+    a = (-12, 0)
     b = (12, 0)
     radius = 2
     shape = pymunk.Segment(body, a, b, radius)
