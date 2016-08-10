@@ -136,9 +136,11 @@ def separator_vessel_feed(space):
 # Add the separator vessel release
 def separator_vessel_release(space):
     body = pymunk.Body()
-    body.position = (387, 225)
-    radius = 4
-    shape = pymunk.Circle(body, radius, (0, 0))
+    body.position = (327, 218)
+    radius = 2
+    a = (-14, 0)
+    b = (14, 0)
+    shape = pymunk.Segment(body, a, b, radius)
     shape.collision_type = sep_vessel_collision
     space.add(shape)
     return shape
@@ -148,6 +150,9 @@ def tank_level_sensor(space):
     body = pymunk.Body()
     body.position = (115, 535)
     radius = 3
+    a = (0, 0)
+    b = (0, 0)
+    
     shape = pymunk.Circle(body, radius, (0, 0))
     shape.collision_type = tank_level_collision # tank_level
     space.add(shape)
@@ -158,8 +163,8 @@ def outlet_valve_sensor(space):
     body = pymunk.Body()
     body.position = (70, 410)
     # Check these coords and adjust
-    a = (-12, 0)
-    b = (12, 0)
+    a = (-14, 0)
+    b = (14, 0)
     radius = 2
     shape = pymunk.Segment(body, a, b, radius)
     shape.collision_type = outlet_valve_collision
@@ -417,7 +422,7 @@ def run_world():
         draw_polygon(bg, pump)
         draw_lines(bg, lines)
         draw_ball(bg, tank_level, THECOLORS['black'])
-        draw_ball(bg, separator_vessel, THECOLORS['black'])
+        draw_line(bg, separator_vessel)
         draw_ball(bg, separator_feed, THECOLORS['black'])
         draw_line(bg, outlet)
 
