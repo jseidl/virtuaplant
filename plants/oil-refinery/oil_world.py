@@ -104,7 +104,7 @@ def add_ball(space):
     body = pymunk.Body(mass, inertia)
     body._bodycontents.v_limit = 120
     body._bodycontents.h_limit = 1
-    x = random.randint(62, 63)
+    x = random.randint(69, 70)
     body.position = x, 565
     shape = pymunk.Circle(body, radius, (0,0))
     shape.collision_type = ball_collision #liquid
@@ -149,8 +149,11 @@ def tank_level_sensor(space):
 def outlet_valve_sensor(space):
     body = pymunk.Body()
     body.position = (70, 410)
+    # Check these coords and adjust
+    a = (0, 0)
+    b = (50, 0)
     radius = 4
-    shape = pymunk.Circle(body, radius, (0, 0))
+    shape = pymunk.Segment(body, a, b, radius)
     shape.collision_type = outlet_valve_collision
     space.add(shape)
     return shape
@@ -208,7 +211,7 @@ def add_oil_unit(space):
     l21 = pymunk.Segment(body, (43, -67), (65, -62), 5) #rigt side diagonal line
     l22 = pymunk.Segment(body, (65, -62), (77, 31), 5) #right vertical line
     l23 = pymunk.Segment(body, (77, 31), (7, 31), 5) #top right horizontal line
-    l24 = pymunk.Segment(body, (-3, -67), (-3, 10), 5)
+    l24 = pymunk.Segment(body, (-3, -67), (-3, 10), 5) #center separator line
  
     #separator exit pipe
     l25 = pymunk.Segment(body, (43, -85), (43, -113), 5) #right side vertical line
@@ -410,7 +413,7 @@ def run_world():
         draw_ball(bg, tank_level, THECOLORS['black'])
         draw_ball(bg, separator_vessel, THECOLORS['black'])
         draw_ball(bg, separator_feed, THECOLORS['black'])
-        draw_ball(bg, outlet, THECOLORS['black'])
+        draw_line(bg, outlet)
 
         #draw_ball(screen, separator_feed, THECOLORS['red'])
         title = fontMedium.render(str("Crude Oil Pretreatment Unit"), 1, THECOLORS['blue'])
