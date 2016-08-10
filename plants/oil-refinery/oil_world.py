@@ -199,48 +199,48 @@ def add_oil_unit(space):
     body.position = (300,300)
     
     #oil storage unit
-    l1 = pymunk.Segment(body, (-278, 270), (-278, 145), 1) #left side line
-    l2 = pymunk.Segment(body, (-278, 145), (-246, 107), 1) 
-    l3 = pymunk.Segment(body, (-180, 270), (-180, 145), 1) #right side line
-    l4 = pymunk.Segment(body, (-180, 145), (-215, 107), 1) 
+    l1 = pymunk.Segment(body, (-278, 270), (-278, 145), 5) #left side line
+    l2 = pymunk.Segment(body, (-278, 145), (-246, 107), 5) 
+    l3 = pymunk.Segment(body, (-180, 270), (-180, 145), 5) #right side line
+    l4 = pymunk.Segment(body, (-180, 145), (-215, 107), 5) 
 
     #pipe to separator vessel
-    l5 = pymunk.Segment(body, (-246, 107), (-246, 53), 1) #left side vertical line
-    l6 = pymunk.Segment(body, (-246, 53), (-19, 53), 1) #bottom horizontal line
-    l7 = pymunk.Segment(body, (-19, 53), (-19, 33), 1)
-    l8 = pymunk.Segment(body, (-215, 107), (-215, 80), 1) #right side vertical line
-    l9 = pymunk.Segment(body, (-215, 80), (7, 80), 1) #top horizontal line
-    l10 = pymunk.Segment(body, (7, 80), (7, 33), 1) 
+    l5 = pymunk.Segment(body, (-246, 107), (-246, 53), 5) #left side vertical line
+    l6 = pymunk.Segment(body, (-246, 53), (-19, 53), 5) #bottom horizontal line
+    l7 = pymunk.Segment(body, (-19, 53), (-19, 33), 5)
+    l8 = pymunk.Segment(body, (-215, 107), (-215, 80), 5) #right side vertical line
+    l9 = pymunk.Segment(body, (-215, 80), (7, 80), 5) #top horizontal line
+    l10 = pymunk.Segment(body, (7, 80), (7, 33), 5) 
 
     #separator vessel
-    l11 = pymunk.Segment(body, (-19, 31), (-95, 31), 1) #top left horizontal line
-    l12 = pymunk.Segment(body, (-95, 31), (-95, -23), 1) #left side vertical line
-    l13 = pymunk.Segment(body, (-95, -23), (-83, -23), 1) 
-    l14 = pymunk.Segment(body, (-83, -23), (-80, -80), 1) #left waste exit line
-    l15 = pymunk.Segment(body, (-68, -80), (-65, -23), 1) #right waste exit line
-    l16 = pymunk.Segment(body, (-65, -23), (-45, -23), 1) 
-    l17 = pymunk.Segment(body, (-45, -23), (-45, -67), 1) #elevation vertical line 
-    l18 = pymunk.Segment(body, (-45, -67), (13, -67), 1) #left bottom line
-    l19 = pymunk.Segment(body, (13, -67), (13, -82), 1) #left side separator exit line
-    l20 = pymunk.Segment(body, (43, -82), (43, -67), 1) #right side separator exit line
-    l21 = pymunk.Segment(body, (43, -67), (65, -62), 1) #rigt side diagonal line
-    l22 = pymunk.Segment(body, (65, -62), (77, 31), 1) #right vertical line
-    l23 = pymunk.Segment(body, (77, 31), (7, 31), 1) #top right horizontal line
-    l24 = pymunk.Segment(body, (-3, -67), (-3, 10), 1) #center separator line
+    l11 = pymunk.Segment(body, (-19, 31), (-95, 31), 5) #top left horizontal line
+    l12 = pymunk.Segment(body, (-95, 31), (-95, -23), 5) #left side vertical line
+    l13 = pymunk.Segment(body, (-95, -23), (-83, -23), 5) 
+    l14 = pymunk.Segment(body, (-83, -23), (-80, -80), 5) #left waste exit line
+    l15 = pymunk.Segment(body, (-68, -80), (-65, -23), 5) #right waste exit line
+    l16 = pymunk.Segment(body, (-65, -23), (-45, -23), 5) 
+    l17 = pymunk.Segment(body, (-45, -23), (-45, -67), 5) #elevation vertical line 
+    l18 = pymunk.Segment(body, (-45, -67), (13, -67), 5) #left bottom line
+    l19 = pymunk.Segment(body, (13, -67), (13, -82), 5) #left side separator exit line
+    l20 = pymunk.Segment(body, (43, -82), (43, -67), 5) #right side separator exit line
+    l21 = pymunk.Segment(body, (43, -67), (65, -62), 5) #rigt side diagonal line
+    l22 = pymunk.Segment(body, (65, -62), (77, 31), 5) #right vertical line
+    l23 = pymunk.Segment(body, (77, 31), (7, 31), 5) #top right horizontal line
+    l24 = pymunk.Segment(body, (-3, -67), (-3, 10), 5) #center separator line
  
     #separator exit pipe
-    l25 = pymunk.Segment(body, (43, -85), (43, -113), 1) #right side vertical line
-    l26 = pymunk.Segment(body, (43, -113), (580, -113), 1) #top horizontal line
-    l27 = pymunk.Segment(body, (13, -85), (13, -140), 1) #left vertical line
-    l28 = pymunk.Segment(body, (13, -140), (580, -140), 1) #bottom horizontal line
+    l25 = pymunk.Segment(body, (43, -85), (43, -113), 5) #right side vertical line
+    l26 = pymunk.Segment(body, (43, -113), (580, -113), 5) #top horizontal line
+    l27 = pymunk.Segment(body, (13, -85), (13, -140), 5) #left vertical line
+    l28 = pymunk.Segment(body, (13, -140), (580, -140), 5) #bottom horizontal line
 
     #waste water pipe
-    l29 = pymunk.Segment(body, (-87, -85), (-87, -112), 1) #left side waste line
-    l30 = pymunk.Segment(body, (-60, -85), (-60, -140), 1) #right side waste line
-    l31 = pymunk.Segment(body, (-87, -112), (-163, -112), 1) #top horizontal line
-    l32 = pymunk.Segment(body, (-60, -140), (-134, -140), 1) #bottom horizontal line
-    l33 = pymunk.Segment(body, (-163, -112), (-163, -185), 1) #left side vertical line
-    l34 = pymunk.Segment(body, (-134, -140), (-134, -185), 1) #right side vertical line
+    l29 = pymunk.Segment(body, (-87, -85), (-87, -112), 5) #left side waste line
+    l30 = pymunk.Segment(body, (-60, -85), (-60, -140), 5) #right side waste line
+    l31 = pymunk.Segment(body, (-87, -112), (-163, -112), 5) #top horizontal line
+    l32 = pymunk.Segment(body, (-60, -140), (-134, -140), 5) #bottom horizontal line
+    l33 = pymunk.Segment(body, (-163, -112), (-163, -185), 5) #left side vertical line
+    l34 = pymunk.Segment(body, (-134, -140), (-134, -185), 5) #right side vertical line
 
     space.add(l1, l2, l3, l4, l5, l6, l7, l8, l9, l10, l11, l12, l13, l14, l15, 
                 l16, l17, l18, l19, l20, l21, l22, l23, l24, l25, 
