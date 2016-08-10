@@ -55,14 +55,6 @@ logging.basicConfig()
 log = logging.getLogger()
 log.setLevel(logging.INFO)
 
-# Helper function to set PLC values
-def PLCSetTag(addr, value):
-    context[0x0].setValues(3, addr, [value])
-
-# Helper function that returns PLC values
-def PLCGetTag(addr):
-    return context[0x0].getValues(3, addr, count=1)[0]
-
 # Display settings
 SCREEN_WIDTH = 580
 SCREEN_HEIGHT = 460
@@ -92,6 +84,13 @@ sep_vessel_collision = 0x7
 separator_collision = 0x8
 oil_spill_collision = 0x9
 
+# Helper function to set PLC values
+def PLCSetTag(addr, value):
+    context[0x0].setValues(3, addr, [value])
+
+# Helper function that returns PLC values
+def PLCGetTag(addr):
+    return context[0x0].getValues(3, addr, count=1)[0]
 
 def to_pygame(p):
     """Small hack to convert pymunk to pygame coordinates"""
@@ -100,7 +99,7 @@ def to_pygame(p):
 # Add "oil" to the world space
 def add_ball(space):
     mass = 0.01
-    radius = 3
+    radius = 6
     inertia = pymunk.moment_for_circle(mass, 0, radius, (0,0))
     body = pymunk.Body(mass, inertia)
     body._bodycontents.v_limit = 120
