@@ -284,6 +284,12 @@ class HMIWindow(Gtk.Window):
                 self.separator_value.set_markup("<span weight='bold' foreground='red'>CLOSED</span>")
                 self.process_status_value.set_markup("<span weight='bold' foreground='red'>STOPPED </span>")
                 
+            # Waste Valve status
+            if regs[7] == 1:
+                self.waste_value.set_markup("<span weight='bold' foreground='green'>OPEN</span>")
+            else:
+                self.waste_value.set_markup("<span weight='bold' foreground='red'>CLOSED</span>")
+                
             # If the oil spilled tag gets set, increase the amount of oil we have spilled
             if regs[5]:
                 #self.oil_spilled_amount += 1
