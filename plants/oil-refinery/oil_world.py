@@ -436,9 +436,9 @@ def run_world():
         bg.blit(separator_label, (385,275))
         screen.blit(waste_water_label, (265, 490))
         bg.blit(tank_sensor, (125, 50))
-        bg.blit(outlet_sensor, (125, 160))
-        screen.blit(separator_release, (425, 315))
-        screen.blit(waste_sensor, (402, 375))
+        bg.blit(outlet_sensor, (125, 185))
+        bg.blit(separator_release, (350, 375))
+        bg.blit(waste_sensor, (90, 375))
         screen.blit(bg, (0, 0))
 
         space.step(1/FPS) 
