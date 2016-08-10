@@ -138,7 +138,7 @@ def sep_valve(space):
 # Add the separator vessel release
 def waste_valve(space):
     body = pymunk.Body()
-    body.position = (220, 218)
+    body.position = (225, 218)
     radius = 2
     a = (-13, 0)
     b = (13, 0)
