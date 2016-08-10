@@ -376,7 +376,7 @@ def run_world():
         if PLCGetTag(PLC_SEP_VALVE) == 1:
             space.add_collision_handler(sep_valve_collision, ball_collision, begin=sep_open)
         else:
-            space.add_collision_handler(sep_vessel_collision, ball_collision, begin=sep_closed)
+            space.add_collision_handler(sep_valve_collision, ball_collision, begin=sep_closed)
             
             
         ticks_to_next_ball -= 1
