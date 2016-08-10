@@ -306,12 +306,12 @@ def sep_feed_on(space, arbiter, *args, **kwargs):
 
 def outlet_valve_open(space, arbiter, *args, **kwargs):
     log.debug("Outlet valve open")
-    PLCSetTag(PLC_OUTLET_VALVE, 1)
+    PLCSetTag(PLC_OUTLET_VALVE, 0)
     return False
     
 def outlet_valve_closed(space, arbiter, *args, **kwargs):
     log.debug("Outlet valve close")
-    PLCSetTag(PLC_OUTLET_VALVE, 0)
+    PLCSetTag(PLC_OUTLET_VALVE, 1)
     return False
 
 def run_world():
