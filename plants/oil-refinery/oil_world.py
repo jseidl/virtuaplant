@@ -104,7 +104,7 @@ def add_ball(space):
     body = pymunk.Body(mass, inertia)
     body._bodycontents.v_limit = 120
     body._bodycontents.h_limit = 1
-    x = random.randint(59, 60)
+    x = random.randint(62, 63)
     body.position = x, 565
     shape = pymunk.Circle(body, radius, (0,0))
     shape.collision_type = ball_collision #liquid
@@ -169,7 +169,7 @@ def oil_spill_sensor(space):
 # Add the feed pump to the space
 def add_pump(space):
     body = pymunk.Body()
-    body.position = (179, 585)
+    body.position = (70, 585)
     shape = pymunk.Poly.create_box(body, (15, 20), (0, 0), 0)
     space.add(shape)
     return shape
@@ -232,12 +232,12 @@ def add_oil_unit(space):
         l17,l18,l19,l20,l21,l22,l23,l24,l25,l26,l27,l28,l29,l30,
         l31,l32,l33,l34)
 
-def draw_polygon(screen, shape):
+def draw_polygon(bg, shape):
     points = shape.get_vertices()
     fpoints = []
     for p in points:
         fpoints.append(to_pygame(p))
-    pygame.draw.polygon(screen, THECOLORS['black'], fpoints)
+    pygame.draw.polygon(bg, THECOLORS['black'], fpoints)
     
 # Draw a single line to the screen
 def draw_line(screen, line, color = None):
@@ -405,7 +405,7 @@ def run_world():
             space.remove(ball, ball.body)
             balls.remove(ball)
 
-        draw_polygon(screen, pump)
+        draw_polygon(bg, pump)
         draw_lines(bg, lines)
         draw_ball(bg, tank_level, THECOLORS['black'])
         draw_ball(bg, separator_vessel, THECOLORS['black'])
