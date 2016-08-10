@@ -434,7 +434,7 @@ def run_world():
         draw_line(bg, sep_valve_obj)
         draw_line(bg, outlet)
         draw_line(bg, waste_valve_obj)
-        draw_line(bg, oil_spill_sensor)
+        draw_line(bg, oil_spill)
 
         #draw_ball(screen, separator_feed, THECOLORS['red'])
         title = fontMedium.render(str("Crude Oil Pretreatment Unit"), 1, THECOLORS['blue'])
