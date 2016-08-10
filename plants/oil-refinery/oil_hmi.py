@@ -201,6 +201,7 @@ class HMIWindow(Gtk.Window):
         self.oil_processed_value = oil_processed_value
         self.oil_spilled_value = oil_spilled_value
         self.outlet_valve_value = outlet_valve_value
+        self.waste_value = waste_value
 
         # Set default label values
         self.resetLabels()
