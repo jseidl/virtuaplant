@@ -81,6 +81,7 @@ PLC_OUTLET_VALVE = 0x03
 PLC_SEP_VALVE = 0x04
 PLC_OIL_SPILL = 0x06
 PLC_OIL_PROCESSED = 0x07
+PLC_WASTE_VALVE = 0x08
 
 # Collision types
 tank_level_collision = 0x4
@@ -88,6 +89,7 @@ ball_collision = 0x5
 outlet_valve_collision = 0x6
 sep_valve_collision = 0x7
 oil_spill_collision = 0x9
+waste_valve_collision = 0x10
 
 # Helper function to set PLC values
 def PLCSetTag(addr, value):
@@ -130,6 +132,18 @@ def sep_valve(space):
     b = (15, 0)
     shape = pymunk.Segment(body, a, b, radius)
     shape.collision_type = sep_valve_collision
+    space.add(shape)
+    return shape
+    
+# Add the separator vessel release
+def waste_valve(space):
+    body = pymunk.Body()
+    body.position = (280, 218)
+    radius = 2
+    a = (-13, 0)
+    b = (13, 0)
+    shape = pymunk.Segment(body, a, b, radius)
+    shape.collision_type = waste_valve_collision
     space.add(shape)
     return shape
 
@@ -304,6 +318,14 @@ def outlet_valve_open(space, arbiter, *args, **kwargs):
 def outlet_valve_closed(space, arbiter, *args, **kwargs):
     log.debug("Outlet valve close")
     return True
+    
+def waste_valve_open(space, arbiter, *args, **kwargs):
+    log.debug("Waste valve open")
+    return False
+    
+def waste_valve_closed(space, arbiter, *args, **kwargs):
+    log.debug("Waste valve close")
+    return True
 
 def run_world():
     pygame.init()
@@ -325,6 +347,8 @@ def run_world():
     space.add_collision_handler(outlet_valve_collision, ball_collision, begin=no_collision)
     # Initial sep valve condition is turned off
     space.add_collision_handler(sep_valve_collision, ball_collision, begin=no_collision)
+    # Initial waste valve condition is turned off
+    space.add_collision_handler(waste_valve_collision, ball_collision, begin=no_collision)
     
     # Add the objects to the game world
     pump = add_pump(space)
@@ -333,6 +357,7 @@ def run_world():
     sep_valve_obj = sep_valve(space)
     oil_spill = oil_spill_sensor(space)
     outlet = outlet_valve(space)
+    waste_valve_obj = waste_valve(space)
     
 
     balls = []
@@ -355,7 +380,7 @@ def run_world():
 
         # Load the background picture for the pipe images
         bg = pygame.image.load("oil_unit.png")
-
+        # Background color
         screen.fill(THECOLORS["grey"])
 
         # If the feed pump is on
@@ -377,6 +402,12 @@ def run_world():
             space.add_collision_handler(sep_valve_collision, ball_collision, begin=sep_open)
         else:
             space.add_collision_handler(sep_valve_collision, ball_collision, begin=sep_closed)
+            
+        # If the waste valve is open
+        if PLCGetTag(PLC_WASTE_VALVE) == 1:
+            space.add_collision_handler(sep_valve_collision, ball_collision, begin=waste_valve_open)
+        else:
+            space.add_collision_handler(sep_valve_collision, ball_collision, begin=waste_valve_closed)
             
             
         ticks_to_next_ball -= 1
@@ -402,6 +433,8 @@ def run_world():
         draw_ball(bg, tank_level, THECOLORS['black'])
         draw_line(bg, sep_valve_obj)
         draw_line(bg, outlet)
+        draw_line(bg, waste_valve_obj)
+        draw_line(bg, oil_spill_sensor)
 
         #draw_ball(screen, separator_feed, THECOLORS['red'])
         title = fontMedium.render(str("Crude Oil Pretreatment Unit"), 1, THECOLORS['blue'])
@@ -412,9 +445,9 @@ def run_world():
         separator_label = fontMedium.render(str("Separator Vessel"), 1, THECOLORS['blue'])
         waste_water_label = fontMedium.render(str("Waste Water Treatment Unit"), 1, THECOLORS['blue'])
         tank_sensor = fontSmall.render(str("Tank Level Sensor"), 1, THECOLORS['blue'])
-        separator_release = fontSmall.render(str("Separator Vessel Release Sensor"), 1, THECOLORS['blue'])
-        waste_sensor = fontSmall.render(str("Waste Water Sensor"), 1, THECOLORS['blue'])
-        outlet_sensor = fontSmall.render(str("Outlet Valve Sensor"), 1, THECOLORS['blue'])
+        separator_release = fontSmall.render(str("Separator Vessel Valve"), 1, THECOLORS['blue'])
+        waste_sensor = fontSmall.render(str("Waste Water Valve"), 1, THECOLORS['blue'])
+        outlet_sensor = fontSmall.render(str("Outlet Valve"), 1, THECOLORS['blue'])
         
         bg.blit(title, (300, 40))
         bg.blit(name, (347, 10))

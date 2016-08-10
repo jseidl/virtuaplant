@@ -55,6 +55,7 @@ class HMIWindow(Gtk.Window):
         self.oil_processed_value.set_markup("<span weight='bold' foreground='green'>" + str(self.oil_processed_amount) + " Liters</span>")
         self.oil_spilled_value.set_markup("<span weight='bold' foreground='red'>" + str(self.oil_spilled_amount) + " Liters</span>")
         self.outlet_valve_value.set_markup("<span weight='bold' foreground='red'>N/A</span>")
+        self.waste_value.set_markup("<span weight='bold' foreground='red'>N/A</span>")
         
     def __init__(self):
         # Window title
@@ -125,12 +126,12 @@ class HMIWindow(Gtk.Window):
         grid.attach(outlet_valve_close_button, 7, elementIndex, 1, 1)
         elementIndex += 1
 
-        #Oil/Water Separator Vessel
-        separator_label = Gtk.Label("Oil/Water Separator Vessel")
+        #Separator Vessel
+        separator_label = Gtk.Label("Separator Vessel Valve")
         separator_value = Gtk.Label()
 
         separator_open_button = Gtk.Button("OPEN")
-        separator_close_button = Gtk.Button("CLOSE")
+        separator_close_button = Gtk.Button("CLOSED")
 
         separator_open_button.connect("clicked", self.setSepValve, 1)
         separator_close_button.connect("clicked", self.setSepValve, 0)
@@ -141,6 +142,22 @@ class HMIWindow(Gtk.Window):
         grid.attach(separator_close_button, 7, elementIndex, 1, 1)
         elementIndex += 1
 
+        #Waste Water Valve
+        waste_label = Gtk.Label("Waste Water Valve")
+        waste_value = Gtk.Label()
+        
+        waste_open_button = Gtk.Button("OPEN")
+        waste_close_button = Gtk.Button("CLOSED")
+        
+        waste_open_button.connect("clicked", self.setWasteValve, 1)
+        waste_close_button.connect("clicked", self.setWasteValve, 0)
+        
+        grid.attach(waste_label, 4, elementIndex, 1, 1)
+        grid.attach(waste_value, 5, elementIndex, 1, 1)
+        grid.attach(waste_open_button, 6, elementIndex, 1, 1)
+        grid.attach(waste_close_button, 7, elementIndex, 1, 1)
+        elementIndex += 1
+        
         # Process status
         process_status_label = Gtk.Label("Process Status")
         process_status_value = Gtk.Label()
@@ -207,6 +224,13 @@ class HMIWindow(Gtk.Window):
     def setSepValve(self, widget, data=None):
         try:
             self.modbusClient.write_register(0x04, data)
+        except:
+            pass
+        
+    # Control the separator vessel level register values
+    def setWasteValve(self, widget, data=None):
+        try:
+            self.modbusClient.write_register(0x08, data)
         except:
             pass
     
