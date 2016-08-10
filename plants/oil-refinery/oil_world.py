@@ -150,8 +150,8 @@ def outlet_valve_sensor(space):
     body = pymunk.Body()
     body.position = (70, 410)
     # Check these coords and adjust
-    a = (-12, -10)
-    b = (12, -10)
+    a = (-12, 10)
+    b = (12, 10)
     radius = 4
     shape = pymunk.Segment(body, a, b, radius)
     shape.collision_type = outlet_valve_collision
