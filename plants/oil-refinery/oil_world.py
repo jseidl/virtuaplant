@@ -87,10 +87,11 @@ PLC_OIL_PROCESSED = 0x07
 # Collision types
 tank_level_collision = 0x4
 ball_collision = 0x5
-separator_collision = 0x8
-sep_vessel_collision = 0x7
-oil_spill_collision = 0x9
 outlet_valve_collision = 0x6
+sep_vessel_collision = 0x7
+separator_collision = 0x8
+oil_spill_collision = 0x9
+
 
 def to_pygame(p):
     """Small hack to convert pymunk to pygame coordinates"""
@@ -328,6 +329,7 @@ def run_world():
     # When oil collides with tank_level, call level_reached
     space.add_collision_handler(tank_level_collision, ball_collision, begin=level_reached)
     space.add_collision_handler(oil_spill_collision, ball_collision, begin=oil_spilled)
+    
 
     pump = add_pump(space)
     lines = add_oil_unit(space)
@@ -374,11 +376,9 @@ def run_world():
             else:
                 space.add_collision_handler(outlet_valve_collision, ball_collision, begin=no_collision)
 
-        if PLCGetTag(PLC_OUTLET_VALVE) == 1:
-                #space.add_collision_handler(outlet_valve_collision, ball_collision, begin=no_collision)  
+        if PLCGetTag(PLC_OUTLET_VALVE) == 1: # Valve is closed
             space.add_collision_handler(outlet_valve_collision, ball_collision, begin=outlet_valve_closed)
-
-        else:
+        elif PLCGETTAG(PLC_OUTLET_VALE) = 0: # Valve is open
             space.add_collision_handler(outlet_valve_collision, ball_collision, begin=no_collision)
        
         # If the separator process is turned on
