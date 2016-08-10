@@ -299,6 +299,11 @@ def sep_feed_on(space, arbiter, *args, **kwargs):
     PLCSetTag(PLC_SEP_FEED, 1)
     return False
 
+def outlet_valve_closed(space, arbiter, *args, **kwargs):
+    log.debug("Outlet valve close")
+    PLCSetTag(PLC_OUTLET_VALVE, 0)
+    return False
+
 def run_world():
     pygame.init()
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
