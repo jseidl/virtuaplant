@@ -150,8 +150,8 @@ def outlet_valve_sensor(space):
     body = pymunk.Body()
     body.position = (70, 410)
     # Check these coords and adjust
-    a = (0, 0)
-    b = (50, 0)
+    a = (-10, 0)
+    b = (10, 0)
     radius = 4
     shape = pymunk.Segment(body, a, b, radius)
     shape.collision_type = outlet_valve_collision
@@ -426,6 +426,7 @@ def run_world():
         tank_sensor = fontSmall.render(str("Tank Level Sensor"), 1, THECOLORS['blue'])
         separator_release = fontSmall.render(str("Separator Vessel Release Sensor"), 1, THECOLORS['blue'])
         waste_sensor = fontSmall.render(str("Waste Water Sensor"), 1, THECOLORS['blue'])
+        outlet_sensor = fontSmall.render(str("Outlet Valve Sensor"), 1, THECOLORS['blue'])
         
         bg.blit(title, (300, 40))
         bg.blit(name, (347, 10))
@@ -435,6 +436,7 @@ def run_world():
         bg.blit(separator_label, (385,275))
         screen.blit(waste_water_label, (265, 490))
         bg.blit(tank_sensor, (125, 50))
+        bg.blit(outlet_sensor, (170, ))
         screen.blit(separator_release, (425, 315))
         screen.blit(waste_sensor, (402, 375))
         screen.blit(bg, (0, 0))
