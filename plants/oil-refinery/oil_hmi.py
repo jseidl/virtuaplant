@@ -116,8 +116,8 @@ class HMIWindow(Gtk.Window):
         outlet_vlave_open_button = Gtk.Button("OPEN")
         outlet_valve_close_button = Gtk.Button("CLOSE")
 
-        outlet_vlave_open_button.connect("clicked", self.setOutletValve, 0)
-        outlet_valve_close_button.connect("clicked", self.setOutletValve, 1)
+        outlet_vlave_open_button.connect("clicked", self.setOutletValve, 1)
+        outlet_valve_close_button.connect("clicked", self.setOutletValve, 0)
 
         grid.attach(outlet_valve_label, 4, elementIndex, 1, 1)
         grid.attach(outlet_valve_value, 5, elementIndex, 1, 1)
