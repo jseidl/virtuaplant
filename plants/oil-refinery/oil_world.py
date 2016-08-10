@@ -64,8 +64,8 @@ def PLCGetTag(addr):
     return context[0x0].getValues(3, addr, count=1)[0]
 
 # Display settings
-SCREEN_WIDTH = 640
-SCREEN_HEIGHT = 550
+SCREEN_WIDTH = 580
+SCREEN_HEIGHT = 460
 FPS=50.0
 
 # Port the world will listen on
@@ -90,6 +90,7 @@ ball_collision = 0x5
 separator_collision = 0x8
 sep_vessel_collision = 0x7
 oil_spill_collision = 0x9
+outlet_valve_collision = 0x6
 
 def to_pygame(p):
     """Small hack to convert pymunk to pygame coordinates"""
@@ -138,13 +139,22 @@ def separator_vessel_release(space):
 # Add the tank level sensor 
 def tank_level_sensor(space):
     body = pymunk.Body()
-    body.position = (125, 400)
+    body.position = (115, 535)
     radius = 3
     shape = pymunk.Circle(body, radius, (0, 0))
     shape.collision_type = tank_level_collision # tank_level
     space.add(shape)
     return shape
     
+def outlet_valve_sensor(space):
+    body = pymunk.Body()
+    body.position = (70, 410)
+    radius = 4
+    shape = pymunk.Circle(body, radius, (0, 0))
+    shape.collision_type = outlet_valve_collision
+    space.add(shape)
+    return shape
+
 def oil_spill_sensor(space):
     body = pymunk.Body()
     body.position = (0, 0)
@@ -170,54 +180,56 @@ def add_oil_unit(space):
     body = pymunk.Body()
     body.position = (300,300)
     
-    #feed pump
-    l1 = pymunk.Segment(body, (-100, 270), (-100, 145), 5)
-    l2 = pymunk.Segment(body, (-135, 270), (-135, 145), 5)
-
     #oil storage unit
-    l7 = pymunk.Segment(body, (-185, 130), (-185, 20), 5) 
-    l8 = pymunk.Segment(body, (-65, 130), (-65, 20), 5) 
-    l9 = pymunk.Segment(body, (-185,20), (-115, 20), 5) 
-    l10 = pymunk.Segment(body, (-90, 20), (-65, 20), 5) 
+    l1 = pymunk.Segment(body, (-278, 270), (-278, 145), 5) #left side line
+    l2 = pymunk.Segment(body, (-278, 145), (-246, 107), 5) 
+    l3 = pymunk.Segment(body, (-180, 270), (-180, 145), 5) #right side line
+    l4 = pymunk.Segment(body, (-180, 145), (-215, 107), 5) 
 
     #pipe to separator vessel
-    l11 = pymunk.Segment(body, (-115, 20), (-115, -45), 5)
-    l12 = pymunk.Segment(body, (-90, 20), (-90, -25), 5) 
-    l13 = pymunk.Segment(body, (-115, -45), (-40, -45), 5)
-    l14 = pymunk.Segment(body, (-90, -25), (-40, -25), 5)
+    l5 = pymunk.Segment(body, (-246, 107), (-246, 53), 5) #left side vertical line
+    l6 = pymunk.Segment(body, (-246, 53), (-19, 53), 5) #bottom horizontal line
+    l7 = pymunk.Segment(body, (-19, 53), (-19, 33), 5)
+    l8 = pymunk.Segment(body, (-215, 107), (-215, 80), 5) #right side vertical line
+    l9 = pymunk.Segment(body, (-215, 80), (7, 80), 5) #top horizontal line
+    l10 = pymunk.Segment(body, (7, 80), (7, 33), 5) 
 
     #separator vessel
-    l15 = pymunk.Segment(body, (-40, -45), (-40, -75), 5)
-    l16 = pymunk.Segment(body, (-40, -25), (-40, 5), 5)
-    l17 = pymunk.Segment(body, (-40, -75), (75, -75), 5)
-    l18 = pymunk.Segment(body, (-40, 5), (120, 5), 5)
-    l19 = pymunk.Segment(body, (100, -75), (120, -75), 5)
-    l22 = pymunk.Segment(body, (120, -75), (120, -55), 5)
-    l23 = pymunk.Segment(body, (120, -30), (120, 5), 5)
+    l11 = pymunk.Segment(body, (-19, 31), (-95, 31), 5) #top left horizontal line
+    l12 = pymunk.Segment(body, (-95, 31), (-95, -23), 5) #left side vertical line
+    l13 = pymunk.Segment(body, (-95, -23), (-83, -23), 5) 
+    l14 = pymunk.Segment(body, (-83, -23), (-80, -80), 5) #left waste exit line
+    l15 = pymunk.Segment(body, (-68, -80), (-65, -23), 5) #right waste exit line
+    l16 = pymunk.Segment(body, (-65, -23), (-45, -23), 5) 
+    l17 = pymunk.Segment(body, (-45, -23), (-45, -67), 5) #elevation vertical line 
+    l18 = pymunk.Segment(body, (-45, -67), (13, -67), 5) #left bottom line
+    l19 = pymunk.Segment(body, (13, -67), (13, -82), 5) #left side separator exit line
+    l20 = pymunk.Segment(body, (43, -82), (43, -67), 5) #right side separator exit line
+    l21 = pymunk.Segment(body, (43, -67), (65, -62), 5) #rigt side diagonal line
+    l22 = pymunk.Segment(body, (65, -62), (77, 31), 5) #right vertical line
+    l23 = pymunk.Segment(body, (77, 31), (7, 31), 5) #top right horizontal line
+ 
+    #separator exit pipe
+    l24 = pymunk.Segment(body, (43, -85), (43, -113), 5) #right side vertical line
+    l25 = pymunk.Segment(body, (43, -113), (580, -113), 5) #top horizontal line
+    l26 = pymunk.Segment(body, (13, -85), (13, -140), 5) #left vertical line
+    l27 = pymunk.Segment(body, (13, -140), (580, -140), 5) #bottom horizontal line
 
     #waste water pipe
-    l20 = pymunk.Segment(body, (75, -75), (75, -115), 5)
-    l21 = pymunk.Segment(body, (100, -75), (100, -115), 5)
-    
-    #separator exit pipe
-    l24 = pymunk.Segment(body, (120, -30), (600, -30), 5)
-    l25 = pymunk.Segment(body, (120, -55), (600, -55), 5)
+    l28 = pymunk.Segment(body, (-87, -85), (-87, -112), 5) #left side waste line
+    l29 = pymunk.Segment(body, (-60, -85), (-60, -140), 5) #right side waste line
+    l30 = pymunk.Segment(body, (-87, -112), (-163, -112), 5) #top horizontal line
+    l31 = pymunk.Segment(body, (-60, -140), (-134, -140), 5) #bottom horizontal line
+    l32 = pymunk.Segment(body, (-163, -112), (-163, -185), 5) #left side vertical line
+    l33 = pymunk.Segment(body, (-134, -140), (-134, -185), 5) #right side vertical line
 
-    #waste water storage
-    l26 = pymunk.Segment(body, (75, -115), (20, -115), 5)
-    l27 = pymunk.Segment(body, (20, -115), (20, -185), 5)
-    l28 = pymunk.Segment(body, (20, -185), (140, -185), 5)
-    l29 = pymunk.Segment(body, (140, -185), (140, -170), 5)
-    l30 = pymunk.Segment(body, (140, -145), (140, -115), 5)
-    l31 = pymunk.Segment(body, (140, -115), (100, -115), 5)
-    l32 = pymunk.Segment(body, (140, -145), (600, -145), 5)
-    l33 = pymunk.Segment(body, (140, -170), (600, -170), 5)
-
-    space.add(l1, l2, l7, l8, l9, l10, l11, l12, l13, l14, l15, 
+    space.add(l1, l2, l3, l4, l5, l6, l7, l8, l9, l10, l11, l12, l13, l14, l15, 
                 l16, l17, l18, l19, l20, l21, l22, l23, l24, l25, 
                 l26, l27, l28, l29, l30, l31, l32, l33) # 3
 
-    return l1,l2,l7,l8,l9,l10,l11,l12,l13,l14,l15,l16,l17,l18,l19,l20,l21,l22,l23,l24,l25,l26,l27,l28,l29,l30,l31,l32,l33
+    return (l1,l2,l3,l4,l5,l6,l7,l8,l9,l10,l11,l12,l13,l14,l15,l16,
+        l17,l18,l19,l20,l21,l22,l23,l24,l25,l26,l27,l28,l29,l30,
+        l31,l32,l33)
 
 def draw_polygon(screen, shape):
     points = shape.get_vertices()
@@ -294,6 +306,7 @@ def run_world():
     clock = pygame.time.Clock()
     running = True
 
+
     # Create game space (world) and set gravity to normal
     space = pymunk.Space() #2
     space.gravity = (0.0, -900.0)
@@ -309,6 +322,7 @@ def run_world():
     separator_feed = separator_vessel_feed(space)
     separator_feed = separator_vessel_feed(space)
     oil_spill = oil_spill_sensor(space)
+    outlet = outlet_valve_sensor(space)
     
 
     balls = []
@@ -330,6 +344,8 @@ def run_world():
             elif event.type == KEYDOWN and event.key == K_ESCAPE:
                 running = False
 
+        bg = pygame.image.load("oil_unit.png")
+
         screen.fill(THECOLORS["grey"])
 
         # If the feed pump is on
@@ -341,7 +357,16 @@ def run_world():
                 space.add_collision_handler(sep_vessel_collision, ball_collision, begin=sep_on)
                 space.add_collision_handler(separator_collision, ball_collision, begin=sep_feed_on)
                 
-            
+            else:
+                space.add_collision_handler(outlet_valve_collision, ball_collision, begin=no_collision)
+
+        if PLCGetTag(PLC_OUTLET_VALVE) == 1:
+                #space.add_collision_handler(outlet_valve_collision, ball_collision, begin=no_collision)  
+            space.add_collision_handler(outlet_valve_collision, ball_collision, begin=outlet_valve_closed)
+
+        else:
+            space.add_collision_handler(outlet_valve_collision, ball_collision, begin=no_collision)
+       
         # If the separator process is turned on
         if PLCGetTag(PLC_SEP_VESSEL) == 1:
             space.add_collision_handler(sep_vessel_collision, ball_collision, begin=sep_on)
@@ -370,11 +395,11 @@ def run_world():
             balls.remove(ball)
 
         draw_polygon(screen, pump)
-        draw_lines(screen, lines)
-        draw_ball(screen, tank_level, THECOLORS['black'])
-        draw_ball(screen, separator_vessel, THECOLORS['black'])
-        draw_ball(screen, separator_feed, THECOLORS['black'])
-        draw_line(screen, oil_spill, THECOLORS['red'])
+        draw_lines(bg, lines)
+        draw_ball(bg, tank_level, THECOLORS['black'])
+        draw_ball(bg, separator_vessel, THECOLORS['black'])
+        draw_ball(bg, separator_feed, THECOLORS['black'])
+        draw_ball(bg, outlet, THECOLORS['black'])
 
         #draw_ball(screen, separator_feed, THECOLORS['red'])
         title = fontMedium.render(str("Crude Oil Pretreatment Unit"), 1, THECOLORS['blue'])
@@ -388,16 +413,17 @@ def run_world():
         separator_release = fontSmall.render(str("Separator Vessel Release Sensor"), 1, THECOLORS['blue'])
         waste_sensor = fontSmall.render(str("Waste Water Sensor"), 1, THECOLORS['blue'])
         
-        screen.blit(title, (300, 40))
-        screen.blit(name, (347, 10))
-        screen.blit(instructions, (SCREEN_WIDTH-115, 10))
-        screen.blit(feed_pump_label, (65, 80))
-        screen.blit(oil_storage_label, (240, 190))
-        screen.blit(separator_label, (270,275))
+        bg.blit(title, (300, 40))
+        bg.blit(name, (347, 10))
+        bg.blit(instructions, (SCREEN_WIDTH-115, 0))
+        #bg.blit(feed_pump_label, (65, 80))
+        bg.blit(oil_storage_label, (125, 100))
+        bg.blit(separator_label, (385,275))
         screen.blit(waste_water_label, (265, 490))
-        screen.blit(tank_sensor, (10, 187))
+        bg.blit(tank_sensor, (125, 50))
         screen.blit(separator_release, (425, 315))
         screen.blit(waste_sensor, (402, 375))
+        screen.blit(bg, (0, 0))
 
         space.step(1/FPS) 
         pygame.display.flip()
