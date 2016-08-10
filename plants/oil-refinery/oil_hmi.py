@@ -252,7 +252,8 @@ class HMIWindow(Gtk.Window):
             else:
                 self.level_switch_value.set_markup("<span weight='bold' foreground='red'>OFF</span>")
             
-            if regs[2] == 1:
+            # Outlet Valve status
+            if regs[2] == 0:
                 self.outlet_valve_value.set_markup("<span weight='bold' foreground='green'>OPEN</span>")
             else:
                 self.outlet_valve_value.set_markup("<span weight='bold' foreground='red'>CLOSED</span>")
