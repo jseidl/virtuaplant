@@ -208,28 +208,29 @@ def add_oil_unit(space):
     l21 = pymunk.Segment(body, (43, -67), (65, -62), 5) #rigt side diagonal line
     l22 = pymunk.Segment(body, (65, -62), (77, 31), 5) #right vertical line
     l23 = pymunk.Segment(body, (77, 31), (7, 31), 5) #top right horizontal line
+    l24 = pymunk.Segment(body, (-3, -67), (-3, 10), 5)
  
     #separator exit pipe
-    l24 = pymunk.Segment(body, (43, -85), (43, -113), 5) #right side vertical line
-    l25 = pymunk.Segment(body, (43, -113), (580, -113), 5) #top horizontal line
-    l26 = pymunk.Segment(body, (13, -85), (13, -140), 5) #left vertical line
-    l27 = pymunk.Segment(body, (13, -140), (580, -140), 5) #bottom horizontal line
+    l25 = pymunk.Segment(body, (43, -85), (43, -113), 5) #right side vertical line
+    l26 = pymunk.Segment(body, (43, -113), (580, -113), 5) #top horizontal line
+    l27 = pymunk.Segment(body, (13, -85), (13, -140), 5) #left vertical line
+    l28 = pymunk.Segment(body, (13, -140), (580, -140), 5) #bottom horizontal line
 
     #waste water pipe
-    l28 = pymunk.Segment(body, (-87, -85), (-87, -112), 5) #left side waste line
-    l29 = pymunk.Segment(body, (-60, -85), (-60, -140), 5) #right side waste line
-    l30 = pymunk.Segment(body, (-87, -112), (-163, -112), 5) #top horizontal line
-    l31 = pymunk.Segment(body, (-60, -140), (-134, -140), 5) #bottom horizontal line
-    l32 = pymunk.Segment(body, (-163, -112), (-163, -185), 5) #left side vertical line
-    l33 = pymunk.Segment(body, (-134, -140), (-134, -185), 5) #right side vertical line
+    l29 = pymunk.Segment(body, (-87, -85), (-87, -112), 5) #left side waste line
+    l30 = pymunk.Segment(body, (-60, -85), (-60, -140), 5) #right side waste line
+    l31 = pymunk.Segment(body, (-87, -112), (-163, -112), 5) #top horizontal line
+    l32 = pymunk.Segment(body, (-60, -140), (-134, -140), 5) #bottom horizontal line
+    l33 = pymunk.Segment(body, (-163, -112), (-163, -185), 5) #left side vertical line
+    l34 = pymunk.Segment(body, (-134, -140), (-134, -185), 5) #right side vertical line
 
     space.add(l1, l2, l3, l4, l5, l6, l7, l8, l9, l10, l11, l12, l13, l14, l15, 
                 l16, l17, l18, l19, l20, l21, l22, l23, l24, l25, 
-                l26, l27, l28, l29, l30, l31, l32, l33) # 3
+                l26, l27, l28, l29, l30, l31, l32, l33, l34) # 3
 
     return (l1,l2,l3,l4,l5,l6,l7,l8,l9,l10,l11,l12,l13,l14,l15,l16,
         l17,l18,l19,l20,l21,l22,l23,l24,l25,l26,l27,l28,l29,l30,
-        l31,l32,l33)
+        l31,l32,l33,l34)
 
 def draw_polygon(screen, shape):
     points = shape.get_vertices()
