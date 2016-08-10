@@ -104,7 +104,7 @@ def add_ball(space):
     body = pymunk.Body(mass, inertia)
     body._bodycontents.v_limit = 120
     body._bodycontents.h_limit = 1
-    x = random.randint(180, 181)
+    x = random.randint(59, 60)
     body.position = x, 565
     shape = pymunk.Circle(body, radius, (0,0))
     shape.collision_type = ball_collision #liquid
@@ -259,7 +259,7 @@ def draw_lines(screen, lines):
         pv2 = body.position + line.b.rotated(body.angle)
         p1 = to_pygame(pv1) # 2
         p2 = to_pygame(pv2)
-        pygame.draw.lines(screen, THECOLORS["black"], False, [p1,p2])
+        pygame.draw.lines(screen, THECOLORS["gray"], False, [p1,p2])
 
 # Default collision function for objects
 # Returning true makes the two objects collide normally just like "walls/pipes"
@@ -271,7 +271,7 @@ def level_reached(space, arbiter, *args, **kwargs):
     log.debug("Level reached")
     PLCSetTag(PLC_TANK_LEVEL, 1) # Level Sensor Hit, Tank full
     PLCSetTag(PLC_FEED_PUMP, 0) # Turn off the pump
-    PLCSetTag(PLC_OUTLET_VALVE, 1) # Set the outlet valve to 1
+#    PLCSetTag(PLC_OUTLET_VALVE, 1) # Set the outlet valve to 1
     return False
     
 def oil_spilled(space, arbiter, *args, **kwargs):
@@ -300,6 +300,11 @@ def sep_feed_on(space, arbiter, *args, **kwargs):
     PLCSetTag(PLC_SEP_FEED, 1)
     return False
 
+def outlet_valve_open(space, arbiter, *args, **kwargs):
+    log.debug("Outlet valve open")
+    PLCSetTag(PLC_OUTLET_VALVE, 1)
+    return False
+    
 def outlet_valve_closed(space, arbiter, *args, **kwargs):
     log.debug("Outlet valve close")
     PLCSetTag(PLC_OUTLET_VALVE, 0)
@@ -394,7 +399,7 @@ def run_world():
             if ball.body.position.y < 0 or ball.body.position.x > SCREEN_WIDTH+150:
                 balls_to_remove.append(ball)
 
-            draw_ball(screen, ball)
+            draw_ball(bg, ball)
 
         for ball in balls_to_remove:
             space.remove(ball, ball.body)
