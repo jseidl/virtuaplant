@@ -378,7 +378,7 @@ def run_world():
 
         if PLCGetTag(PLC_OUTLET_VALVE) == 1: # Valve is closed
             space.add_collision_handler(outlet_valve_collision, ball_collision, begin=outlet_valve_closed)
-        elif PLCGETTAG(PLC_OUTLET_VALE) = 0: # Valve is open
+        elif PLCGetTag(PLC_OUTLET_VALE) = 0: # Valve is open
             space.add_collision_handler(outlet_valve_collision, ball_collision, begin=no_collision)
        
         # If the separator process is turned on
