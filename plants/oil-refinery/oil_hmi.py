@@ -54,7 +54,8 @@ class HMIWindow(Gtk.Window):
         self.connection_status_value.set_markup("<span weight='bold' foreground='red'>OFFLINE</span>")
         self.oil_processed_value.set_markup("<span weight='bold' foreground='green'>" + str(self.oil_processed_amount) + " Liters</span>")
         self.oil_spilled_value.set_markup("<span weight='bold' foreground='red'>" + str(self.oil_spilled_amount) + " Liters</span>")
-     
+        self.outlet_valve_value.set_markup("<span weight='bold' foreground='red'>N/A</span>")
+        
     def __init__(self):
         # Window title
         Gtk.Window.__init__(self, title="Oil Refinery")
@@ -106,6 +107,22 @@ class HMIWindow(Gtk.Window):
         grid.attach(level_switch_value, 5, elementIndex, 1, 1)
         grid.attach(level_switch_start_button, 6, elementIndex, 1, 1)
         grid.attach(level_switch_stop_button, 7, elementIndex, 1, 1)
+        elementIndex += 1
+        
+        #outlet valve
+        outlet_valve_label = Gtk.Label("Outlet Valve")
+        outlet_valve_value = Gtk.Label()
+
+        outlet_vlave_open_button = Gtk.Button("OPEN")
+        outlet_valve_close_button = Gtk.Button("CLOSE")
+
+        outlet_vlave_open_button.connect("clicked", self.setOutletValve, 1)
+        outlet_valve_close_button.connect("clicked", self.setOutletValve, 0)
+
+        grid.attach(outlet_valve_label, 4, elementIndex, 1, 1)
+        grid.attach(outlet_valve_value, 5, elementIndex, 1, 1)
+        grid.attach(outlet_vlave_open_button, 6, elementIndex, 1, 1)
+        grid.attach(outlet_valve_close_button, 7, elementIndex, 1, 1)
         elementIndex += 1
 
         #Oil/Water Separator Vessel
@@ -166,6 +183,7 @@ class HMIWindow(Gtk.Window):
         self.level_switch_value = level_switch_value
         self.oil_processed_value = oil_processed_value
         self.oil_spilled_value = oil_spilled_value
+        self.outlet_valve_value = outlet_valve_value
 
         # Set default label values
         self.resetLabels()
@@ -199,6 +217,12 @@ class HMIWindow(Gtk.Window):
         except:
             pass
 
+    def setOutletValve(self, widget, data=None):
+        try:
+            self.modbusClient.write_register(0x03, data)
+        except:
+            pass
+        
     def update_status(self):
 
         try:
@@ -227,6 +251,11 @@ class HMIWindow(Gtk.Window):
                 self.level_switch_value.set_markup("<span weight='bold' foreground='green'>ON</span>")
             else:
                 self.level_switch_value.set_markup("<span weight='bold' foreground='red'>OFF</span>")
+            
+            if regs[2] == 1:
+                self.outlet_valve_value.set_markup("<span weight='bold' foreground='green'>OPEN</span>")
+            else:
+                self.outlet_valve_value.set_markup("<span weight='bold' foreground='red'>CLOSED</span>")
                 
             # If the feed pump "0x04" is set to 1, separator is currently processing
             if regs[3] == 1:
