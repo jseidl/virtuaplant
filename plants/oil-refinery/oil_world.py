@@ -99,7 +99,7 @@ def to_pygame(p):
 # Add "oil" to the world space
 def add_ball(space):
     mass = 0.01
-    radius = 6
+    radius = 4
     inertia = pymunk.moment_for_circle(mass, 0, radius, (0,0))
     body = pymunk.Body(mass, inertia)
     body._bodycontents.v_limit = 120
