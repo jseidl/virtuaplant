@@ -330,7 +330,7 @@ def run_world():
     pump = add_pump(space)
     lines = add_oil_unit(space)
     tank_level = tank_level_sensor(space)
-    sep_valve = sep_valve(space)
+    sep_valve_obj = sep_valve(space)
     oil_spill = oil_spill_sensor(space)
     outlet = outlet_valve(space)
     
