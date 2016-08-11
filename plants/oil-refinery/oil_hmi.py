@@ -284,7 +284,7 @@ class HMIWindow(Gtk.Window):
                 self.separator_value.set_markup("<span weight='bold' foreground='red'>CLOSED</span>")
                 self.process_status_value.set_markup("<span weight='bold' foreground='red'>STOPPED </span>")
                 
-            # Waste Valve status
+            # Waste Valve status "0x08"
             if regs[7] == 1:
                 self.waste_value.set_markup("<span weight='bold' foreground='green'>OPEN</span>")
             else:

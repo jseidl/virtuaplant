@@ -89,7 +89,7 @@ ball_collision = 0x5
 outlet_valve_collision = 0x6
 sep_valve_collision = 0x7
 oil_spill_collision = 0x9
-waste_valve_collision = 0x10
+waste_valve_collision = 0x8
 
 # Helper function to set PLC values
 def PLCSetTag(addr, value):
@@ -404,9 +404,9 @@ def run_world():
             
         # Waste water valve open/closed collision handler
         if PLCGetTag(PLC_WASTE_VALVE) == 1:
-            space.add_collision_handler(sep_valve_collision, ball_collision, begin=waste_valve_open)
+            space.add_collision_handler(waste_valve_collision, ball_collision, begin=waste_valve_open)
         else:
-            space.add_collision_handler(sep_valve_collision, ball_collision, begin=waste_valve_closed)
+            space.add_collision_handler(waste_valve_collision, ball_collision, begin=waste_valve_closed)
             
             
         ticks_to_next_ball -= 1
