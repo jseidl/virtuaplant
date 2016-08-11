@@ -219,8 +219,8 @@ def add_oil_unit(space):
     l14 = pymunk.Segment(body, (-83, -23), (-80, -80), 1) #left waste exit line
     l15 = pymunk.Segment(body, (-68, -80), (-65, -53), 1) #right waste exit line
     l16 = pymunk.Segment(body, (-65, -53), (-3, -67), 1) 
-    l17 = pymunk.Segment(body, (-45, -23), (-45, -67), 1) #elevation vertical line 
-    l18 = pymunk.Segment(body, (-45, -67), (13, -67), 1) #left bottom line
+#    l17 = pymunk.Segment(body, (-45, -23), (-45, -67), 1) #elevation vertical line 
+#    l18 = pymunk.Segment(body, (-45, -67), (13, -67), 1) #left bottom line
     l19 = pymunk.Segment(body, (13, -67), (13, -82), 1) #left side separator exit line
     l20 = pymunk.Segment(body, (43, -82), (43, -67), 1) #right side separator exit line
     l21 = pymunk.Segment(body, (43, -67), (65, -62), 1) #rigt side diagonal line
@@ -243,11 +243,11 @@ def add_oil_unit(space):
     l34 = pymunk.Segment(body, (-134, -140), (-134, -185), 1) #right side vertical line
 
     space.add(l1, l2, l3, l4, l5, l6, l7, l8, l9, l10, l11, l12, l13, l14, l15, 
-                l16, l17, l18, l19, l20, l21, l22, l23, l24, l25, 
+                l16, l19, l20, l21, l22, l23, l24, l25, 
                 l26, l27, l28, l29, l30, l31, l32, l33, l34) # 3
 
     return (l1,l2,l3,l4,l5,l6,l7,l8,l9,l10,l11,l12,l13,l14,l15,l16,
-        l17,l18,l19,l20,l21,l22,l23,l24,l25,l26,l27,l28,l29,l30,
+        l19,l20,l21,l22,l23,l24,l25,l26,l27,l28,l29,l30,
         l31,l32,l33,l34)
 
 # Draw a defined polygon
