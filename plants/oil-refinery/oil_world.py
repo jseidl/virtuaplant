@@ -114,7 +114,7 @@ def add_ball(space):
     x = random.randint(69, 70)
     body.position = x, 565
     shape = pymunk.Circle(body, radius, (0,0))
-    shape.friction = 0.1
+    shape.friction = 0.0
     shape.collision_type = ball_collision #liquid
     space.add(body, shape)
     return shape
@@ -219,7 +219,7 @@ def add_oil_unit(space):
     l13 = pymunk.Segment(body, (-95, -23), (-83, -23), 1) 
     l14 = pymunk.Segment(body, (-83, -23), (-80, -80), 1) #left waste exit line
     l15 = pymunk.Segment(body, (-68, -80), (-65, -23), 1) #right waste exit line
-    l16 = pymunk.Segment(body, (-65, -53), (-45, -23), 1) 
+    l16 = pymunk.Segment(body, (-65, -23), (-45, -23), 1) 
     l17 = pymunk.Segment(body, (-45, -23), (-45, -67), 1) #elevation vertical line 
     l18 = pymunk.Segment(body, (-45, -67), (13, -67), 1) #left bottom line
     l19 = pymunk.Segment(body, (13, -67), (13, -82), 1) #left side separator exit line
