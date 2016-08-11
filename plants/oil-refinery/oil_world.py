@@ -140,8 +140,8 @@ def waste_valve(space):
     body = pymunk.Body()
     body.position = (225, 218)
     radius = 2
-    a = (-10, 0)
-    b = (10, 0)
+    a = (-8, 0)
+    b = (9, 0)
     shape = pymunk.Segment(body, a, b, radius)
     shape.collision_type = waste_valve_collision
     space.add(shape)
