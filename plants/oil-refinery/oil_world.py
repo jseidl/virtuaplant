@@ -200,9 +200,9 @@ def add_oil_unit(space):
     body.position = (300,300)
     
     #oil storage unit
-    l1 = pymunk.Segment(body, (-278, 270), (-278, 145), 1) #left side line
+    l1 = pymunk.Segment(body, (-278, 250), (-278, 145), 1) #left side line
     l2 = pymunk.Segment(body, (-278, 145), (-246, 107), 1) 
-    l3 = pymunk.Segment(body, (-180, 270), (-180, 145), 1) #right side line
+    l3 = pymunk.Segment(body, (-180, 250), (-180, 145), 1) #right side line
     l4 = pymunk.Segment(body, (-180, 145), (-215, 107), 1) 
 
     #pipe to separator vessel
