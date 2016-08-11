@@ -57,6 +57,7 @@ try:
         rq = client.write_register(0x01, 1) # Run Plant, Run!
         rq = client.write_register(0x02, 0) # Level Sensor
         rq = client.write_register(0x04, 0) # Limit Switch
+        rq = client.write_register(0x06, 0) # Nope, nothing spilled
         
 except KeyboardInterrupt:
     client.close()
