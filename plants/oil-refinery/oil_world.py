@@ -175,7 +175,7 @@ def outlet_valve(space):
 # Sensor at the bottom of the world that detects and counts spills
 def oil_spill_sensor(space):
     body = pymunk.Body()
-    body.position = (0, 0)
+    body.position = (100, 100)
     radius = 7
     a = (0, 75)
     b = (SCREEN_WIDTH, 75)
