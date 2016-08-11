@@ -227,7 +227,7 @@ def add_oil_unit(space):
     l22 = pymunk.Segment(body, (65, -62), (77, 31), 1) #right vertical line
     l23 = pymunk.Segment(body, (77, 31), (7, 31), 1) #top right horizontal line
     l24 = pymunk.Segment(body, (-3, -67), (-3, 10), 3) #center separator line
-    l35 = pymunk.Segment(body, (-3, 10), (-68, -80), 1)
+    l35 = pymunk.Segment(body, (-3, 10), (-65, -53), 1)
  
     #separator exit pipe
     l25 = pymunk.Segment(body, (43, -85), (43, -113), 1) #right side vertical line
