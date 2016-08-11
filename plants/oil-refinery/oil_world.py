@@ -114,6 +114,7 @@ def add_ball(space):
     x = random.randint(69, 70)
     body.position = x, 565
     shape = pymunk.Circle(body, radius, (0,0))
+    shape.friction = 0.1
     shape.collision_type = ball_collision #liquid
     space.add(body, shape)
     return shape
