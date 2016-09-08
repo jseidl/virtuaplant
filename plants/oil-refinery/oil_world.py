@@ -88,8 +88,9 @@ tank_level_collision = 0x4
 ball_collision = 0x5
 outlet_valve_collision = 0x6
 sep_valve_collision = 0x7
-oil_spill_collision = 0x9
 waste_valve_collision = 0x8
+oil_spill_collision = 0x9
+oil_process_collision = 0xA
 
 # Helper function to set PLC values
 def PLCSetTag(addr, value):
@@ -180,6 +181,18 @@ def oil_spill_sensor(space):
     radius = 7
     a = (0, 75)
     b = (137, 75)
+    shape = pymunk.Segment(body, a, b, radius)
+    shape.collision_type = oil_spill_collision # oil spill sensor
+    space.add(shape)
+    return shape
+    
+# Sensor at the bottom of the world that detects and counts spills
+def oil_process_sensor(space):
+    body = pymunk.Body()
+    body.position = (70, 585)
+    radius = 7
+    a = (0, 75)
+    b = (75, 75)
     shape = pymunk.Segment(body, a, b, radius)
     shape.collision_type = oil_spill_collision # oil spill sensor
     space.add(shape)
@@ -296,12 +309,18 @@ def level_reached(space, arbiter, *args, **kwargs):
     
 def oil_spilled(space, arbiter, *args, **kwargs):
     global oil_spilled_amount
-    global oil_processed_amount
     log.debug("Oil Spilled")
     oil_spilled_amount = oil_spilled_amount + 1
     PLCSetTag(PLC_OIL_SPILL, oil_spilled_amount) # We lost a unit of oil
     PLCSetTag(PLC_FEED_PUMP, 0) # Attempt to shut off the pump
     return False   
+    
+def oil_processed(space, arbiter, *args, **kwargs):
+    global oil_processed_amount
+    log.debug("Oil Processed")
+    oil_processed_amount = oil_processed_amount + 1
+    PLCSetTag(PLC_OIL_PROCESS, oil_processed_amount) # We processed a unit of oil
+    return False  
     
 # This is on when separation is on
 def sep_open(space, arbiter, *args, **kwargs):
@@ -345,6 +364,8 @@ def run_world():
     space.add_collision_handler(tank_level_collision, ball_collision, begin=level_reached)
     # When oil touches the oil_spill marker, call oil_spilled
     space.add_collision_handler(oil_spill_collision, ball_collision, begin=oil_spilled)
+    # When oil touches the oil_process marker, call oil_processed
+    space.add_collision_handler(oil_process_collision, ball_collision, begin=oil_processed)
     # Initial outlet valve condition is turned off
     space.add_collision_handler(outlet_valve_collision, ball_collision, begin=no_collision)
     # Initial sep valve condition is turned off
@@ -358,6 +379,7 @@ def run_world():
     tank_level = tank_level_sensor(space)
     sep_valve_obj = sep_valve(space)
     oil_spill = oil_spill_sensor(space)
+    oil_process = oil_process_sensor(space)
     outlet = outlet_valve(space)
     waste_valve_obj = waste_valve(space)
     
