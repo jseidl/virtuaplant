@@ -90,7 +90,7 @@ outlet_valve_collision = 0x6
 sep_valve_collision = 0x7
 waste_valve_collision = 0x8
 oil_spill_collision = 0x9
-oil_process_collision = 0x3
+oil_processed_collision = 0x3
 
 # Helper function to set PLC values
 def PLCSetTag(addr, value):
@@ -187,14 +187,14 @@ def oil_spill_sensor(space):
     return shape
     
 # Sensor at the bottom of the world that detects and counts spills
-def oil_process_sensor(space):
+def oil_processed_sensor(space):
     body = pymunk.Body()
     body.position = (70, 585)
     radius = 7
     a = (0, 75)
     b = (75, 75)
     shape = pymunk.Segment(body, a, b, radius)
-    shape.collision_type = oil_process_collision # oil spill sensor
+    shape.collision_type = oil_processed_collision # oil processed sensor
     space.add(shape)
     return shape
 
@@ -365,7 +365,7 @@ def run_world():
     # When oil touches the oil_spill marker, call oil_spilled
     space.add_collision_handler(oil_spill_collision, ball_collision, begin=oil_spilled)
     # When oil touches the oil_process marker, call oil_processed
-    space.add_collision_handler(oil_process_collision, ball_collision, begin=oil_processed)
+    space.add_collision_handler(oil_processed_collision, ball_collision, begin=oil_processed)
     # Initial outlet valve condition is turned off
     space.add_collision_handler(outlet_valve_collision, ball_collision, begin=no_collision)
     # Initial sep valve condition is turned off
@@ -379,7 +379,7 @@ def run_world():
     tank_level = tank_level_sensor(space)
     sep_valve_obj = sep_valve(space)
     oil_spill = oil_spill_sensor(space)
-    oil_process = oil_process_sensor(space)
+    oil_process = oil_processed_sensor(space)
     outlet = outlet_valve(space)
     waste_valve_obj = waste_valve(space)
     
