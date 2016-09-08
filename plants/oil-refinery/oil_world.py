@@ -90,7 +90,7 @@ outlet_valve_collision = 0x6
 sep_valve_collision = 0x7
 waste_valve_collision = 0x8
 oil_spill_collision = 0x9
-oil_process_collision = 0xA
+oil_process_collision = 0x3
 
 # Helper function to set PLC values
 def PLCSetTag(addr, value):
@@ -194,7 +194,7 @@ def oil_process_sensor(space):
     a = (0, 75)
     b = (75, 75)
     shape = pymunk.Segment(body, a, b, radius)
-    shape.collision_type = oil_spill_collision # oil spill sensor
+    shape.collision_type = oil_process_collision # oil spill sensor
     space.add(shape)
     return shape
 
