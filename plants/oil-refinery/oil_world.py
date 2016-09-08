@@ -319,7 +319,7 @@ def oil_processed(space, arbiter, *args, **kwargs):
     global oil_processed_amount
     log.debug("Oil Processed")
     oil_processed_amount = oil_processed_amount + 1
-    PLCSetTag(PLC_OIL_PROCESS, oil_processed_amount) # We processed a unit of oil
+    PLCSetTag(PLC_OIL_PROCESSED, oil_processed_amount) # We processed a unit of oil
     return False  
     
 # This is on when separation is on
