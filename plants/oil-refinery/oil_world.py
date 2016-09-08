@@ -189,10 +189,10 @@ def oil_spill_sensor(space):
 # Sensor at the bottom of the world that detects and counts spills
 def oil_processed_sensor(space):
     body = pymunk.Body()
-    body.position = (70, 585)
+    body.position = (327, 218)
     radius = 7
-    a = (-25, -100)
-    b = (25, -100)
+    a = (-15, 5)
+    b = (15, 50)
     shape = pymunk.Segment(body, a, b, radius)
     shape.collision_type = oil_processed_collision # oil processed sensor
     space.add(shape)
