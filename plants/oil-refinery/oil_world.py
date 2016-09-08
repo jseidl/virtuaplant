@@ -191,8 +191,8 @@ def oil_processed_sensor(space):
     body = pymunk.Body()
     body.position = (70, 585)
     radius = 7
-    a = (0, 75)
-    b = (75, 75)
+    a = (0, 0)
+    b = (200, 200)
     shape = pymunk.Segment(body, a, b, radius)
     shape.collision_type = oil_processed_collision # oil processed sensor
     space.add(shape)
