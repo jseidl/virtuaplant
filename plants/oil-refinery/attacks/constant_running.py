@@ -57,6 +57,8 @@ try:
         rq = client.write_register(0x01, 1) # Run Plant, Run!
         rq = client.write_register(0x02, 0) # Level Sensor
         rq = client.write_register(0x04, 0) # Limit Switch
+        rq = client.write_register(0x03, 0) # Outlet valve
+        rq = client.write_register(0x08, 0) # Waste valve
         
 except KeyboardInterrupt:
     client.close()
