@@ -82,6 +82,7 @@ PLC_SEP_VALVE = 0x04
 PLC_OIL_SPILL = 0x06
 PLC_OIL_PROCESSED = 0x07
 PLC_WASTE_VALVE = 0x08
+PLC_OIL_UPPER = 0x09
 
 # Collision types
 tank_level_collision = 0x4
@@ -319,7 +320,11 @@ def oil_processed(space, arbiter, *args, **kwargs):
     global oil_processed_amount
     log.debug("Oil Processed")
     oil_processed_amount = oil_processed_amount + 1
-    PLCSetTag(PLC_OIL_PROCESSED, oil_processed_amount) # We processed a unit of oil
+    if oil_processed_amount >= 65000:
+        PLCSetTag(PLC_OIL_PROCESSED, 65000) # We processed a unit of oil
+        PLCSetTag(PLC_OIL_UPPER, oil_processed_amount-65000) # We processed a unit of oil
+    else:
+        PLCSetTag(PLC_OIL_PROCESSED, oil_processed_amount) # We processed a unit of oil
     return False  
     
 # This is on when separation is on
