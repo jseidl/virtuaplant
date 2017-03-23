@@ -33,11 +33,11 @@ log.setLevel(logging.INFO)
 PLC_SERVER_IP   = "localhost"
 PLC_SERVER_PORT = 502
 
+PLC_TAG_RUN     = 0x0
 PLC_TAG_LEVEL   = 0x1
 PLC_TAG_CONTACT = 0x2
 PLC_TAG_MOTOR   = 0x3
 PLC_TAG_NOZZLE  = 0x4
-PLC_TAG_RUN     = 0x10
 
 #########################################
 # MOTOR actuator
@@ -45,7 +45,7 @@ PLC_TAG_RUN     = 0x10
 MOTOR_SERVER_IP     = "localhost"
 MOTOR_SERVER_PORT   = 503
 
-MOTOR_TAG_RUN = 0x3
+MOTOR_TAG_RUN = 0x0
 
 #########################################
 # NOZZLE actuator
@@ -53,7 +53,7 @@ MOTOR_TAG_RUN = 0x3
 NOZZLE_SERVER_IP    = "localhost"
 NOZZLE_SERVER_PORT  = 504
 
-NOZZLE_TAG_RUN = 0x4
+NOZZLE_TAG_RUN = 0x0
 
 #########################################
 # LEVEL sensor
@@ -61,7 +61,7 @@ NOZZLE_TAG_RUN = 0x4
 LEVEL_SERVER_IP     = "localhost"
 LEVEL_SERVER_PORT   = 505
 
-LEVEL_TAG_SENSOR = 0x1
+LEVEL_TAG_SENSOR = 0x0
 
 #########################################
 # CONTACT sensor
@@ -69,7 +69,7 @@ LEVEL_TAG_SENSOR = 0x1
 CONTACT_SERVER_IP   = "localhost"
 CONTACT_SERVER_PORT = 506
 
-CONTACT_TAG_SENSOR = 0x2
+CONTACT_TAG_SENSOR = 0x0
 
 #########################################
 # World code
@@ -346,23 +346,16 @@ def runWorld():
         plc['server'].write(PLC_TAG_CONTACT, plc['contact'].read(CONTACT_TAG_SENSOR))
 
         # Manage PLC programm
-        if plc['server'].read(PLC_TAG_RUN):
-                # Motor Logic
-                if (plc['server'].read(PLC_TAG_CONTACT) == 0):
-                    plc['server'].write(PLC_TAG_MOTOR, 1)
-                else:
-                    if (plc['server'].read(PLC_TAG_CONTACT) == 1) and (plc['server'].read(PLC_TAG_LEVEL) == 1):
-                        plc['server'].write(PLC_TAG_MOTOR, 1)
-                    else:
-                        plc['server'].write(PLC_TAG_MOTOR, 0)
-
-                # Nozzle Logic 
-                if (plc['server'].read(PLC_TAG_MOTOR) == 0) and (plc['server'].read(PLC_TAG_CONTACT) == 1) and (plc['server'].read(PLC_TAG_LEVEL) == 0):
-                    plc['server'].write(PLC_TAG_NOZZLE, 1)
-                else:
-                    plc['server'].write(PLC_TAG_NOZZLE, 0)
+        # Motor Logic
+        if plc['server'].read(PLC_TAG_RUN) and ((plc['server'].read(PLC_TAG_CONTACT) == 0) or (plc['server'].read(PLC_TAG_LEVEL) == 1)):
+            plc['server'].write(PLC_TAG_MOTOR, 1)
         else:
             plc['server'].write(PLC_TAG_MOTOR, 0)
+
+        # Nozzle Logic 
+        if plc['server'].read(PLC_TAG_RUN) and (plc['server'].read(PLC_TAG_CONTACT) == 1) and (plc['server'].read(PLC_TAG_LEVEL) == 0):
+            plc['server'].write(PLC_TAG_NOZZLE, 1)
+        else:
             plc['server'].write(PLC_TAG_NOZZLE, 0)
 
         # Read local variables and store in remote
