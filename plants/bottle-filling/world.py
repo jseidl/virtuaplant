@@ -33,7 +33,10 @@ log.setLevel(logging.INFO)
 PLC_SERVER_IP   = "localhost"
 PLC_SERVER_PORT = 502
 
-PLC_TAG_RUN     = 0x0
+PLC_RW_ADDR = 0x0
+PLC_TAG_RUN = 0x0
+
+PLC_RO_ADDR	= 0x3E8
 PLC_TAG_LEVEL   = 0x1
 PLC_TAG_CONTACT = 0x2
 PLC_TAG_MOTOR   = 0x3
@@ -45,6 +48,7 @@ PLC_TAG_NOZZLE  = 0x4
 MOTOR_SERVER_IP     = "localhost"
 MOTOR_SERVER_PORT   = 503
 
+MOTOR_RW_ADDR = 0x0
 MOTOR_TAG_RUN = 0x0
 
 #########################################
@@ -53,6 +57,7 @@ MOTOR_TAG_RUN = 0x0
 NOZZLE_SERVER_IP    = "localhost"
 NOZZLE_SERVER_PORT  = 504
 
+NOZZLE_RW_ADDR = 0x0
 NOZZLE_TAG_RUN = 0x0
 
 #########################################
@@ -61,6 +66,7 @@ NOZZLE_TAG_RUN = 0x0
 LEVEL_SERVER_IP     = "localhost"
 LEVEL_SERVER_PORT   = 505
 
+LEVEL_RO_ADDR = 0x0
 LEVEL_TAG_SENSOR = 0x0
 
 #########################################
@@ -69,6 +75,7 @@ LEVEL_TAG_SENSOR = 0x0
 CONTACT_SERVER_IP   = "localhost"
 CONTACT_SERVER_PORT = 506
 
+CONTACT_RO_ADDR = 0x0
 CONTACT_TAG_SENSOR = 0x0
 
 #########################################
@@ -237,7 +244,7 @@ def level_ok(space, arbiter, *args, **kwargs):
 
     log.debug("Level reached")
 
-    level['server'].write(LEVEL_TAG_SENSOR, 1)  # Level Sensor Hit, Bottle Filled
+    level['server'].write(LEVEL_RO_ADDR + LEVEL_TAG_SENSOR, 1)  # Level Sensor Hit, Bottle Filled
 
     return False
 
@@ -246,7 +253,7 @@ def no_level(space, arbiter, *args, **kwargs):
 
     log.debug("No level")
 
-    level['server'].write(LEVEL_TAG_SENSOR, 0)
+    level['server'].write(LEVEL_RO_ADDR + LEVEL_TAG_SENSOR, 0)
 
     return False
 
@@ -255,7 +262,7 @@ def bottle_in_place(space, arbiter, *args, **kwargs):
 
     log.debug("Bottle in place")
 
-    contact['server'].write(CONTACT_TAG_SENSOR, 1)
+    contact['server'].write(CONTACT_RO_ADDR + CONTACT_TAG_SENSOR, 1)
 
     return False
 
@@ -264,7 +271,7 @@ def no_bottle(space, arbiter, *args, **kwargs):
 
     log.debug("No Bottle")
 
-    contact['server'].write(CONTACT_TAG_SENSOR, 0)
+    contact['server'].write(CONTACT_RO_ADDR + CONTACT_TAG_SENSOR, 0)
     
     return False
 
@@ -341,34 +348,40 @@ def runWorld():
         screen.fill(THECOLORS["white"])
         
         # Manage plc
-        # Read remote variables and store in local
-        plc['server'].write(PLC_TAG_LEVEL, plc['level'].read(LEVEL_TAG_SENSOR))
-        plc['server'].write(PLC_TAG_CONTACT, plc['contact'].read(CONTACT_TAG_SENSOR))
+        # Read remote/local variables
+        tag_level   = plc['level'].read(LEVEL_RO_ADDR + LEVEL_TAG_SENSOR)
+        tag_contact = plc['contact'].read(CONTACT_RO_ADDR + CONTACT_TAG_SENSOR)
+        tag_run     = plc['server'].read(PLC_RW_ADDR + PLC_TAG_RUN) 
 
         # Manage PLC programm
         # Motor Logic
-        if plc['server'].read(PLC_TAG_RUN) and ((plc['server'].read(PLC_TAG_CONTACT) == 0) or (plc['server'].read(PLC_TAG_LEVEL) == 1)):
-            plc['server'].write(PLC_TAG_MOTOR, 1)
+        if (tag_run == 1) and ((tag_contact == 0) or (tag_level == 1)):
+            tag_motor = 1
         else:
-            plc['server'].write(PLC_TAG_MOTOR, 0)
+            tag_motor = 0
 
         # Nozzle Logic 
-        if plc['server'].read(PLC_TAG_RUN) and (plc['server'].read(PLC_TAG_CONTACT) == 1) and (plc['server'].read(PLC_TAG_LEVEL) == 0):
-            plc['server'].write(PLC_TAG_NOZZLE, 1)
+        if (tag_run == 1) and ((tag_contact == 1) and (tag_level == 0)):
+            tag_nozzle = 1
         else:
-            plc['server'].write(PLC_TAG_NOZZLE, 0)
+            tag_nozzle = 0
 
-        # Read local variables and store in remote
-        plc['motor'].write(MOTOR_TAG_RUN, plc['server'].read(PLC_TAG_MOTOR))
-        plc['nozzle'].write(NOZZLE_TAG_RUN, plc['server'].read(PLC_TAG_NOZZLE))
+        # Write remote/local variables
+        plc['motor'].write(MOTOR_RW_ADDR + MOTOR_TAG_RUN, tag_motor)
+        plc['nozzle'].write(NOZZLE_RW_ADDR + NOZZLE_TAG_RUN, tag_nozzle)
+
+        plc['server'].write(PLC_RO_ADDR + PLC_TAG_LEVEL, tag_level)
+        plc['server'].write(PLC_RO_ADDR + PLC_TAG_CONTACT, tag_contact)
+        plc['server'].write(PLC_RO_ADDR + PLC_TAG_MOTOR, tag_motor)
+        plc['server'].write(PLC_RO_ADDR + PLC_TAG_NOZZLE, tag_nozzle)
 
         # Manage nozzle actuator : filling bottle
-        if nozzle['server'].read(NOZZLE_TAG_RUN) == 1:
+        if nozzle['server'].read(NOZZLE_RW_ADDR + NOZZLE_TAG_RUN) == 1:
             ball_shape = add_ball(space)
             balls.append(ball_shape)
 
         # Manage motor : move the bottles
-        if motor['server'].read(MOTOR_TAG_RUN) == 1:
+        if motor['server'].read(MOTOR_RW_ADDR + MOTOR_TAG_RUN) == 1:
             for bottle in bottles:
                 bottle[0].body.position.x += 0.25
 

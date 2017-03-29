@@ -122,13 +122,13 @@ class HMIWindow(Gtk.Window):
 
     def setProcess(self, widget, data=None):
         try:
-            self.client.write(PLC_TAG_RUN, data)
+            self.client.write(PLC_RW_ADDR + PLC_TAG_RUN, data)
         except:
             pass
 
     def update_status(self):
         try:
-            regs = self.client.readln(0x0, 17)
+            regs = self.client.readln(PLC_RO_ADDR, 17)
 
             if regs[PLC_TAG_CONTACT] == 1:
                 self.bottlePositionValue.set_markup("<span weight='bold' foreground='green'>YES</span>")
@@ -149,6 +149,8 @@ class HMIWindow(Gtk.Window):
                     self.nozzleStatusValue.set_markup("<span weight='bold' foreground='green'>OPEN</span>")
             else:
                 self.nozzleStatusValue.set_markup("<span weight='bold' foreground='red'>CLOSED</span>")
+
+            regs = self.client.readln(PLC_RW_ADDR, 17)
 
             if regs[PLC_TAG_RUN] == 1:
                 self.processStatusValue.set_markup("<span weight='bold' foreground='green'>RUNNING</span>")

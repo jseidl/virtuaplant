@@ -49,11 +49,8 @@ class ClientModbus(ModbusTcpClient):
 
 class ServerModbus(ModbusServerFactory):
     def __init__(self, address, port = MODBUS_PORT):
-        store = ModbusSlaveContext(
-            di = ModbusSequentialDataBlock(0, [0]*100),
-            co = ModbusSequentialDataBlock(0, [0]*100),
-            hr = ModbusSequentialDataBlock(0, [0]*100),
-            ir = ModbusSequentialDataBlock(0, [0]*100))
+        block = ModbusSequentialDataBlock(0x00, [0]*0x3ff)
+        store = ModbusSlaveContext(di=block, co=block, hr=block, ir=block)
         
         self.context = ModbusServerContext(slaves=store, single=True)
         
