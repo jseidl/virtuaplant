@@ -1,0 +1,14 @@
+TODO list
+- Add more mini-game aspect to it
+    - Show amount of oil successfully processed,
+    - Show amount of oil lost due to overflow
+    - Show amount of oil successfully shipped
+    - Show oil shipments missed due to lack of oil processed
+    
+- Make it prettier/more graphical
+- Add background image
+
+- Oil Spilled/Processed
+    - Add sensors in processing pipes
+    - Add sensor at bottom of world/above level sensor
+    
