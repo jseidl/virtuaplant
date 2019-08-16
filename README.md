@@ -1,3 +1,5 @@
+** VIRTUAPLANT IS NO LONGER MAINTAINED. THERE ARE SECURITY VULNERABILITIES IN THE `twisted` AND `pycrypto` VERSIONS ON THIS PROJECT. ALSO, THE CODE SEEMS TO BE BROKEN SINCE `pymodbus` WAS UPDATED**
+
 # VirtuaPlant
 
 VirtuaPlant is a Industrial Control Systems simulator which adds a “similar to real-world control logic” to the basic “read/write tags” feature of most PLC simulators. Paired with a game library and 2d physics engine, VirtuaPlant is able to present a GUI simulating the “world view” behind the control system allowing the user to have a vision of the would-be actions behind the control systems.
